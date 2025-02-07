@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      const respuesta = await axios.post("http://127.0.0.1:8000/api/login", {
+      const respuesta = await axios.post("https://jwmalmcenb-production.up.railway.app/api/login", {
         username,
         password
     });

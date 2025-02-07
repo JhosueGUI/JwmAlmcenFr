@@ -49,7 +49,7 @@ export function InventarioPage() {
                 const token = obtenerToken()
                 if (token) {
                     setCargando(true);
-                    const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/inventario_valorizado/get", {
+                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/inventario_valorizado/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

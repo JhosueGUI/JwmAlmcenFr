@@ -24,12 +24,12 @@ const ModalEditarProveedor = ({ pasarAbrirModalEditar, pasarCerrarModalEditar, p
             const token = obtenerToken()
             if (token && dataProveedor.ruc) {
                 console.log('pasar form', dataProveedor)
-                const respuestaPost = await axios.post(`http://127.0.0.1:8000/api/almacen/proveedor/update/${pasarProveedorSeleccionado.id}`, dataProveedor, {
+                const respuestaPost = await axios.post(`https://jwmalmcenb-production.up.railway.app/api/almacen/proveedor/update/${pasarProveedorSeleccionado.id}`, dataProveedor, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 })
-                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/proveedor/get", {
+                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/proveedor/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -69,7 +69,7 @@ const ModalEditarProveedor = ({ pasarAbrirModalEditar, pasarCerrarModalEditar, p
             const token = obtenerToken();
             if (token) {
                 const ruc = dataProveedor.ruc;
-                const respuestaGet = await axios.get(`http://127.0.0.1:8000/api/almacen/proveedor/peticion/get?ruc=${ruc}`, {
+                const respuestaGet = await axios.get(`https://jwmalmcenb-production.up.railway.app/api/almacen/proveedor/peticion/get?ruc=${ruc}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

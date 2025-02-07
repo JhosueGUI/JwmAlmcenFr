@@ -32,7 +32,7 @@ export const ReporteGraficoEpps = () => {
         try {
             const token = obtenerToken();
             if (token) {
-                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/reporte/epps/filtro", {
+                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/reporte/epps/filtro", {
                     params: dataEpps,
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -157,7 +157,7 @@ export const ReporteGraficoEpps = () => {
         try {
             const token = obtenerToken();
             if (token) {
-                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/reporte/epps/filtro/mes", {
+                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/reporte/epps/filtro/mes", {
                     params: { ...dataEpps, año },
                     headers: {
                         Authorization: `Bearer ${token}`

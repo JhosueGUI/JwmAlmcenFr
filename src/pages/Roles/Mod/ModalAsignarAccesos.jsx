@@ -26,7 +26,7 @@ export const ModalAsignarAccesos = ({pasarAbrirModalAsignar,pasarCerrarModalAsig
         try {
             const token =obtenerToken()     
             if(token){
-                const respuestaPost = await axios.post(`http://127.0.0.1:8000/api/almacen/rol/asignar_acceso/${pasarRolSeleccionado.id}`,dataRol,{
+                const respuestaPost = await axios.post(`https://jwmalmcenb-production.up.railway.app/api/almacen/rol/asignar_acceso/${pasarRolSeleccionado.id}`,dataRol,{
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

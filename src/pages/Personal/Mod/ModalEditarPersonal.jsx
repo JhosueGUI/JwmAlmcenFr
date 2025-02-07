@@ -29,7 +29,7 @@ const ModalAgregarPersonal = ({ pasarAbrirModalEditar, pasarCerrarModalEditar, p
             if (token) {
                 console.log("Datos que se enviarán:", dataPersonal);
 
-                const respuestaPersonalPost = await axios.post(`http://127.0.0.1:8000/api/almacen/personal/update/${pasarPersonalSeleccionado.id}`, dataPersonal, {
+                const respuestaPersonalPost = await axios.post(`https://jwmalmcenb-production.up.railway.app/api/almacen/personal/update/${pasarPersonalSeleccionado.id}`, dataPersonal, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -37,7 +37,7 @@ const ModalAgregarPersonal = ({ pasarAbrirModalEditar, pasarCerrarModalEditar, p
                 // console.log("Respuesta del servidor:", respuestaPersonalPost);
 
                 // Obtener las categorías actualizadas después de agregar una nueva categoría
-                const respuestaPersonalGet = await axios.get("http://127.0.0.1:8000/api/almacen/personal/get", {
+                const respuestaPersonalGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/personal/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

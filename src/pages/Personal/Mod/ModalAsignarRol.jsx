@@ -28,7 +28,7 @@ export const ModalAsignarRol = ({ pasarAbrirModalAsignar, pasarCerrarModalAsigna
             try {
                 const token = obtenerToken();
                 if (token) {
-                    const respuesta = await axios.get("http://127.0.0.1:8000/api/almacen/rol/get", {
+                    const respuesta = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/rol/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
@@ -57,7 +57,7 @@ export const ModalAsignarRol = ({ pasarAbrirModalAsignar, pasarCerrarModalAsigna
                 const data = {
                     rol: [rolSeleccionado.id]
                 };
-                const respuestaCategoria = await axios.post(`http://127.0.0.1:8000/api/almacen/personal/asignar_rol/${pasarPersonalSeleccionado.id}`, data, {
+                const respuestaCategoria = await axios.post(`https://jwmalmcenb-production.up.railway.app/api/almacen/personal/asignar_rol/${pasarPersonalSeleccionado.id}`, data, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
