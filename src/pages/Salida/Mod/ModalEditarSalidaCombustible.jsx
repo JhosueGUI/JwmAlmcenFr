@@ -49,12 +49,12 @@ const ModalEditarSalidaCombustible = ({ pasarSetSalidas, pasarAbrirModal, pasarC
             const token = obtenerToken()
             if (token) {
                 console.log("Data Salida", dataSalida)
-                const respuestaPost = await axios.post('http://localhost:8000/api/almacen/salida_combustible/create', dataSalida, {
+                const respuestaPost = await axios.post('https://jwmalmcenb-production.up.railway.app/api/almacen/salida_combustible/create', dataSalida, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 })
-                const respuestaGet = await axios.get("http://localhost:8000/api/almacen/salida_combustible/get", {
+                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/salida_combustible/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

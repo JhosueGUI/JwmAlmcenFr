@@ -19,7 +19,7 @@ export const GetDestinoCombustible = ({ pasarSetSalidas,pasarSalidaSeleccionadoC
             try {
                 const token = obtenerToken()
                 if (token) {
-                    const respuestaGet = await axios.get("http://localhost:8000/api/almacen/destino_combustible/get", {
+                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/destino_combustible/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

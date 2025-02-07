@@ -125,7 +125,7 @@ export function SalidaPage() {
                 const token = obtenerToken();
                 if (token) {
                     setCargando(true);
-                    const respuestaGet = await axios.get("http://localhost:8000/api/almacen/salida_combustible/get", {
+                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/salida_combustible/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

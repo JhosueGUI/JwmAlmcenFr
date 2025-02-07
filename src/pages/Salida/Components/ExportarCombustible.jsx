@@ -32,7 +32,7 @@ export const ExportarCombustible = () => {
                     fecha_inicio: formatearFecha(fecha[0]),
                     fecha_fin: formatearFecha(fecha[1]),
                 }
-                const respuesta = await axios.get('http://localhost:8000/api/reporte/consumo/placa', {
+                const respuesta = await axios.get('https://jwmalmcenb-production.up.railway.app/api/reporte/consumo/placa', {
                     params: data,
                     responseType: 'blob'  // Esto indica que la respuesta será un archivo binario
                 });
