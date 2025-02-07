@@ -19,7 +19,7 @@ export const GetArea = ({ pasarSetPersonal, pasarPersonalInicial }) => {
             try {
                 const token = obtenerToken()
                 if (token) {
-                    const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/area/get", {
+                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/area/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

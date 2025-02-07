@@ -20,12 +20,12 @@ const ModalEliminarProveedor = ({ pasarAbrirModalEliminar, pasarCerrarModalElimi
         try {
             const token = obtenerToken()
             if (token) {
-                const respuestaPost = await axios.delete(`http://127.0.0.1:8000/api/almacen/proveedor/delete/${pasarProveedorSeleccionado.id}`, {
+                const respuestaPost = await axios.delete(`https://jwmalmcenb-production.up.railway.app/api/almacen/proveedor/delete/${pasarProveedorSeleccionado.id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 })
-                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/proveedor/get", {
+                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/proveedor/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

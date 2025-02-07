@@ -31,12 +31,12 @@ const ModalEliminarInventario = ({ pasarAbrirModalEliminar, pasarCerrarModalElim
         try {
             const token = obtenerToken();
             if (token && pasarInventarioSeleccionado) {
-                const respuestaPost = await axios.delete(`http://127.0.0.1:8000/api/almacen/inventario_valorizado/delete/${pasarInventarioSeleccionado.id}`, {
+                const respuestaPost = await axios.delete(`https://jwmalmcenb-production.up.railway.app/api/almacen/inventario_valorizado/delete/${pasarInventarioSeleccionado.id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
-                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/inventario_valorizado/get", {
+                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/inventario_valorizado/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

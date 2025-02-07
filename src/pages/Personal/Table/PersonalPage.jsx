@@ -40,7 +40,7 @@ export function PersonalPage() {
                 const token = obtenerToken() // Obtenemos el token de localStorage
                 if (token) {
                     setCargando(true);
-                    const respuesta = await axios.get("http://127.0.0.1:8000/api/almacen/personal/get", {
+                    const respuesta = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/personal/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

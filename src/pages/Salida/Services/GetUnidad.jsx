@@ -16,7 +16,7 @@ export const GetUnidad = ({ pasarSetSalidas, pasarPersonalInicial, pasarSalidaSe
             try {
                 const token = obtenerToken()
                 if (token) {
-                    const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/flota/get_unidad", {
+                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/flota/get_unidad", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

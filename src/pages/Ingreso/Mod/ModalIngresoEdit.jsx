@@ -30,12 +30,12 @@ const ModalIngresoEdit = ({ pasarSetIngreso, pasarAbrirModalEdit, pasarCerrarMod
         try {
             const token = obtenerToken()
             if (token) {
-                const respuestaPost = await axios.post(`http://127.0.0.1:8000/api/almacen/ingreso/update/${pasarIngresoSeleccionado.id}`, dataIngreso, {
+                const respuestaPost = await axios.post(`https://jwmalmcenb-production.up.railway.app/api/almacen/ingreso/update/${pasarIngresoSeleccionado.id}`, dataIngreso, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 })
-                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/ingreso/get", {
+                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/ingreso/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

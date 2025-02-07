@@ -15,7 +15,7 @@ export function GetAccesos({ pasarSetRoles, personalInicial }) {
             try {
                 const token = obtenerToken();
                 if (token) {
-                    const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/acceso/get", {
+                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/acceso/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

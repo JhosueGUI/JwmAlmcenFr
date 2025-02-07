@@ -23,12 +23,12 @@ export const ModalEliminarRol = ({ pasarAbrirModalEliminar, pasarCerrarModalElim
         try {
             const token = obtenerToken()
             if (token) {
-                const respuestaDelete = await axios.delete(`http://127.0.0.1:8000/api/almacen/rol/delete/${pasarRolSeleccionado.id}`, {
+                const respuestaDelete = await axios.delete(`https://jwmalmcenb-production.up.railway.app/api/almacen/rol/delete/${pasarRolSeleccionado.id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 })
-                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/rol/get", {
+                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/rol/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

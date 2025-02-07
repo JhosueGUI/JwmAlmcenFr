@@ -38,14 +38,14 @@ const ModalCrearInventario = ({ pasarSetInventario }) => {
             const token = obtenerToken();
             if (token) {
                 console.log(dataInventario)
-                const respuestaPostInventario = await axios.post("http://127.0.0.1:8000/api/almacen/inventario_valorizado/create", dataInventario, {
+                const respuestaPostInventario = await axios.post("https://jwmalmcenb-production.up.railway.app/api/almacen/inventario_valorizado/create", dataInventario, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
 
                 // Obtener las categorías actualizadas después de agregar una nueva categoría
-                const respuestaGetInventario = await axios.get("http://127.0.0.1:8000/api/almacen/inventario_valorizado/get", {
+                const respuestaGetInventario = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/inventario_valorizado/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
