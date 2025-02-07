@@ -1,0 +1,27 @@
+export const InicialDataInventario = [
+    { field: 'id', header: 'ID' },
+    { field: 'ubicacion', header: 'Ubicacion' },
+    { field: 'SKU', header: 'SKU' },
+    { field: 'familia', header: 'Familia' },
+    { field: 'sub_familia', header: 'Sub Familia' },
+    { field: 'nombre', header: 'Articulo' },
+    { field: 'unidad_medida', header: 'UM' },
+    { field: 'fecha_salida', header: 'Ultima Fecha de Salida' },
+    { field: 'fecha_ingreso', header: 'Ultima Fecha de Ingreso' },
+    { field: 'precio_soles', header: 'Ultimo Precio Soles' },
+    { field: 'valor_inventario_soles', header: 'Valor de Inventario Soles' },
+    { field: 'precio_dolares', header: 'Ultimo Precio Dolares' },
+    { field: 'valor_inventario_dolares', header: 'Valor de Inventario Dolares' },
+    { field: 'total_ingreso', header: 'Total de Ingresos' },
+    { field: 'total_salida', header: 'Total de Salidas' },
+    { field: 'stock_logico', header: 'Stock Lógico' },
+    { field: 'demanda_mensual', header: 'Demanda Mensual' },
+    { field: 'estado_operativo', header: 'Estado Operativo' },
+];
+export const DataInventario = {
+    ubicacion_id:"",
+    SKU: "",
+    sub_familia_id: "",
+    nombre: "",
+    unidad_medida_id: "",
+}

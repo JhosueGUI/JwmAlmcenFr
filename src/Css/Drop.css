@@ -1,0 +1,39 @@
+.p-dropdown-trigger{
+    background-color: #5472d4;
+}
+.p-dropdown .p-dropdown-trigger {
+    color: white;
+}
+.p-dropdown .p-dropdown-clear-icon {
+    margin-right: 10px;
+}
+.p-multiselect.p-multiselect-chip .p-multiselect-token {
+    background-color: #f3f7e8;
+}
+.estado-operativo-verde {
+    background-color: #BFF1DF;
+    color: #248D63;
+    border-radius: 10px;
+    padding: 5px; /* Ajusta según el tamaño del sombreado deseado */
+    display: inline-block; /* Para asegurar que el sombreado solo aplique al contenido */
+    font-weight: bold;
+
+}
+.estado-operativo-rojo {
+    background-color: #FFECEC;
+    color: #FF6767;
+    border-radius: 10px;
+    padding: 5px; /* Ajusta según el tamaño del sombreado deseado */
+    display: inline-block; /* Para asegurar que el sombreado solo aplique al contenido */
+    font-weight: bold;
+}
+/* .progress-red .p-progressbar-value {
+    background-color: red !important;
+} */
+
+/* .progress-blue .p-progressbar-value {
+    background-color: rgb(59, 130, 246) !important; 
+} */
+.custom-progress-spinner .p-progress-spinner-circle {
+    fill: rgba(0, 0, 0, 0.0); /* Cambia este color al que prefieras */
+}

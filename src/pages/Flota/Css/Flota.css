@@ -1,0 +1,119 @@
+.tabla-contenedor {
+    width: 100%;
+
+    height: 50%;
+}
+
+.p-datatable .p-datatable-header {
+    background: #fff;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: none;
+    padding: 0.5rem;
+}
+
+.p-inputwrapper-filled.p-multiselect.p-multiselect-chip .p-multiselect-label {
+    background:transparent;
+}
+
+.p-multiselect {
+    /* background-image: linear-gradient(to right, #92FE9D, #3BE5B8); */
+    background: linear-gradient(to bottom, rgba(84, 114, 212, 0.664), rgba(121, 152, 236, 0.5));
+
+    border: 1px solid transparent;
+    font-size: 14px;
+}
+
+.p-multiselect .p-multiselect-trigger {
+    border-left: 3px dashed #fff; /* Borde solamente en el lado izquierdo */
+    border-top: none; /* Sin borde en la parte superior */
+    border-right: none; /* Sin borde en la parte derecha */
+    border-bottom: none; /* Sin borde en la parte inferior */
+    color: #fff;
+}
+
+.p-multiselect.p-multiselect-chip .p-multiselect-token {
+    /* background-color: rgba(0, 0, 0, 0.178) */
+    color: #6c6c6c;
+    font-weight: 400;
+    background: white;
+    border: 2px solid #5472d4; 
+}
+
+
+.data-table-custom {
+    min-width: 20rem;
+    border: 1px solid #000;
+    background-color: #000000;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+    background-color: #fff;
+    padding: 10px; /* Ajusta el padding según sea necesario */
+    border: none;
+    text-align: center; /* Evita el ajuste de texto automático */
+}
+.p-datatable .p-column-header-content {
+    display: initial;
+    align-items: initial; 
+   
+}
+.p-datatable .p-datatable-tbody > tr {
+    background: #fff;
+    color: #88888e;
+    font-size: 15px;
+    justify-content: center;
+    align-items: center;
+}
+.p-datatable .p-datatable-tbody > tr > td {
+    border: 1px dashed #4a7de9; 
+    border-width: 0 1px 0 0; 
+    border-bottom: 2px solid #d8d8d8; 
+}
+
+.logout {
+    --blue: #7998ec; /* Color base */
+    font-size: 15px;
+    padding: 0.7em 2.7em;
+    letter-spacing: 0.06em;
+    position: relative;
+    font-family: inherit;
+    border-radius: 0.6em;
+    overflow: hidden;
+    transition: all 0.3s;
+    line-height: 1.4em;
+    border: 2px solid var(--blue);
+    background: linear-gradient(to right, rgba(121, 152, 236, 0.3) 1%, transparent 40%, transparent 60%, rgba(121, 152, 236, 0.3) 100%);
+    color: white; /* Texto en blanco */
+    box-shadow: inset 0 0 10px rgba(121, 152, 236, 0.6), 0 0 9px 3px rgba(121, 152, 236, 0.3);
+  }
+  
+  .logout:hover {
+    color: white; /* Color de hover más oscuro */
+    box-shadow: inset 0 0 10px rgba(121, 152, 236, 0.8), 0 0 9px 3px rgba(121, 152, 236, 0.4);
+  }
+  
+  .logout:before {
+    content: "";
+    position: absolute;
+    left: -4em;
+    width: 4em;
+    height: 100%;
+    top: 0;
+    transition: transform .4s ease-in-out;
+    background: linear-gradient(to right, transparent 1%, rgba(121, 152, 236, 0.3) 40%, rgba(121, 152, 236, 0.3) 60%, transparent 100%);
+  }
+  
+  .logout:hover:before {
+    transform: translateX(15em);
+  }
+  .p-tabmenu .p-tabmenu-nav {
+    border: 1px solid #4a7de9;
+    border-width: 0 0 2px 0;
+    background: transparent;
+  }
+ .p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link {
+    background: transparent;
+    font-size: 15px;
+    color: #789be7;
+ }
