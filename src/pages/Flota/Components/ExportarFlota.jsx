@@ -23,6 +23,6 @@ export function ExportarFlota() {
     };
 
     return (
-        <Button type="button" icon="pi pi-download" className="p-button-secondary" severity="info" onClick={exportarExcel} />
+        <Button type="button" icon="pi pi-download" className="p-button-secondary" severity="info" style={{background:'#1A55B0',border:'1px solid #1A55B0'}} onClick={exportarExcel} />
     );
 }

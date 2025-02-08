@@ -7,7 +7,7 @@ import { SidebarContext } from '../context/sidebarContext';
 // Iconos
 import { MdOutlineInventory } from "react-icons/md";
 import { BiArrowToRight, BiArrowToLeft } from "react-icons/bi";
-import {  CiLogout } from "react-icons/ci";
+import { CiLogout } from "react-icons/ci";
 import { IoCard } from "react-icons/io5";
 import { BsFileEarmarkBarGraph } from "react-icons/bs";
 import { MdSubdirectoryArrowRight } from "react-icons/md";
@@ -28,7 +28,7 @@ export const Sidebar = () => {
     'Orden de Compra': <IoCard size={25} />,
     'Flota': <MdSubdirectoryArrowRight size={25} />,
     'Roles': <MdSubdirectoryArrowRight size={25} />,
-    'Reportes' :<BsFileEarmarkBarGraph size={25} />,
+    'Reportes': <BsFileEarmarkBarGraph size={25} />,
     'Rep Productos': <MdSubdirectoryArrowRight size={25} />,
     'EPPS': <MdSubdirectoryArrowRight size={25} />,
     'Mantenimiento': <MdOutlineInventory size={25} />,
@@ -52,12 +52,14 @@ export const Sidebar = () => {
     <div className={`sidebar ${sidebarClass}`}>
       <div className="sidebar-header">
         <div className="user-info">
-          <div className="info-img img-fit-cover">
-            <img src={empresaLogo.empresa_logo} alt="profile image" />
+          <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <img
+              src={empresaLogo.LogoSistema}
+              alt="profile image"
+              style={{ width: '400px', height: '180px', objectFit: 'contain' }}
+            />
           </div>
-          <h2 style={{ color: '#4a7de9', display: 'flex', flexDirection: 'column' }}>
-            Transporte <span style={{ fontSize: '15px' }}>JWM</span>
-          </h2>
+
         </div>
       </div>
       <div className="sidebar-content">

@@ -194,14 +194,14 @@ export function PersonalPage() {
     return (
         <Contenedor>
             <div className="contenedor" style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
-                <div className="encabezado" style={{ width: '100%', color: '#4a7de9' }}>
+                <div className="encabezado" style={{ width: '100%', color: '#1A55B0' }}>
                     <div className="TituloE" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <h2> Gestión de Personal </h2>
-                        <TabMenu model={items} activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)} />
+                        <span style={{fontSize:'30px', fontWeight:'bold'}}> Gestión de Personal </span>
+                        <TabMenu  model={items} activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)} />
 
                     </div>
                     <div className="ContentE">
-                        <span style={{ color: '#4a7de9' }}>
+                        <span style={{ color: '#1A55B0', fontSize:'15px' }}>
                             En este modulo usteded podra administrar el registro del Personal
                         </span>
                     </div>

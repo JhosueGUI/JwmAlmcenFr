@@ -108,7 +108,7 @@ export const ModalCrearFlota = ({ pasarSetFlota }) => {
             <Toast ref={toast} />
             <ConfirmDialog />
             {/* Contenido */}
-            <Button icon="pi pi-plus"  label="Crear Flota" onClick={abrirModal}  severity="info" outlined  style={{ color:'#4a7de9' }} />
+            <Button icon="pi pi-plus"  label="Crear Flota" onClick={abrirModal}  severity="info" outlined  style={{ color:'#1A55B0' }} />
             <Dialog
                 header={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '50px' }}>
                     <h3>Crear Flota</h3>

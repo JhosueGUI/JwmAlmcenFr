@@ -38,7 +38,7 @@
 
 .sidebar-content {
   flex: 1;
-  background: #5472d4;
+  background: #0B1C51;
   border-top-left-radius: 40px;
   border-top-right-radius: 40px;
   display: flex;
@@ -204,6 +204,13 @@
   .nav-link-text {
     display: none;
   }
+}
+.p-multiselect-panel .p-multiselect-items .p-multiselect-item.p-highlight.p-focus {
+  background: #EDF2FB;
+}
+.p-multiselect-panel .p-multiselect-items .p-multiselect-item.p-highlight {
+  color: #585858;
+  background: #ffffff;
 }
 
 @media screen and (max-width: 420px) {

@@ -89,7 +89,7 @@ export const ModalCrearRol = ({ pasarSetRol }) => {
             <ConfirmDialog />
             {/* Contenido */}
 
-            <Button icon="pi pi-plus" label="Agregar Rol" severity="info" outlined onClick={funtAbrirModal} style={{ color: '#4a7de9' }} />
+            <Button icon="pi pi-plus" label="Agregar Rol" severity="info" outlined onClick={funtAbrirModal} style={{ color: '#1A55B0' }} />
 
             <Dialog
                 header={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '50px' }}>

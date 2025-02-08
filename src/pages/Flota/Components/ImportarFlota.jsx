@@ -133,6 +133,7 @@ export const ImportarFlota = ({ pasarSetFlota }) => {
                 icon="pi pi-upload"
                 className="p-button-secondary"
                 severity="info"
+                style={{background:'#1A55B0',border:'1px solid #1A55B0'}}
                 onClick={abrirModal}
             />
             <Dialog
@@ -140,6 +141,7 @@ export const ImportarFlota = ({ pasarSetFlota }) => {
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: "50px" }}>
                         <h3>Subir Archivo</h3>
                         <Button
+                        
                             icon="pi pi-times"
                             rounded
                             text
@@ -158,6 +160,7 @@ export const ImportarFlota = ({ pasarSetFlota }) => {
                 <div className="cargar" style={{ display: 'flex', gap: "10px", flexDirection: 'column' }}>
                     <div className="file" style={{ display: 'flex', width: '100%' }}>
                         <FileUpload
+                        
                             ref={uploadRef}
                             mode="basic"
                             name="demo[]"

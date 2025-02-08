@@ -26,13 +26,14 @@ import producto from "../assets/images/Producto.png"
 import prueba from "../assets/images/prueba.svg"
 //roles
 import roles from "../assets/images/roles.svg"
-
+import LogoSistema from "../assets/images/LogoSistema.jpeg"
 export const iconsImgs = {
     alert, bell, bills, budget, card, check, empty_check, gears, home, menu, plane, plus, report, search, user, wallet, wealth
 }
 
 export const empresaLogo={
     empresa_logo,
+    LogoSistema,
     logoEmpresa
 }
 export const personalLogo={

@@ -128,7 +128,7 @@ const ModalAgregarPersonal = ({ pasarSetPersonal }) => {
             {/* Confirmacion */}
             <Toast ref={toast} />
             {/* Contenido */}
-            <Button icon="pi pi-plus" label="Agregar Personal" severity="info" outlined  style={{ color:'#4a7de9' }} onClick={abrirModalPersonal} />
+            <Button icon="pi pi-plus" label="Agregar Personal" severity="info" outlined  style={{ color:'#1A55B0' }} onClick={abrirModalPersonal} />
             <Dialog
                 header={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '50px' }}>
                     <h3>Crear Personal</h3>

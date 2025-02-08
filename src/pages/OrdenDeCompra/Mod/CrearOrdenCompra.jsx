@@ -177,7 +177,7 @@ export const ModalCrearOrdenCompra = ({pasarSetOrden}) => {
             <Toast ref={toast} />
             <ConfirmDialog />
             {/* Contenido */}
-            <Button icon="pi pi-plus" label="Agregar Orden de Compra" style={{ color: "#4a7de9" }} severity="info" outlined onClick={abrirModal} />
+            <Button icon="pi pi-plus" label="Agregar Orden de Compra" style={{ color: "#1A55B0" }} severity="info" outlined onClick={abrirModal} />
 
             <Dialog
                 header={<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: "50px" }}>

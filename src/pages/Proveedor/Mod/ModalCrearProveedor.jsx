@@ -112,7 +112,7 @@ const ModalCrearProveedor = ({ pasarSetProveedor }) => {
 
     const footer = (
         <div>
-            <Button label="Guardar" onClick={confirmarCreacion} className="p-button-success" />
+            <Button label="Guardar" onClick={confirmarCreacion} className="p-button-success"  />
             <Button label="Cancelar" onClick={FuntCerrarModal} className="p-button-secondary" />
         </div>
     );
@@ -122,7 +122,7 @@ const ModalCrearProveedor = ({ pasarSetProveedor }) => {
             <Toast ref={toast} />
             <ConfirmDialog />
             {/* Contenido */}
-            <Button icon="pi pi-plus" label="Agregar Proveedor" severity="info" outlined style={{ color:'#4a7de9' }} onClick={FuntAbrirModal} />
+            <Button icon="pi pi-plus" label="Agregar Proveedor" severity="info" outlined style={{ color:'#1A55B0' }} onClick={FuntAbrirModal} />
             <Dialog
                 header={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '50px' }}>
                     <h3>Crear Proveedor</h3>

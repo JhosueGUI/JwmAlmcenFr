@@ -182,10 +182,10 @@ export function InventarioPage() {
     };
     return (
         <Contenedor>
-            <div className="contenedor" style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
-                <div className="encabezado" style={{ width: '100%', color: '#4a7de9' }}>
-                    <h2> Gestión de Inventario </h2>
-                    <span style={{ color: '#4a7de9' }}>
+            <div className="contenedor" style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
+                <div className="encabezado" style={{ width: '100%', color: '#1A55B0', display:'flex', flexDirection:'column'}}>
+                    <span style={{fontSize:'30px', fontWeight:'bold'}} > Gestión de Inventario </span>
+                    <span style={{ color: '#1A55B0', fontSize:'15px' }}>
                         En este modulo usteded podra administrar los el inventario
                     </span>
                 </div>
@@ -203,7 +203,7 @@ export function InventarioPage() {
                         <div className="tarjeta" style={{ overflowY: 'auto', overflowX: 'auto' }}>
                             <DataTable
                                 paginator rows={10}
-                                rowsPerPageOptions={[5, 10]}
+                                rowsPerPageOptions={[5, 10, 20]}
                                 paginatorRight={botonDescargar}
                                 paginatorLeft={botonImportar}
                                 value={inventarioFiltrado}
@@ -218,7 +218,7 @@ export function InventarioPage() {
                                         />
                                     </MultiSelectContainer>
                                 }
-                                tableStyle={{ minWidth: '220rem' }}
+                                tableStyle={{ minWidth: '250rem' }}
                             >
                                 {columnasVisibles.map(col => {
                                     if (col.field === 'precio_unitario_soles' || col.field === 'valor_inventario_soles' || col.field === 'precio_soles') {
