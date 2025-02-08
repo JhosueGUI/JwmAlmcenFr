@@ -138,6 +138,7 @@ export const ImportarInventario = ({ pasarSetInventario }) => {
                 className="p-button-secondary"
                 severity="info"
                 onClick={abrirModal}
+                style={{background:'#1A55B0',border:'1px solid #1A55B0'}}
             />
             <Dialog
                 header={

@@ -23,6 +23,6 @@ export function ExportarIngreso() {
     };
 
     return (
-        <Button type="button" icon="pi pi-download" className="p-button-secondary" severity="info" onClick={exportarExcel} />
+        <Button type="button" icon="pi pi-download" className="p-button-secondary" severity="info" onClick={exportarExcel} style={{background:'#1A55B0',border:'1px solid #1A55B0'}}/>
     );
 }

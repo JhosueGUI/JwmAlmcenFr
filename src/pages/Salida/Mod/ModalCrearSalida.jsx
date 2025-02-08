@@ -149,7 +149,7 @@ const ModalCrearSalida = ({ pasarSetSalidas }) => {
             <Toast ref={toast} />
             <ConfirmDialog />
             {/* Contenido */}
-            <Button icon="pi pi-plus" label="Registrar Salida" severity="info" outlined style={{ color: '#4a7de9' }} onClick={abrirModal} />
+            <Button icon="pi pi-plus" label="Registrar Salida" severity="info" outlined style={{ color: '#1A55B0' }} onClick={abrirModal} />
 
             <Dialog
                 header={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '50px' }}>

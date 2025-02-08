@@ -161,7 +161,7 @@ const ModalCrearInventario = ({ pasarSetInventario }) => {
             <ConfirmDialog />
             {/* Contenido */}
             
-            <Button icon="pi pi-plus" label="Agregar Inventario"severity="info" outlined   onClick={abrirModalCrear}  style={{ color:'#4a7de9' }}/>
+            <Button icon="pi pi-plus" label="Agregar Inventario"severity="info" outlined   onClick={abrirModalCrear}  style={{ color:'#1A55B0' }}/>
             <Dialog
                 header={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '50px' }}>
                     <h3>Crear Inventario</h3>

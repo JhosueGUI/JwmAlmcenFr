@@ -148,6 +148,7 @@ export const ImportarIngreso = ({ pasarSetIngreso }) => {
             <Toast ref={toast} />
             {/* Contenido */}
             <Button
+                style={{ background: '#1A55B0', border: '1px solid #1A55B0' }}
                 type="button"
                 icon="pi pi-upload"
                 className="p-button-secondary"

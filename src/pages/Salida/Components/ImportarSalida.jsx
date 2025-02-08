@@ -146,6 +146,7 @@ export const ImportarSalida = ({ pasarSetSalida }) => {
             {/* Contenido */}
             <Button
                 type="button"
+                style={{background:'#1A55B0',border:'1px solid #1A55B0'}}
                 icon="pi pi-upload"
                 className="p-button-secondary"
                 severity="info"

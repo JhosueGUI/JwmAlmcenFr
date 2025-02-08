@@ -281,13 +281,13 @@ export function SalidaPage() {
     return (
         <Contenedor>
             <div className="contenedor" style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
-                <div className="encabezado" style={{ width: '100%', color: '#4a7de9' }}>
+                <div className="encabezado" style={{ width: '100%', color: '#1A55B0' }}>
                     <div className="TituloE" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <h2>Gestión de Salidas </h2>
+                        <span style={{fontSize:'30px', fontWeight:'bold'}}>Gestión de Salidas </span>
                         <TabMenu model={items} activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)} />
                     </div>
                     <div className="ContentE">
-                        <span style={{ color: '#4a7de9' }}>
+                        <span style={{ color: '#1A55B0', fontSize:'15px' }}>
                             En este modulo usteded podra administrar el registro de las Salidas
                         </span>
                     </div>

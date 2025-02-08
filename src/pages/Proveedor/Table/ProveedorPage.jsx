@@ -126,9 +126,9 @@ export function ProveedorPage() {
     return (
         <Contenedor>
             <div className="contenedor" style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
-                <div className="encabezado" style={{ width: '100%' , color: '#4a7de9'}}>
-                    <h2> Gestión de Proveedor </h2>
-                    <span style={{ color: '#4a7de9' }}>
+                <div className="encabezado" style={{ width: '100%', color: '#1A55B0', display:'flex', flexDirection:'column'}}>
+                    <span style={{fontSize:'30px', fontWeight:'bold'}}> Gestión de Proveedor </span>
+                    <span style={{ color: '#1A55B0', fontSize:'15px' }}>
                         En este modulo usteded gestionara a los Proveedores
                     </span>
                 </div>
