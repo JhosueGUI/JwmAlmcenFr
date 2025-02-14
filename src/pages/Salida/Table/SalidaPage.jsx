@@ -21,6 +21,7 @@ import { ExportarCombustible } from "../Components/ExportarCombustible";
 import UsarGetStockCombustible from "../hooks/UsarGetStockCombustible";
 import { GetStockCombustible } from "../Services/SalidaCombustibleApi";
 import { Tag } from "primereact/tag";
+import ModalEliminarSalidaCombustible from "../Mod/ModalEliminarSalidaCombustible";
 
 export function SalidaPage() {
     //#hooks
@@ -244,8 +245,17 @@ export function SalidaPage() {
         setModalEditarSalidaCombustible(false)
     }
 
+    //estado para abrir y cerrar modal de eliminar salida combustible    
+    const [modalEliminarSalidaCombustible, setModalEliminarSalidaCombustible] = useState(false)
+    const functAbrirEliminarCombustible=(idSalir)=>{
+        setModalEliminarSalidaCombustible(true)
+        setSalidaCombustibleSeleccionado(idSalir)
+    }
+    const funtCerrarEliminarCombustible=()=>{
+        setModalEliminarSalidaCombustible(false)
+    }
+    //
 
-    //#region para aumnetar los botones en la tabla
     const botonDescargar = <ExportarSalida />;
     const botonImportar = <ImportarSalida pasarSetSalida={setSalidas} />;
 
@@ -265,7 +275,7 @@ export function SalidaPage() {
                     </div>
                 )}
                 <div className="eliminar">
-                    <Button icon="pi pi-trash" severity="danger" style={{ color: '#FF6767', backgroundColor: '#FFECEC', border: 'none' }} aria-label="Eliminar" disabled />
+                    <Button icon="pi pi-trash" severity="danger" style={{ color: '#FF6767', backgroundColor: '#FFECEC', border: 'none' }} aria-label="Eliminar" onClick={()=>{ functAbrirEliminarCombustible(id)}} />
                 </div>
             </div>
         )
@@ -498,6 +508,7 @@ export function SalidaPage() {
             {/* Modals */}
             <ModalEditarSalir pasarAbrirModal={modalEditarSalir} pasarCerrarModal={funtCerrarEditar} pasarSalidaSeleccionado={salidaSeleccionado} pasarSetSalidas={setSalidas} />
             <ModalEditarSalidaCombustible pasarAbrirModal={modalEditarSalidaCombustible} pasarCerrarModal={funtCerrarEditarCombustible} pasarSetSalidas={setSalidasCombustible} pasarSalidaSeleccionadoCombustible={salidaCombustibleSeleccionado} />
+            <ModalEliminarSalidaCombustible pasarAbrirModalEliminar={modalEliminarSalidaCombustible} pasarCerrarModalEliminar={funtCerrarEliminarCombustible} pasarSetSalidas={setSalidasCombustible} pasarSalidaSeleccionadoCombustible={salidaCombustibleSeleccionado}/>
             {/* Mostrar el spinner si está cargando */}
             {cargando && (
                 <div style={{
