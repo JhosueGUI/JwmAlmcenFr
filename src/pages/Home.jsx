@@ -1,7 +1,7 @@
 import styled from "styled-components";
 export function Home() {
   return (<Container>
-<h1>Home</h1>
+<h1>Bienvenido</h1>
   </Container>);
 }
 const Container =styled.div`

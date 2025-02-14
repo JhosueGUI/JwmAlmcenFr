@@ -15,6 +15,7 @@ import { RolesPage } from "../pages/Roles/Table/RolesPage";
 import { ReporteGraficoFiltro } from "../pages/Reportes/Filtro/ReporteGraficoFiltro";
 import { ReporteGraficoEpps } from "../pages/Reportes/Epps/ReporteGraficoEpps";
 import { ReporteGraficoImplemento } from "../pages/Reportes/Implementos/ReporteGraficoImplemento";
+import { Home } from "../pages/Home";
 
 export const RouteApp = () => {
   // Traemos al usuario autenticado
@@ -76,7 +77,7 @@ export const RouteApp = () => {
           <Routes>
             {usuarioAutenticado ? (
               <>
-                <Route path="/" element={<InventarioPage />} />
+                <Route path="/" element={<Home />} />
                 {renderRoutes(accesos)}
               </>
             ) : (
