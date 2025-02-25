@@ -16,6 +16,8 @@ import { ReporteGraficoFiltro } from "../pages/Reportes/Filtro/ReporteGraficoFil
 import { ReporteGraficoEpps } from "../pages/Reportes/Epps/ReporteGraficoEpps";
 import { ReporteGraficoImplemento } from "../pages/Reportes/Implementos/ReporteGraficoImplemento";
 import { Home } from "../pages/Home";
+import { MovimientoPage } from "../pages/Finanza/Movimiento/tabla/MovimientoPage";
+import { AsistenciaPage } from "../pages/RRHH/tabla/AsistenciaPage";
 
 export const RouteApp = () => {
   // Traemos al usuario autenticado
@@ -26,11 +28,16 @@ export const RouteApp = () => {
   // Define los componentes asociados a cada ruta
   const rutasComponentes = {
     'Inventario': InventarioPage,
+    'Salida': SalidaPage,
+    'Ingreso': IngresoPage,
+    'Orden de Compra': OrdenDeCompra,
+
+    'Asistencias': AsistenciaPage,
+    'Horarios': AsistenciaPage,
+    
+    'Movimientos': MovimientoPage,
     'Proveedor': ProveedorPage,
     'Personal': PersonalPage,
-    'Ingreso': IngresoPage,
-    'Salida': SalidaPage,
-    'Orden de Compra': OrdenDeCompra,
     'Flota': FlotaPage,
     'Roles': RolesPage,
     'Reportes': RolesPage,
@@ -44,30 +51,29 @@ export const RouteApp = () => {
   const renderRoutes = (accesos) => {
     return accesos.flatMap(acceso => {
       const Component = rutasComponentes[acceso.ruta];
-      if (!Component) return [];
+      const routes = [];
 
-      // Renderiza la ruta principal
-      const routes = [<Route key={acceso.id} path={`/${acceso.ruta}`} element={<Component />} />];
-
-      // Renderiza las subrutas si existen
-      if (acceso.sub_acceso && acceso.sub_acceso.length > 0) {
+      if (Component) {
         routes.push(
-          ...acceso.sub_acceso.map(subAcceso => {
-            const SubComponent = rutasComponentes[subAcceso.ruta];
-            return SubComponent ? (
-              <Route
-                key={subAcceso.id}
-                path={`/${subAcceso.ruta}`}
-                element={<SubComponent />}
-              />
-            ) : null;
-          })
+          <Route key={acceso.id} path={`/${acceso.ruta}`} element={<Component />} />
         );
+      }
+
+      if (acceso.sub_acceso && acceso.sub_acceso.length > 0) {
+        acceso.sub_acceso.forEach(subAcceso => {
+          const SubComponent = rutasComponentes[subAcceso.ruta];
+          if (SubComponent) {
+            routes.push(
+              <Route key={subAcceso.id} path={`/${subAcceso.ruta}`} element={<SubComponent />} />
+            );
+          }
+        });
       }
 
       return routes;
     });
   };
+
 
   return (
     <>
