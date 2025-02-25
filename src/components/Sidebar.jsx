@@ -6,11 +6,13 @@ import { AuthContext } from '../context/AuthContext';
 import { SidebarContext } from '../context/sidebarContext';
 // Iconos
 import { MdOutlineInventory } from "react-icons/md";
-import { BiArrowToRight, BiArrowToLeft } from "react-icons/bi";
+import { LiaCheckSquareSolid } from "react-icons/lia";
 import { CiLogout } from "react-icons/ci";
-import { IoCard } from "react-icons/io5";
+import { GiReceiveMoney } from "react-icons/gi";
 import { BsFileEarmarkBarGraph } from "react-icons/bs";
 import { MdSubdirectoryArrowRight } from "react-icons/md";
+import { GoContainer } from "react-icons/go";
+import { GrVmMaintenance } from "react-icons/gr";
 
 export const Sidebar = () => {
   const { logout, autenticadoState } = useContext(AuthContext);
@@ -20,18 +22,31 @@ export const Sidebar = () => {
 
   // Iconos para cada una de las rutas
   const IconosRutasMap = {
-    'Inventario': <MdOutlineInventory size={25} />,
-    'Ingreso': <BiArrowToRight size={25} />,
-    'Salida': <BiArrowToLeft size={25} />,
+    'Almacen': <GoContainer size={25} />,
+    'Inventario': <MdSubdirectoryArrowRight size={25} />,
+    'Ingreso': <MdSubdirectoryArrowRight size={25} />,
+    'Salida': <MdSubdirectoryArrowRight size={25} />,
+    'Orden de Compra': <MdSubdirectoryArrowRight size={25} />,
+
+    'RRHH': <LiaCheckSquareSolid size={25} />,
+    'Asistencias': <MdSubdirectoryArrowRight size={25} />,
+    'Horarios': <MdSubdirectoryArrowRight size={25} />,
+
+    'Finanzas': <GiReceiveMoney size={25} />,
+    'Movimientos': <MdSubdirectoryArrowRight size={25} />,
+
     'Proveedor': <MdSubdirectoryArrowRight size={25} />,
     'Personal': <MdSubdirectoryArrowRight size={25} />,
-    'Orden de Compra': <IoCard size={25} />,
+
+    'Mantenimiento': <GrVmMaintenance size={25} />,
+    'Ingreso MMTTO': <MdSubdirectoryArrowRight size={25} />,
+
+    'Administración': <MdOutlineInventory size={25} />,
     'Flota': <MdSubdirectoryArrowRight size={25} />,
     'Roles': <MdSubdirectoryArrowRight size={25} />,
     'Reportes': <BsFileEarmarkBarGraph size={25} />,
     'Rep Productos': <MdSubdirectoryArrowRight size={25} />,
     'EPPS': <MdSubdirectoryArrowRight size={25} />,
-    'Mantenimiento': <MdOutlineInventory size={25} />,
     'Implementos': <MdSubdirectoryArrowRight size={25} />,
   };
 

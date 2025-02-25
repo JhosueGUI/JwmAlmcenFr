@@ -182,7 +182,7 @@ export function InventarioPage() {
     };
     return (
         <Contenedor>
-            <div className="contenedor" style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
+            <div className="contenedor" style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
                 <div className="encabezado" style={{ width: '100%', color: '#1A55B0', display:'flex', flexDirection:'column'}}>
                     <span style={{fontSize:'30px', fontWeight:'bold'}} > Gestión de Inventario </span>
                     <span style={{ color: '#1A55B0', fontSize:'15px' }}>
