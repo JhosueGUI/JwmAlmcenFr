@@ -10,9 +10,7 @@ const UsarGetStockCombustible = () => {
         const FetchData = async () => {
             try {
                 const token = obtenerToken();
-                console.log("Token:", token);
                 const data = await GetStockCombustible(token);
-                console.log("Respuesta de API:", data);
                 setRespuesta(data);
             } catch (error) {
                 console.error("Error al obtener Combustible:", error);

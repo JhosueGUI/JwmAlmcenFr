@@ -63,6 +63,7 @@ export const ColumnasInicialesSalidaCombustible = [
 ]
 
 export const DataSalidaCombustible = {
+    fecha: '',
     SKU: 537,
     numero_salida_combustible: '',
     numero_salida_ruta: '',

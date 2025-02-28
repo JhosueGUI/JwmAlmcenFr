@@ -157,6 +157,8 @@ export function SalidaPage() {
                         }
                     })
                     setCargando(false);
+                    console.log("Respuesta de Salida Combustible:", SalidaCombustibleAdaptado);
+
                     setSalidasCombustible(SalidaCombustibleAdaptado)
                 }
             } catch (error) {
