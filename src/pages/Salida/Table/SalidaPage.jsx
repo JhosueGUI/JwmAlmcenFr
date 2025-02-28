@@ -29,7 +29,6 @@ export function SalidaPage() {
     const [combustible, setCombustible] = useState([])
 
     useEffect(() => {
-        console.log("Datos de combustible:", respuesta);
         setCombustible(respuesta);
     }, [respuesta]);
 
@@ -157,7 +156,6 @@ export function SalidaPage() {
                         }
                     })
                     setCargando(false);
-                    console.log("Respuesta de Salida Combustible:", SalidaCombustibleAdaptado);
 
                     setSalidasCombustible(SalidaCombustibleAdaptado)
                 }
