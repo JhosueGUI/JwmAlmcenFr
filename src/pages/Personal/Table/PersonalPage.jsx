@@ -12,8 +12,6 @@ import { FiltradoPersonal } from "../Components/FiltradoPersonal";
 import ModalAgregarPersonal from "../Mod/ModalCrearPersonal";
 //MODAL EDITAR PERSONAL
 import ModalEditarPersonal from "../Mod/ModalEditarPersonal";
-//IMPORTAR DATA
-import { InicialDataPersonal } from '../Data/DataPersonal';
 import { Button } from "primereact/button";
 import { ModalAsignarRol } from "../Mod/ModalAsignarRol";
 import ModalEliminarPersonal from "../Mod/ModalEliminarPersonal";
@@ -25,87 +23,34 @@ import { ModalEnvioDeCredencial } from "../Mod/ModalEnvioDeCredencial";
 import { SubirArchivoPersonal } from "../Components/SubirArchivoPersonal";
 import { ExportarPersonal } from "../Components/ExportarPersonal";
 import { ProgressSpinner } from 'primereact/progressspinner';
+import UsarGetPersonal from "../Hooks/UsarGetPersonal";
+import { ColumnasPeronal } from "../Constant/ColumnasPersonal";
+import { InputText } from "primereact/inputtext";
 
 export function PersonalPage() {
-    //#region para el cargado
-    const [cargando, setCargando] = useState(false);
-    //obtener el token
-    const { obtenerToken } = useContext(AuthContext)
-    //#region Estado para almacenar la lista de personal 
-    const [personal, setPersonal] = useState([]);
-    // Efecto para cargar los datos iniciales del personal desde la API al montar el componente
-    useEffect(() => {
-        const obtenerPersonal = async () => {
-            try {
-                const token = obtenerToken() // Obtenemos el token de localStorage
-                if (token) {
-                    setCargando(true);
-                    const respuesta = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/personal/get", {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    });
-                    const PersonalAdaptado = respuesta.data.data.map(item => ({
-                        id: item.id || '',
-                        nombre: item.persona?.nombre || '',
-                        apellido: `${item.persona?.apellido_paterno} ${item.persona?.apellido_materno}` || '',
-                        gmail: item.persona?.gmail || '',
-                        numero_documento: item.persona?.numero_documento || '',
-                        tipo_documento_id: item.persona?.tipo_documento_id || '',
-                        area: item.area?.nombre || '',
-                        area_id: item.area?.id || '',
-                        habilidad: item.habilidad || '',
-                        experiencia: item.experiencia || '',
-                    }))
-                    setCargando(false);
-                    setPersonal(PersonalAdaptado)
-
-                } else {
-                    console.log("No se encontró un token de autenticación válido"); // Manejo de caso donde no hay token válido
-                    setCargando(false);
-                }
-            } catch (error) {
-                console.error("Error al obtener el personal:", error); // Manejo de errores en la solicitud HTTP
-                setCargando(false);
-            }
-        };
-        obtenerPersonal(); // Llamamos a la función para obtener los datos
-    }, []); // El efecto se ejecuta solo una vez al montar el componente
-
-    //#region Estado para las columnas visibles en la tabla
-    const [columnasVisibles, setColumnasVisibles] = useState(InicialDataPersonal);
-    // Función para manejar el cambio de columnas visibles en la tabla
-    const manejarCambioColumnas = (evento) => {
-        const columnasSeleccionadas = evento.value;
-        // Filtramos las columnas visibles basadas en las seleccionadas por el usuario
-        const columnasOrdenadasSeleccionadas = InicialDataPersonal.filter(col =>
+    //hooks
+    const { data,setData } = UsarGetPersonal();
+    //columnas Iniciales
+    const [columnasVisibles, setColumnasVisibles] = useState(ColumnasPeronal);
+    // Estado para la búsqueda global
+    const [filtroGlobal, setFiltroGlobal] = useState("");
+    // Función para alternar columnas visibles
+    const AlternarColumna = (event) => {
+        let columnasSeleccionadas = event.value;
+        let columnasOrdenadas = ColumnasPeronal.filter(col =>
             columnasSeleccionadas.some(sCol => sCol.field === col.field)
         );
+        setColumnasVisibles(columnasOrdenadas);
+    }
+    // Filtrar los datos en base a la búsqueda
+    const datosFiltrados = data?.filter(item =>
+        columnasVisibles.some(col =>
+            item[col.field]?.toString().toLowerCase().includes(filtroGlobal.toLowerCase())
+        )
+    );
+    //#region para el cargado
+    const [cargando, setCargando] = useState(false);
 
-        setColumnasVisibles(columnasOrdenadasSeleccionadas); // Actualizamos el estado de columnas visibles
-    };
-    //#region  Estado para el filtro de búsqueda
-    const [filtro, setFiltro] = useState('');
-    // Función para filtrar el personal basado en el filtro de búsqueda
-    const personalFiltrado = personal.filter(p => {
-        const nombre = p.nombre || '';
-        const apellido = p.apellido || '';
-        const gmail = p.gmail || '';
-        const numeroDocumento = p.numero_documento || '';
-        const area = p.area || '';
-        const habilidad = p.habilidad || '';
-        const experiencia = p.experiencia !== null ? p.experiencia.toString() : '';
-
-        return (
-            nombre.toLowerCase().includes(filtro.toLowerCase()) ||
-            apellido.toLowerCase().includes(filtro.toLowerCase()) ||
-            gmail.toLowerCase().includes(filtro.toLowerCase()) ||
-            numeroDocumento.toLowerCase().includes(filtro.toLowerCase()) ||
-            area.toLowerCase().includes(filtro.toLowerCase()) ||
-            habilidad.toLowerCase().includes(filtro.toLowerCase()) ||
-            experiencia.toLowerCase().includes(filtro.toLowerCase())
-        );
-    });
     //#region para Modal Editar y Modal Eliminar
     //Estados para la seleccion del personal y del modal editar
     const [personalSeleccionado, setPersonalSeleccionado] = useState(null)
@@ -174,7 +119,7 @@ export function PersonalPage() {
 
     //#region para aumnetar los botones en la tabla
     const botonDescargar = <ExportarPersonal />;
-    const botonImportar = <SubirArchivoPersonal pasarSetPersonal={setPersonal} />;
+    const botonImportar = <SubirArchivoPersonal pasarSetPersonal={setData} />;
 
 
     const asignarRolCampoTabla = (id) => {
@@ -196,12 +141,12 @@ export function PersonalPage() {
             <div className="contenedor" style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
                 <div className="encabezado" style={{ width: '100%', color: '#1A55B0' }}>
                     <div className="TituloE" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span style={{fontSize:'30px', fontWeight:'bold'}}> Gestión de Personal </span>
-                        <TabMenu  model={items} activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)} />
+                        <span style={{ fontSize: '30px', fontWeight: 'bold' }}> Gestión de Personal </span>
+                        <TabMenu model={items} activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)} />
 
                     </div>
                     <div className="ContentE">
-                        <span style={{ color: '#1A55B0', fontSize:'15px' }}>
+                        <span style={{ color: '#1A55B0', fontSize: '15px' }}>
                             En este modulo usteded podra administrar el registro del Personal
                         </span>
                     </div>
@@ -211,11 +156,18 @@ export function PersonalPage() {
                 <div className="acciones" style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     {activeIndex === 0 && (
                         <div className="crearPersonal">
-                            <ModalAgregarPersonal pasarSetPersonal={setPersonal} />
+                            <ModalAgregarPersonal pasarSetPersonal={setData} />
                         </div>
                     )}
-                    <div className="search">
-                        <FiltradoPersonal filtro={filtro} setFiltro={setFiltro} />
+                    <div className="buscar" style={{ display: 'flex', width: '100%', justifyContent: 'flex-end', }}>
+                        <span className="p-inputgroup-addon">
+                            <i className="pi pi-search"></i>
+                        </span>
+                        <InputText
+                            value={filtroGlobal}
+                            onChange={(e) => setFiltroGlobal(e.target.value)}
+                            placeholder="Buscar..."
+                        />
                     </div>
                 </div>
 
@@ -224,22 +176,21 @@ export function PersonalPage() {
                     <div className="tabla-contenedor" style={{ width: '100%' }}>
                         <div className="tarjeta" style={{ height: '50%' }}>
                             <DataTable
-                                value={personalFiltrado}
+                                value={datosFiltrados}
                                 paginator rows={10}
                                 rowsPerPageOptions={[5, 10]}
                                 paginatorRight={botonDescargar}
                                 paginatorLeft={botonImportar}
                                 header={
-                                    <MultiSelectContainer>
-                                        <MultiSelect
-                                            value={columnasVisibles}
-                                            options={InicialDataPersonal}
-                                            optionLabel="header"
-                                            onChange={manejarCambioColumnas}
-                                            className="w-full sm:w-20rem"
-                                            display="chip"
-                                        />
-                                    </MultiSelectContainer>
+                                    <MultiSelect
+                                        style={{ width: '100%' }}
+                                        value={columnasVisibles}
+                                        options={ColumnasPeronal}
+                                        optionLabel="header"
+                                        onChange={AlternarColumna}
+                                        className="w-full sm:w-20rem"
+                                        display="chip"
+                                    />
                                 }
                                 tableStyle={{ minWidth: '50rem' }}
                             >
@@ -268,9 +219,9 @@ export function PersonalPage() {
 
             </div>
             {/* RegionModal */}
-            <ModalEditarPersonal pasarAbrirModalEditar={ModalEditar} pasarCerrarModalEditar={cerrarModalEditar} pasarPersonalSeleccionado={personalSeleccionado} pasarSetPersonal={setPersonal} />
+            <ModalEditarPersonal pasarAbrirModalEditar={ModalEditar} pasarCerrarModalEditar={cerrarModalEditar} pasarPersonalSeleccionado={personalSeleccionado} pasarSetPersonal={setData} />
             <ModalAsignarRol pasarAbrirModalAsignar={ModalAsignar} pasarCerrarModalAsignar={cerrarModalAsignar} pasarPersonalSeleccionado={personalSeleccionado} />
-            <ModalEliminarPersonal pasarAbrirModalEliminar={modalEliminarPersonal} pasarCerrarModalEliminar={cerrarModalEliminar} pasarPersonalSeleccionado={personalSeleccionado} pasarSetPersonal={setPersonal} />
+            <ModalEliminarPersonal pasarAbrirModalEliminar={modalEliminarPersonal} pasarCerrarModalEliminar={cerrarModalEliminar} pasarPersonalSeleccionado={personalSeleccionado} pasarSetPersonal={setData} />
             <ModalEnvioDeCredencial pasarAbrirModalEnviar={modalEnviar} pasarCerrarModalEnviar={functCerrarModalEnviar} pasarPersonalSeleccionado={personalSeleccionado} />
             {/* Mostrar el spinner si está cargando */}
             {cargando && (

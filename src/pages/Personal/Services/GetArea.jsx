@@ -31,7 +31,7 @@ export const GetArea = ({ pasarSetPersonal, pasarPersonalInicial }) => {
                     setArea(areaConFiltro)
                     if (pasarPersonalInicial) {
                         const areaSeleccionadoRelleno = areaConFiltro.find(p => p.id === pasarPersonalInicial.area_id)
-                        if(areaSeleccionadoRelleno){
+                        if (areaSeleccionadoRelleno) {
                             setAreaSeleccionado(areaSeleccionadoRelleno)
                         }
                     }
@@ -61,23 +61,21 @@ export const GetArea = ({ pasarSetPersonal, pasarPersonalInicial }) => {
         );
     }
     return (
-        <div style={{ width: '100%', margin: '0 auto' }}>
-            <FloatLabel>
-                <Dropdown
-                    id="personal_id"
-                    value={areaSeleccionado}
-                    options={area}
-                    onChange={handleAreaChange}
-                    optionLabel="filtro"
-                    placeholder="Seleccione una Area"
-                    style={{ width: '100%' }}
-                    filter
-                    filterBy="filtro"
-                    itemTemplate={camposUnidos}
-                    showClear
-                />
-                <label htmlFor="personal_id">Seleccione una Area</label>
-            </FloatLabel>
+        <div style={{ display: "flex", flexDirection: "column", gap: "5px", width: "100%" }}>
+            <label htmlFor="ssn" style={{ color: '#344054' }}>Area</label>
+            <Dropdown
+                id="personal_id"
+                value={areaSeleccionado}
+                options={area}
+                onChange={handleAreaChange}
+                optionLabel="filtro"
+                placeholder="Seleccione una Area"
+                style={{ width: '100%' }}
+                filter
+                filterBy="filtro"
+                itemTemplate={camposUnidos}
+                showClear
+            />
         </div>
     );
 };
