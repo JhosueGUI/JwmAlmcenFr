@@ -1,81 +1,66 @@
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { Dropdown } from 'primereact/dropdown';
 import { useState, useEffect, useRef } from "react";
 import { Dialog } from "primereact/dialog";
 import { FloatLabel } from 'primereact/floatlabel';
-import axios from "axios";
 import GetUnidadMedida from "../Services/GetUnidadMedida";
-//Input Para MASCARAS
-import { InputMask } from 'primereact/inputmask';
 ///inputNumero
 import { InputNumber } from 'primereact/inputnumber';
-import GetEstadoOperativo from "../Services/GetEstadoOperativo";
 import GetUbicacion from "../Services/GetUbicacion";
 import { DataInventario } from "../Data/DataInventario";
 
 // Importar ReactPrime Confirmar Dialogo
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import GetFamilias from "../Services/GetFamilias";
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
+import UsarEditarInventario from "../Hooks/UsarEditarInventario";
+import { GetInventario } from "../Services/InventarioApi";
 
-export const ModalEditarInventario = ({ pasarCerrarModalEditar,pasarAbrirModalEditar,pasarSetInventario,pasarInventarioSeleccionado}) => {
+export const ModalEditarInventario = ({ pasarCerrarModalEditar, pasarAbrirModalEditar, pasarSetInventario, pasarInventarioSeleccionado }) => {
+    //hooks
+    const { Editar } = UsarEditarInventario();
+
     //traer al token
-    const {obtenerToken}=useContext(AuthContext)
+    const { obtenerToken } = useContext(AuthContext)
 
     //#region Estado para obtener la data inicial
     const [dataInventario, setDataInventario] = useState(DataInventario)
+
     const editarInventario = async () => {
         try {
             const token = obtenerToken();
-            if (token) {
-                const respuestaPostInventario = await axios.post(`https://jwmalmcenb-production.up.railway.app/api/almacen/inventario_valorizado/update/${pasarInventarioSeleccionado.id}`, dataInventario, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-                // Obtener las categorías actualizadas después de agregar una nueva categoría
-                const respuestaGetInventario = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/inventario_valorizado/get", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-                const InventarioTransformado = respuestaGetInventario.data.data.map(item => ({
-                    id: item.id || '',
-                    ubicacion_id: item.inventario.ubicacion?.id || '',
-                    ubicacion: item.inventario.ubicacion?.codigo_ubicacion || '',
-                    SKU: item.inventario.producto?.SKU || '',
-                    familia_id: item.inventario?.producto?.articulo?.sub_familia?.familia_id ?? null,
-                    familia: item.inventario?.producto?.articulo?.sub_familia?.familia?.familia ?? null,
-                    sub_familia_id: item.inventario.producto.articulo?.sub_familia_id || '',
-                    sub_familia: item.inventario.producto.articulo.sub_familia?.nombre || '',
-                    nombre: item.inventario.producto.articulo?.nombre || '',
-                    unidad_medida_id: item.inventario.producto?.unidad_medida_id || '',
-                    unidad_medida: item.inventario.producto.unidad_medida?.nombre || '',
-                    fecha_salida: item.inventario.producto.transacciones[1]?.salida[0]?.fecha || '',
-                    fecha_ingreso: item.inventario.producto.transacciones[0]?.ingreso[0]?.fecha || '',
-                    precio_dolares: item.inventario.producto.articulo?.precio_dolares || 0,
-                    precio_soles: item.inventario.producto.articulo?.precio_soles || 0,
-                    valor_inventario_soles: item.valor_inventario_soles || 0,
-                    valor_inventario_dolares: item.valor_inventario_dolares || 0,
-                    total_ingreso: item.inventario?.total_ingreso || '',
-                    total_salida: item.inventario?.total_salida || '',
-                    stock_logico: item.inventario?.stock_logico || '',
-                    demanda_mensual: item.inventario?.demanda_mensual || '',
-                    estado_operativo: item.inventario.estado_operativo?.nombre || '',
-                }));
-                // Actualizar el estado de las categorías con los datos obtenidos
-                pasarSetInventario(InventarioTransformado);
-                // Restaurar los datos de categoría a su estado inicial
-                setDataInventario(dataInventario);
-                const mensajeDelServidor = respuestaPostInventario.data.resp
-                // Mostrar un mensaje de éxito
-                toast.current.show({ severity: 'success', summary: 'Éxito', detail: mensajeDelServidor, life: 3000 });
-                // Cerrar el modal después de agregar la categoría
-                pasarCerrarModalEditar();
-            }
+            await Editar(dataInventario, pasarInventarioSeleccionado.id);
+            const respuesta = await GetInventario(token);
+            const InventarioAdaptado = respuesta.map(item => ({
+                id: item.id || '',
+                ubicacion_id: item.inventario.ubicacion?.id || '',
+                ubicacion: item.inventario.ubicacion?.codigo_ubicacion || '',
+                SKU: item.inventario.producto?.SKU || '',
+                familia_id: item.inventario?.producto?.articulo?.sub_familia?.familia_id ?? null,
+                familia: item.inventario?.producto?.articulo?.sub_familia?.familia?.familia ?? null,
+                sub_familia_id: item.inventario.producto.articulo?.sub_familia_id || '',
+                sub_familia: item.inventario.producto.articulo.sub_familia?.nombre || '',
+                nombre: item.inventario.producto.articulo?.nombre || '',
+                unidad_medida_id: item.inventario.producto?.unidad_medida_id || '',
+                unidad_medida: item.inventario.producto.unidad_medida?.nombre || '',
+
+                // fecha_salida: item.inventario.producto.transacciones[1]?.salida[0]?.fecha || '',
+                // fecha_ingreso: item.inventario.producto.transacciones[0]?.ingreso[0]?.fecha || '',
+
+                precio_dolares: item.inventario.producto.articulo?.precio_dolares || 0,
+                precio_soles: item.inventario.producto.articulo?.precio_soles || 0,
+                valor_inventario_soles: item.valor_inventario_soles || 0,
+                valor_inventario_dolares: item.valor_inventario_dolares || 0,
+                total_ingreso: item.inventario?.total_ingreso || '',
+                total_salida: item.inventario?.total_salida || '',
+                stock_logico: item.inventario?.stock_logico || '',
+                demanda_mensual: item.inventario?.demanda_mensual || '',
+                estado_operativo: item.inventario.estado_operativo?.nombre || '',
+            }))
+            pasarSetInventario(InventarioAdaptado);
+            pasarCerrarModalEditar();
         } catch (error) {
             console.error("Error al agregar una categoría:", error);
             toast.current.show({ severity: 'info', summary: 'Observación', detail: error.response?.data?.resp || 'Error al Editar el Inventario', life: 3000 });
@@ -84,14 +69,13 @@ export const ModalEditarInventario = ({ pasarCerrarModalEditar,pasarAbrirModalEd
     //#region Plasmar los datos del Personal a los Inputs
     useEffect(() => {
         if (pasarInventarioSeleccionado) {
-            console.log(pasarInventarioSeleccionado)
             setDataInventario({
-                unidad_medida_id:pasarInventarioSeleccionado.unidad_medida_id,
-                sub_familia_id:pasarInventarioSeleccionado.sub_familia_id,
-                ubicacion_id:pasarInventarioSeleccionado.ubicacion_id,
+                unidad_medida_id: pasarInventarioSeleccionado.unidad_medida_id,
+                sub_familia_id: pasarInventarioSeleccionado.sub_familia_id,
+                ubicacion_id: pasarInventarioSeleccionado.ubicacion_id,
                 SKU: pasarInventarioSeleccionado.SKU,
                 nombre: pasarInventarioSeleccionado.nombre
-                
+
             });
         }
     }, [pasarInventarioSeleccionado])
@@ -154,7 +138,7 @@ export const ModalEditarInventario = ({ pasarCerrarModalEditar,pasarAbrirModalEd
         <>
             {/* Confirmacion */}
             <Toast ref={toast} />
-            {/* Contenido */}            
+            {/* Contenido */}
             <Dialog
                 header={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '50px' }}>
                     <h3>Editar Inventario</h3>
@@ -172,21 +156,21 @@ export const ModalEditarInventario = ({ pasarCerrarModalEditar,pasarAbrirModalEd
                         <form onSubmit={editarInventario}>
                             <div style={{ marginTop: "20px", width: "100%", display: 'flex', flexDirection: 'column', gap: '25px' }}>
 
-                                <GetUbicacion pasarSetDataInventario={handleUbicacionChange} pasarUbicacionSeleccionado={pasarInventarioSeleccionado}/>
+                                <GetUbicacion pasarSetDataInventario={handleUbicacionChange} pasarUbicacionSeleccionado={pasarInventarioSeleccionado} />
 
                                 <FloatLabel>
-                                    <InputNumber id="SKU" name="SKU" style={{ width: '100%' }} value={dataInventario.SKU || null} onChange={(e) => setDataInventario({ ...dataInventario, SKU: e.value })} disabled/>
+                                    <InputNumber id="SKU" name="SKU" style={{ width: '100%' }} value={dataInventario.SKU || null} onChange={(e) => setDataInventario({ ...dataInventario, SKU: e.value })} disabled />
                                     <label htmlFor="SKU" style={{ textAlign: "center" }}>SKU</label>
                                 </FloatLabel>
 
-                                <GetFamilias pasarSetDataInventario={handleSubFamiliaChange} pasarFamiliaSeleccionado={pasarInventarioSeleccionado}/>
+                                <GetFamilias pasarSetDataInventario={handleSubFamiliaChange} pasarFamiliaSeleccionado={pasarInventarioSeleccionado} />
 
                                 <FloatLabel>
                                     <InputText id="articulo" name="nombre" style={{ width: '100%' }} value={dataInventario.nombre} onChange={handleInputChange} />
                                     <label htmlFor="articulo" style={{ textAlign: "center" }}>Articulo</label>
                                 </FloatLabel>
 
-                                <GetUnidadMedida pasarSetDataInventario={handleUnidadDeMedidaChange} pasarUnidadMedidaSeleccionado={pasarInventarioSeleccionado}/>
+                                <GetUnidadMedida pasarSetDataInventario={handleUnidadDeMedidaChange} pasarUnidadMedidaSeleccionado={pasarInventarioSeleccionado} />
 
                             </div>
                         </form>

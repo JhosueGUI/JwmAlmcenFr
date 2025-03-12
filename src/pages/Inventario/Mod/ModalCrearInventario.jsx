@@ -1,12 +1,9 @@
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { Dialog } from "primereact/dialog";
 import { FloatLabel } from 'primereact/floatlabel';
-import axios from "axios";
 import GetUnidadMedida from "../Services/GetUnidadMedida";
-///inputNumero
-import { InputNumber } from 'primereact/inputnumber';
 import GetUbicacion from "../Services/GetUbicacion";
 import { DataInventario } from "../Data/DataInventario";
 
@@ -17,10 +14,14 @@ import GetFamilias from "../Services/GetFamilias";
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { GetUltimoSku } from "../Services/GetUltimoSku";
+import UsarCrearInventario from "../Hooks/UsarCrearInventario";
+import { GetInventario } from "../Services/InventarioApi";
 
 const ModalCrearInventario = ({ pasarSetInventario }) => {
+    //hooks
+    const { Crear } = UsarCrearInventario();
     //traer al token
-    const {obtenerToken}=useContext(AuthContext)
+    const { obtenerToken } = useContext(AuthContext)
     //#region Estado para modal
     const [modal, setModal] = useState(false);
     const abrirModalCrear = () => {
@@ -29,63 +30,44 @@ const ModalCrearInventario = ({ pasarSetInventario }) => {
     const cerrarModalCrear = () => {
         setModal(false);
     };
-    //#endregion
 
     //#region Estado para obtener la data inicial
     const [dataInventario, setDataInventario] = useState(DataInventario)
+
     const agregarInventario = async () => {
         try {
             const token = obtenerToken();
-            if (token) {
-                console.log(dataInventario)
-                const respuestaPostInventario = await axios.post("https://jwmalmcenb-production.up.railway.app/api/almacen/inventario_valorizado/create", dataInventario, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
+            await Crear(dataInventario);
+            const respuesta = await GetInventario(token);
+            const InventarioAdaptado = respuesta.map(item => ({
+                id: item.id || '',
+                ubicacion_id: item.inventario.ubicacion?.id || '',
+                ubicacion: item.inventario.ubicacion?.codigo_ubicacion || '',
+                SKU: item.inventario.producto?.SKU || '',
+                familia_id: item.inventario?.producto?.articulo?.sub_familia?.familia_id ?? null,
+                familia: item.inventario?.producto?.articulo?.sub_familia?.familia?.familia ?? null,
+                sub_familia_id: item.inventario.producto.articulo?.sub_familia_id || '',
+                sub_familia: item.inventario.producto.articulo.sub_familia?.nombre || '',
+                nombre: item.inventario.producto.articulo?.nombre || '',
+                unidad_medida_id: item.inventario.producto?.unidad_medida_id || '',
+                unidad_medida: item.inventario.producto.unidad_medida?.nombre || '',
 
-                // Obtener las categorías actualizadas después de agregar una nueva categoría
-                const respuestaGetInventario = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/inventario_valorizado/get", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-                const InventarioTransformado = respuestaGetInventario.data.data.map(item => ({
-                    id: item.id || '',
-                    ubicacion_id: item.inventario.ubicacion?.id || '',
-                    ubicacion: item.inventario.ubicacion?.codigo_ubicacion || '',
-                    SKU: item.inventario.producto?.SKU || '',
-                    familia_id: item.inventario?.producto?.articulo?.sub_familia?.familia_id ?? null,
-                    familia: item.inventario?.producto?.articulo?.sub_familia?.familia?.familia ?? null,
-                    sub_familia_id: item.inventario.producto.articulo?.sub_familia_id || '',
-                    sub_familia: item.inventario.producto.articulo.sub_familia?.nombre || '',
-                    nombre: item.inventario.producto.articulo?.nombre || '',
-                    unidad_medida_id: item.inventario.producto?.unidad_medida_id || '',
-                    unidad_medida: item.inventario.producto.unidad_medida?.nombre || '',
-                    fecha_salida: item.inventario.producto.transacciones[1]?.salida[0]?.fecha || '',
-                    fecha_ingreso: item.inventario.producto.transacciones[0]?.ingreso[0]?.fecha || '',
-                    precio_dolares: item.inventario.producto.articulo?.precio_dolares || 0,
-                    precio_soles: item.inventario.producto.articulo?.precio_soles || 0,
-                    valor_inventario_soles: item.valor_inventario_soles || 0,
-                    valor_inventario_dolares: item.valor_inventario_dolares || 0,
-                    total_ingreso: item.inventario?.total_ingreso || '',
-                    total_salida: item.inventario?.total_salida || '',
-                    stock_logico: item.inventario?.stock_logico || '',
-                    demanda_mensual: item.inventario?.demanda_mensual || '',
-                    estado_operativo: item.inventario.estado_operativo?.nombre || '',
-                }));
-                // Actualizar el estado de las categorías con los datos obtenidos
-                pasarSetInventario(InventarioTransformado);
-                // Restaurar los datos de categoría a su estado inicial
-                setDataInventario(dataInventario);
-                const mensajeDelServidor = respuestaPostInventario.data.resp
-                // Mostrar un mensaje de éxito
-                toast.current.show({ severity: 'success', summary: 'Éxito', detail: mensajeDelServidor, life: 3000 });
-                // Cerrar el modal después de agregar la categoría
-                cerrarModalCrear();
-            } else {
-                toast.current.show({ severity: 'info', summary: 'Observación', detail: 'Seleccione un Tipo de Documento', life: 3000 });
-            }
+                // fecha_salida: item.inventario.producto.transacciones[1]?.salida[0]?.fecha || '',
+                // fecha_ingreso: item.inventario.producto.transacciones[0]?.ingreso[0]?.fecha || '',
+
+                precio_dolares: item.inventario.producto.articulo?.precio_dolares || 0,
+                precio_soles: item.inventario.producto.articulo?.precio_soles || 0,
+                valor_inventario_soles: item.valor_inventario_soles || 0,
+                valor_inventario_dolares: item.valor_inventario_dolares || 0,
+                total_ingreso: item.inventario?.total_ingreso || '',
+                total_salida: item.inventario?.total_salida || '',
+                stock_logico: item.inventario?.stock_logico || '',
+                demanda_mensual: item.inventario?.demanda_mensual || '',
+                estado_operativo: item.inventario.estado_operativo?.nombre || '',
+            }))
+            pasarSetInventario(InventarioAdaptado);
+            cerrarModalCrear();
+
         } catch (error) {
             console.error("Error al agregar una categoría:", error);
             toast.current.show({ severity: 'info', summary: 'Observación', detail: error.response?.data?.resp || 'Error al Crear el Inventario', life: 3000 });
@@ -124,10 +106,10 @@ const ModalCrearInventario = ({ pasarSetInventario }) => {
     const handleSKUChange = (nuevoSKU) => {
         setDataInventario({
             ...dataInventario,
-            SKU: nuevoSKU 
+            SKU: nuevoSKU
         });
     };
-    
+
 
 
     //#region Estado Para Confirmacion
@@ -160,8 +142,8 @@ const ModalCrearInventario = ({ pasarSetInventario }) => {
             <Toast ref={toast} />
             <ConfirmDialog />
             {/* Contenido */}
-            
-            <Button icon="pi pi-plus" label="Agregar Inventario"severity="info" outlined   onClick={abrirModalCrear}  style={{ color:'#1A55B0' }}/>
+
+            <Button icon="pi pi-plus" label="Agregar Inventario" severity="info" outlined onClick={abrirModalCrear} style={{ color: '#1A55B0' }} />
             <Dialog
                 header={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '50px' }}>
                     <h3>Crear Inventario</h3>
@@ -181,7 +163,7 @@ const ModalCrearInventario = ({ pasarSetInventario }) => {
 
                                 <GetUbicacion pasarSetDataInventario={handleUbicacionChange} />
 
-                                <GetUltimoSku pasarSetDataInventario={handleSKUChange}/>
+                                <GetUltimoSku pasarSetDataInventario={handleSKUChange} />
 
                                 <GetFamilias pasarSetDataInventario={handleSubFamiliaChange} />
 
