@@ -14,17 +14,18 @@ import { Toast } from 'primereact/toast';
 import { GetTipoDocumentos } from "../Services/GetTipoDocumentos";
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
-import { GetArea } from "../Services/GetArea";
+import { SeleccionarPlanilla } from "../Components/SeleccionarPlanilla";
+import { SeleccionarCargo } from "../Components/SeleccionarCargo";
+import { Calendar } from 'primereact/calendar';
 
 const ModalAgregarPersonal = ({ pasarSetPersonal }) => {
     //obtner tokrn
-    const {obtenerToken}=useContext(AuthContext)
+    const { obtenerToken } = useContext(AuthContext)
     //#region Estado para modal
     const [modal, setModal] = useState(false);
     const abrirModalPersonal = () => {
         setModal(true);
     };
-
     const cerrarModalPersonal = () => {
         setModal(false);
     };
@@ -34,16 +35,12 @@ const ModalAgregarPersonal = ({ pasarSetPersonal }) => {
         try {
             const token = obtenerToken();
             if (token) {
-                console.log("Datos que se enviarán:", dataPersonal);
-
                 const respuestaCategoria = await axios.post("https://jwmalmcenb-production.up.railway.app/api/almacen/personal/create", dataPersonal, {
                     headers: {
                         Authorization: `Bearer ${token}`
 
                     }
                 });
-                console.log("Respuesta del servidor:", respuestaCategoria);
-
                 // Obtener las categorías actualizadas después de agregar una nueva categoría
                 const respuestaCategorias = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/personal/get", {
                     headers: {
@@ -51,17 +48,21 @@ const ModalAgregarPersonal = ({ pasarSetPersonal }) => {
 
                     }
                 });
-                console.log(respuestaCategorias.data.data)
                 const personalTransformado = respuestaCategorias.data.data.map(item => ({
                     id: item.id || '',
                     nombre: item.persona?.nombre || '',
+                    fecha_nacimiento: item.persona?.fecha_nacimiento || '',
                     apellido: `${item.persona?.apellido_paterno} ${item.persona?.apellido_materno}` || '',
                     gmail: item.persona?.gmail || '',
                     numero_documento: item.persona?.numero_documento || '',
                     tipo_documento_id: item.persona?.tipo_documento_id || '',
-                    area: item.area?.nombre || '',
-                    area_id:item.area?.id || '',
+                    fecha_ingreso: item.fecha_ingreso || '',
+                    area: item.cargo.area?.nombre || '',
+                    cargo: item.cargo?.nombre_cargo || '',
+                    area_id: item.area?.id || '',
                     habilidad: item.habilidad || '',
+                    ingreso_planilla: item.fecha_ingreso_planilla || '',
+                    planilla: item.planilla?.nombre_planilla || '',
                     experiencia: item.experiencia || '',
                 }));
                 // Actualizar el estado de las categorías con los datos obtenidos
@@ -87,20 +88,20 @@ const ModalAgregarPersonal = ({ pasarSetPersonal }) => {
             [name]: value.toUpperCase()
         });
     };
-    // Manejar cambios en los campos del formulario para solo TipoDocumento
+    //Funciones para eventos
     const handleDocumentosChange = (tipoDocumentoSeleccionado) => {
         setDataPersonal({
             ...dataPersonal,
             tipo_documento_id: tipoDocumentoSeleccionado.id
         });
     };
-     // Manejar cambios en los campos del formulario para solo TipoDocumento
-     const handleAreaChange = (areaSeleccionado) => {
+    const handlePlanillaChange = (e) => {
         setDataPersonal({
             ...dataPersonal,
-            area_id: areaSeleccionado.id
+            planilla_id: e.value.id
         });
-    };
+    }
+
     //#region Estado Para Confirmacion
     const toast = useRef(null);
     const reject = () => {
@@ -128,14 +129,14 @@ const ModalAgregarPersonal = ({ pasarSetPersonal }) => {
             {/* Confirmacion */}
             <Toast ref={toast} />
             {/* Contenido */}
-            <Button icon="pi pi-plus" label="Agregar Personal" severity="info" outlined  style={{ color:'#1A55B0' }} onClick={abrirModalPersonal} />
+            <Button icon="pi pi-plus" label="Agregar Personal" severity="info" outlined style={{ color: '#1A55B0' }} onClick={abrirModalPersonal} />
             <Dialog
                 header={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '50px' }}>
                     <h3>Crear Personal</h3>
                     <Button onClick={cerrarModalPersonal} icon="pi pi-times" rounded text severity="danger" aria-label="Cancel" />
                 </div>}
                 visible={modal}
-                style={{ width: '30%', minWidth: '300px' }}
+                style={{ width: '40%', minWidth: '300px' }}
                 footer={footer}
                 onHide={cerrarModalPersonal}
                 closable={false}
@@ -143,41 +144,68 @@ const ModalAgregarPersonal = ({ pasarSetPersonal }) => {
                 <form onSubmit={agregarCategoria}>
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                         <div style={{ marginTop: "20px", width: "100%", display: 'flex', flexDirection: 'column', gap: '25px' }}>
-                            <FloatLabel>
-                                <InputText id="nombre" name="nombre" style={{ width: '100%' }} value={dataPersonal.nombre} onChange={handleInputChange} />
-                                <label htmlFor="nombre" style={{ textAlign: "center", }}>Nombre Completo</label>
-                            </FloatLabel>
                             <div className="apellidos" style={{ display: 'flex', justifyContent: 'space-between', gap: '5px', width: '100%' }}>
-                                <div style={{ width: '50%' }}>
+                                <div style={{ width: '100%' }}>
+                                    <FloatLabel>
+                                        <InputText id="nombre" name="nombre" style={{ width: '100%' }} value={dataPersonal.nombre} onChange={handleInputChange} />
+                                        <label htmlFor="nombre" style={{ textAlign: "center", }}>Nombre Completo</label>
+                                    </FloatLabel>
+                                </div>
+                                <div style={{ width: '100%' }}>
                                     <FloatLabel>
                                         <InputText id="apellido_paterno" name="apellido_paterno" style={{ width: '100%' }} value={dataPersonal.apellido_paterno} onChange={handleInputChange} />
                                         <label htmlFor="apellido_paterno" style={{ textAlign: "center" }}>Apellido Paterno</label>
                                     </FloatLabel>
                                 </div>
-                                <div style={{ width: '50%' }}>
+                                <div style={{ width: '100%' }}>
                                     <FloatLabel>
                                         <InputText id="apellido_materno" name="apellido_materno" style={{ width: '100%' }} value={dataPersonal.apellido_materno} onChange={handleInputChange} />
                                         <label htmlFor="apellido_materno" style={{ textAlign: "center" }}>Apellido Materno</label>
                                     </FloatLabel>
                                 </div>
+                                <div style={{ width: '100%' }}>
+                                    <FloatLabel>
+                                        <Calendar id="fecha_nacimiento" value={dataPersonal.fecha_nacimiento} onChange={(e) => setDataPersonal({ ...dataPersonal, fecha_nacimiento: e.value })} dateFormat="dd/mm/yy" showIcon style={{ width: "100%" }} />
+                                        <label htmlFor="fecha_nacimiento" style={{ textAlign: "center" }}>Fecha Nacimiento</label>
+                                    </FloatLabel>
+                                </div>
                             </div>
-
-                            <FloatLabel>
-                                <InputText id="gmail" name="gmail" style={{ width: '100%' }} value={dataPersonal.gmail} onChange={handleInputChange} />
-                                <label htmlFor="gmail" style={{ textAlign: "center" }}>Gmail</label>
-                            </FloatLabel>
                             <div className="documentos" style={{ display: 'flex', gap: '5px' }}>
-                                <div className="documento" style={{ width: '60%' }}>
+                                <div className="gmail" style={{ width: '100%' }}>
+                                    <FloatLabel>
+                                        <InputText id="gmail" name="gmail" style={{ width: '100%' }} value={dataPersonal.gmail} onChange={handleInputChange} />
+                                        <label htmlFor="gmail" style={{ textAlign: "center" }}>Gmail</label>
+                                    </FloatLabel>
+                                </div>
+                                <div className="documento" style={{ width: '100%' }}>
                                     <GetTipoDocumentos pasarDataPersonal={handleDocumentosChange} />
                                 </div>
-                                <div className="documento" style={{ width: '50%' }}>
+                                <div className="documento" style={{ width: '100%' }}>
                                     <FloatLabel>
                                         <InputText id="numero_documento" name="numero_documento" style={{ width: '100%' }} value={dataPersonal.numero_documento} onChange={handleInputChange} />
                                         <label htmlFor="numero_documento" style={{ textAlign: "center" }}>Número Documento</label>
                                     </FloatLabel>
                                 </div>
                             </div>
-                            <GetArea pasarSetPersonal={handleAreaChange}/>
+                            <div style={{ display: 'flex', gap: '5px' }}>
+                                <SeleccionarCargo />
+                                <div style={{ width: '100%' }}>
+                                    <FloatLabel>
+                                        <Calendar id="fecha_ingreso" value={dataPersonal.fecha_ingreso} onChange={(e) => setDataPersonal({ ...dataPersonal, fecha_ingreso: e.value })} dateFormat="dd/mm/yy" showIcon style={{ width: "100%" }} />
+                                        <label htmlFor="fecha_ingreso" style={{ textAlign: "center" }}>Fecha Ingreso</label>
+                                    </FloatLabel>
+                                </div>
+                            </div>
+                            <div style={{ display: 'flex', gap: '5px' }}>
+                                <SeleccionarPlanilla pasarSetPersonal={handlePlanillaChange}/>
+                                <div style={{ width: '100%' }}>
+                                    <FloatLabel>
+                                        <Calendar id="fecha_ingreso_planilla" value={dataPersonal.fecha_ingreso_planilla} onChange={(e) => setDataPersonal({ ...dataPersonal, fecha_ingreso_planilla: e.value })} dateFormat="dd/mm/yy" showIcon style={{ width: "100%" }} />
+                                        <label htmlFor="fecha_ingreso_planilla" style={{ textAlign: "center" }}>Fecha Ingreso Planilla</label>
+                                    </FloatLabel>
+                                </div>
+                            </div>
+
                             <FloatLabel>
                                 <InputText id="habilidad" name="habilidad" style={{ width: '100%' }} value={dataPersonal.habilidad} onChange={handleInputChange} />
                                 <label htmlFor="habilidad" style={{ textAlign: "center" }} >Habilidad</label>

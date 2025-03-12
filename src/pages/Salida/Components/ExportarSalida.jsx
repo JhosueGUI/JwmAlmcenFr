@@ -8,7 +8,7 @@ export function ExportarSalida() {
             const fecha = new Date();
             const fechaFormateada = fecha.toISOString().split('T')[0]; // Formato YYYY-MM-DD
 
-            const response = await axios.get('https://jwmalmcenb-production.up.railway.app/api/orden_compra/exportar_salida', {
+            const response = await axios.get('https://jwmalmcenb-production.up.railway.app/api/orden_compra/exportar_salida',{ timeout: 300000 }, {
                 responseType: 'blob' // Para manejar archivos binarios (Excel en este caso)
             });
             const url = window.URL.createObjectURL(new Blob([response.data]));

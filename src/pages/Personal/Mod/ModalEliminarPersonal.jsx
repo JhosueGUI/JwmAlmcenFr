@@ -31,13 +31,18 @@ const ModalEliminarPersonal = ({ pasarAbrirModalEliminar, pasarCerrarModalElimin
                 const personalTransformado = respuestaGet.data.data.map(item => ({
                     id: item.id || '',
                     nombre: item.persona?.nombre || '',
+                    fecha_nacimiento: item.persona?.fecha_nacimiento || '',
                     apellido: `${item.persona?.apellido_paterno} ${item.persona?.apellido_materno}` || '',
                     gmail: item.persona?.gmail || '',
                     numero_documento: item.persona?.numero_documento || '',
                     tipo_documento_id: item.persona?.tipo_documento_id || '',
-                    area: item.area?.nombre || '',
-                    area_id:item.area?.id || '',
+                    fecha_ingreso: item.fecha_ingreso || '',
+                    area: item.cargo.area?.nombre || '',
+                    cargo: item.cargo?.nombre_cargo || '',
+                    area_id: item.area?.id || '',
                     habilidad: item.habilidad || '',
+                    ingreso_planilla: item.fecha_ingreso_planilla || '',
+                    planilla: item.planilla?.nombre_planilla || '',
                     experiencia: item.experiencia || '',
                 }));
                 pasarSetPersonal(personalTransformado)
