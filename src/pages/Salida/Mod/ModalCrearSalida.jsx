@@ -36,12 +36,12 @@ const ModalCrearSalida = ({ pasarSetSalidas }) => {
         try {
             const token = obtenerToken()
             if (token) {
-                const respuestaPost = await axios.post('https://jwmalmcenb-production.up.railway.app/api/almacen/salida/create', dataSalida, {
+                const respuestaPost = await axios.post('http://127.0.0.1:8000/api/almacen/salida/create', dataSalida, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 })
-                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/salida/get", {
+                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/salida/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

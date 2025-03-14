@@ -18,7 +18,7 @@ export function GetProveedorOrden({ pasarSetDataOrden, pasarOrdenSeleccionado })
             try {
                 const token = obtenerToken();
                 if (token) {
-                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/proveedor/get", {
+                    const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/proveedor/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

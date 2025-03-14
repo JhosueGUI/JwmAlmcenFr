@@ -21,7 +21,7 @@ const GetFamilias = ({ pasarSetDataInventario, pasarFamiliaSeleccionado }) => {
             try {
                 const token = obtenerToken();
                 if (token) {
-                    const respuesta = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/sub_familia/get", {
+                    const respuesta = await axios.get("http://127.0.0.1:8000/api/almacen/sub_familia/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

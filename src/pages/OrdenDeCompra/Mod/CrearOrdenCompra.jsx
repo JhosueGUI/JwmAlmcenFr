@@ -108,12 +108,12 @@ export const ModalCrearOrdenCompra = ({pasarSetOrden}) => {
             const token = obtenerToken();
             if (token) {
                 console.log(dataOrden)
-                const respuestaPost = await axios.post("https://jwmalmcenb-production.up.railway.app/api/orden_compra/generar",dataOrden, {
+                const respuestaPost = await axios.post("http://127.0.0.1:8000/api/orden_compra/generar",dataOrden, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 })
-                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/orden_compra/get", {
+                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/orden_compra/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

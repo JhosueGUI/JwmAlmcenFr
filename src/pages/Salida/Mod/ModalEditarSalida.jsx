@@ -29,12 +29,12 @@ const ModalEditarSalir = ({ pasarSetSalidas, pasarAbrirModal, pasarCerrarModal, 
             console.log("edit", dataSalida)
             const token = obtenerToken()
             if (token) {
-                const respuestaPost = await axios.post(`https://jwmalmcenb-production.up.railway.app/api/almacen/salida/update/${pasarSalidaSeleccionado.id}`, dataSalida, {
+                const respuestaPost = await axios.post(`http://127.0.0.1:8000/api/almacen/salida/update/${pasarSalidaSeleccionado.id}`, dataSalida, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 })
-                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/salida/get", {
+                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/salida/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

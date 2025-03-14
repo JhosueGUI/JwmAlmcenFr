@@ -24,12 +24,12 @@ export const ModalEditarRol = ({ pasarSetRol,pasarAbrirModalEdit,pasarCerrarModa
         try {
             const token = obtenerToken()
             if (token) {
-                const respuestaPost = await axios.post(`https://jwmalmcenb-production.up.railway.app/api/almacen/rol/update/${pasarRolSeleccionado.id}`, rolData, {
+                const respuestaPost = await axios.post(`http://127.0.0.1:8000/api/almacen/rol/update/${pasarRolSeleccionado.id}`, rolData, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 })
-                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/rol/get", {
+                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/rol/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

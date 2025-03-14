@@ -18,7 +18,7 @@ export const GetUnidadMedidaOrden = ({pasarSetDataProducto}) => {
             try {
                 const token = obtenerToken();
                 if (token) {
-                    const respuesta = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/unidad_medida/get", {
+                    const respuesta = await axios.get("http://127.0.0.1:8000/api/almacen/unidad_medida/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

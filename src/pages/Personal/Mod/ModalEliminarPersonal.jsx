@@ -17,12 +17,12 @@ const ModalEliminarPersonal = ({ pasarAbrirModalEliminar, pasarCerrarModalElimin
         try {
             const token = obtenerToken();
             if (token && pasarPersonalSeleccionado) {
-                const respuestaPost = await axios.delete(`https://jwmalmcenb-production.up.railway.app/api/almacen/personal/delete/${pasarPersonalSeleccionado.id}`, {
+                const respuestaPost = await axios.delete(`http://127.0.0.1:8000/api/almacen/personal/delete/${pasarPersonalSeleccionado.id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
-                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/personal/get", {
+                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/personal/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
