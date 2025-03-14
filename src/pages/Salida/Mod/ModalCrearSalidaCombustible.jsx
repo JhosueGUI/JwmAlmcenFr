@@ -39,19 +39,19 @@ const ModalCrearSalidaCombustible = ({ pasarSetSalidas, pasarSetCombustible }) =
             const token = obtenerToken()
             if (token) {
                 console.log("Data Salida", dataSalida)
-                const respuestaPost = await axios.post('http://127.0.0.1:8000/api/almacen/salida_combustible/create', dataSalida, {
+                const respuestaPost = await axios.post('https://jwmalmcenb-production.up.railway.app/api/almacen/salida_combustible/create', dataSalida, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 })
                 console.log("Respuesta", respuestaPost)
 
-                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/salida_combustible/get", {
+                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/salida_combustible/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 })
-                const respuestaGetCombustible = await axios.get("http://127.0.0.1:8000/api/almacen/salida_combustible/get/combustible", {
+                const respuestaGetCombustible = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/salida_combustible/get/combustible", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

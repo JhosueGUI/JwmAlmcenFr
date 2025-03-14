@@ -31,14 +31,14 @@ const ModalEliminarFlota = ({ pasarAbrirModalEliminar, pasarCerrarModalEliminar,
         try {
             const token = obtenerToken()
             if (token) {
-                const respuestaDelete = await axios.delete(`http://127.0.0.1:8000/api/almacen/flota/delete/${pasarFlotaSeleccionado.id}`, {
+                const respuestaDelete = await axios.delete(`https://jwmalmcenb-production.up.railway.app/api/almacen/flota/delete/${pasarFlotaSeleccionado.id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
 
                 // Actualizar la lista de flotas después de eliminar una flota
-                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/flota/get", {
+                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/flota/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

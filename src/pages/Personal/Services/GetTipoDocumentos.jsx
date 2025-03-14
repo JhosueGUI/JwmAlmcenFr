@@ -18,7 +18,7 @@ export function GetTipoDocumentos({ pasarDataPersonal, personalInicial }) {
             try {
                 const token = obtenerToken();
                 if (token) {
-                    const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/tipo_documento/get", {
+                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/tipo_documento/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
