@@ -26,7 +26,7 @@ export const SubirArchivoPersonal = ({ pasarSetPersonal }) => {
 
     const uploadRef = useRef(null);
 
-    const urlSubirArchivo = "http://127.0.0.1:8000/api/almacen/personal/archivo";
+    const urlSubirArchivo = "https://jwmalmcenb-production.up.railway.app/api/almacen/personal/archivo";
 
     const SubirArchivo = async () => {
         try {
