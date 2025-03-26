@@ -51,3 +51,51 @@ export const getSalidaCombustible = async (token) => {
         throw error;
     }
 }
+export const createSalidaCombustible = async (token, data) => {
+    try {
+        const apiClient = axios.create({
+            baseURL: PROGRAMACION_API,
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+        const respuesta = await apiClient.post('/almacen/salida_combustible/create', data);
+        return respuesta.data.resp
+    } catch (error) {
+        console.error("Error al crear Salida Combustible:", error);
+        throw error;
+    }
+}
+export const getGrifo = async (token) => {
+    try {
+        const apiClient = axios.create({
+            baseURL: PROGRAMACION_API,
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+        const respuesta = await apiClient.get('/almacen/grifo/get');
+        return respuesta.data.data
+    } catch (error) {
+        console.error("Error al obtener Grifo:", error);
+        throw error;
+    }
+}
+export const createGrifo = async (token, data) => {
+    try{
+        const apiClient = axios.create({
+            baseURL: PROGRAMACION_API,
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+        const respuesta = await apiClient.post('/almacen/grifo/create',data);
+        return respuesta.data.resp
+    }catch(error){
+        console.error("Error al crear Grifo:", error);
+        throw error;
+    }
+}

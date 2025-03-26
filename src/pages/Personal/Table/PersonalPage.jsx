@@ -26,10 +26,12 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import UsarGetPersonal from "../Hooks/UsarGetPersonal";
 import { ColumnasPeronal } from "../Constant/ColumnasPersonal";
 import { InputText } from "primereact/inputtext";
+import { IconField } from "primereact/iconfield";
+import { InputIcon } from "primereact/inputicon";
 
 export function PersonalPage() {
     //hooks
-    const { data,setData } = UsarGetPersonal();
+    const { data, setData } = UsarGetPersonal();
     //columnas Iniciales
     const [columnasVisibles, setColumnasVisibles] = useState(ColumnasPeronal);
     // Estado para la búsqueda global
@@ -159,16 +161,16 @@ export function PersonalPage() {
                             <ModalAgregarPersonal pasarSetPersonal={setData} />
                         </div>
                     )}
-                    <div className="buscar" style={{ display: 'flex', width: '100%', justifyContent: 'flex-end', }}>
-                        <span className="p-inputgroup-addon">
-                            <i className="pi pi-search"></i>
-                        </span>
+                    <IconField iconPosition="left">
+                        <InputIcon className="pi pi-search" />
                         <InputText
+                            style={{ backgroundColor: 'var(--clr-primary)', border: 'none' }}
                             value={filtroGlobal}
                             onChange={(e) => setFiltroGlobal(e.target.value)}
-                            placeholder="Buscar..."
+                            placeholder="Buscar Flota"
                         />
-                    </div>
+                    </IconField>
+
                 </div>
 
 
@@ -247,10 +249,4 @@ export function PersonalPage() {
 // Estilo utilizando styled-components para el contenedor principal
 const Contenedor = styled.div`
     overflow-y: auto;
-`;
-
-const MultiSelectContainer = styled.div`
-    .p-multiselect {
-        width: 100%; /* Ajusta el tamaño según tus necesidades */
-    }
 `;

@@ -1,6 +1,5 @@
 import styled from "styled-components";
-import React, { useState, useEffect } from 'react';
-import axios from "axios";
+import React, { useState } from 'react';
 import { ColumnasInicialesSalida, ColumnasInicialesSalidaCombustible } from "../Data/SalidaData";
 import { DataTable } from "primereact/datatable";
 import { MultiSelect } from "primereact/multiselect";
@@ -8,7 +7,6 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import ModalCrearSalida from "../Mod/ModalCrearSalida";
 import ModalEditarSalir from "../Mod/ModalEditarSalida";
-import { FiltradoSalida } from "../Components/FiltradoSalida";
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { ExportarSalida } from "../Components/ExportarSalida";
@@ -19,42 +17,54 @@ import ModalCrearSalidaCombustible from "../Mod/ModalCrearSalidaCombustible";
 import ModalEditarSalidaCombustible from "../Mod/ModalEditarSalidaCombustible";
 import { ExportarCombustible } from "../Components/ExportarCombustible";
 import UsarGetStockCombustible from "../hooks/UsarGetStockCombustible";
-import { GetStockCombustible } from "../Services/SalidaCombustibleApi";
-import { Tag } from "primereact/tag";
 import ModalEliminarSalidaCombustible from "../Mod/ModalEliminarSalidaCombustible";
+import UsarGetSalidaCombustible from "../hooks/UsarGetSalidaCombustible";
+import UsarGetSalida from "../hooks/UsarGetSalida";
+import { IconField } from "primereact/iconfield";
+import { InputIcon } from "primereact/inputicon";
+import { InputText } from "primereact/inputtext";
 
 export function SalidaPage() {
     //#hooks
-    const { respuesta } = UsarGetStockCombustible()
-    const [combustible, setCombustible] = useState([])
+    const { respuesta, setRespuesta } = UsarGetStockCombustible()
+    const { data, setData } = UsarGetSalidaCombustible()
+    const { data2, setData2 } = UsarGetSalida()
 
-    useEffect(() => {
-        setCombustible(respuesta);
-    }, [respuesta]);
-
-    //#region para el cargado
-    const [cargando, setCargando] = useState(false);
-    //obtener token
-    const { obtenerToken } = useContext(AuthContext)
     //#region estado para las columnas visibles
     const [columnasVisibles, setColumnasVisibles] = useState(ColumnasInicialesSalida)
     const [columnasVisiblesCombustible, setColumnasVisiblesCombustible] = useState(ColumnasInicialesSalidaCombustible)
 
-    // Función para manejar el cambio de columnas visibles en la tabla
-    const manejarCambioColumnas = (e) => {
-        const columnasSeleccionadas = e.value
-        const columnasOrdenadasSeleccionadas = ColumnasInicialesSalida.filter(col =>
+    // Estado para la búsqueda global
+    const [filtroGlobal, setFiltroGlobal] = useState("");
+
+    // Función para alternar columnas visibles
+    const AlternarColumna = (event) => {
+        let columnasSeleccionadas = event.value;
+        let columnasOrdenadas = ColumnasInicialesSalidaCombustible.filter(col =>
             columnasSeleccionadas.some(sCol => sCol.field === col.field)
-        )
-        setColumnasVisibles(columnasOrdenadasSeleccionadas)
-    }
-    const manejarCambioColumnasCombustible = (e) => {
-        const columnasSeleccionadas = e.value
-        const columnasOrdenadasSeleccionadas = ColumnasInicialesSalidaCombustible.filter(col =>
+        );
+        setColumnasVisiblesCombustible(columnasOrdenadas);
+    };
+    // Función para alternar columnas visibles
+    const AlternarColumna2 = (event) => {
+        let columnasSeleccionadas = event.value;
+        let columnasOrdenadas = ColumnasInicialesSalida.filter(col =>
             columnasSeleccionadas.some(sCol => sCol.field === col.field)
+        );
+        setColumnasVisibles(columnasOrdenadas);
+    };
+    // Filtrar los datos en base a la búsqueda
+    const datosFiltrados = data?.filter(item =>
+        columnasVisiblesCombustible.some(col =>
+            item[col.field]?.toString().toLowerCase().includes(filtroGlobal.toLowerCase())
         )
-        setColumnasVisiblesCombustible(columnasOrdenadasSeleccionadas)
-    }
+    );
+    const datosFiltrados2 = data2?.filter(item =>
+        columnasVisibles.some(col =>
+            item[col.field]?.toString().toLowerCase().includes(filtroGlobal.toLowerCase())
+        )
+    );
+
     //#region para formatear los precios
     const formatearPrecioSoles = (precio) => {
         return `S/. ${parseFloat(precio).toFixed(2)}`;
@@ -62,167 +72,6 @@ export function SalidaPage() {
     const formatearPrecioDolares = (precio) => {
         return `$/. ${parseFloat(precio).toFixed(2)}`;
     };
-
-    //#region para traer a todas las salidas
-    const [salidas, setSalidas] = useState([]);
-    const [salidasCombustible, setSalidasCombustible] = useState([]);
-
-    useEffect(() => {
-        const TraerRegistroSalidas = async () => {
-            try {
-                const token = obtenerToken();
-                if (token) {
-                    setCargando(true);
-                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/salida/get", {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    })
-                    const SalidaAdaptado = respuestaGet.data.data.map(item => {
-                        let personal = null;
-                        if (item.personal && item.personal.persona) {
-                            personal = `${item.personal.persona?.nombre || ''} ${item.personal.persona?.apellido_paterno || ''} ${item.personal.persona?.apellido_materno || ''}`;
-                        }
-                        return {
-                            id: item.id || '',
-                            fecha: item.fecha || '',
-                            vale: item.vale || '',
-                            tipo_operacion: item.transaccion?.tipo_operacion || '',
-                            destino: item.destino || '',
-                            personal: personal,
-                            personalId: item.personal?.id || '',
-                            unidad: item.unidad || '',
-                            duracion_neumatico: item.duracion_neumatico || '',
-                            kilometraje_horometro: item.kilometraje_horometro || '',
-                            fecha_vencimiento: item.fecha_vencimiento || '',
-                            SKU: item.transaccion.producto?.SKU || '',
-                            familia: item.transaccion.producto.articulo.sub_familia.familia?.familia || '',
-                            sub_familia: item.transaccion.producto.articulo.sub_familia?.nombre || '',
-                            articulo: item.transaccion.producto.articulo?.nombre || '',
-                            marca: item.transaccion.marca || '',
-                            precio_dolares: item.transaccion.producto.articulo?.precio_dolares || 0,
-                            precio_soles: item.transaccion.producto.articulo?.precio_soles || 0,
-                            stock_logico: item.transaccion.producto.inventario?.stock_logico || '',
-                            unidad_medida: item.transaccion.producto.unidad_medida?.nombre || '',
-                            salida: item.numero_salida || '',
-                            precio_unitario_soles: item.transaccion?.precio_unitario_soles || 0,
-                            precio_total_soles: item.transaccion?.precio_total_soles || 0,
-                            precio_unitario_dolares: item.transaccion?.precio_unitario_dolares || 0,
-                            precio_total_dolares: item.transaccion?.precio_total_dolares || 0,
-                            observaciones: item.transaccion?.observaciones || ''
-                        }
-                    })
-                    setCargando(false);
-                    setSalidas(SalidaAdaptado)
-                }
-            } catch (error) {
-                setCargando(false);
-                console.log("Error al traer Ingresos", error)
-            }
-        }
-        const TraerRegistroSalidasCombustible = async () => {
-            try {
-                const token = obtenerToken();
-                if (token) {
-                    setCargando(true);
-                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/salida_combustible/get", {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    })
-                    const SalidaCombustibleAdaptado = respuestaGet.data.data.map(item => {
-                        return {
-                            id: item.id || '',
-                            fecha: item.fecha || '',
-                            flota_id: item.flota?.id || '',
-                            placa: item.flota?.placa || '',
-                            tipo: item.flota?.tipo || '',
-                            personal_id: item.personal?.id || '',
-                            nombre: item.personal?.persona?.nombre || '',
-                            destino_combustible_id: item.destino_combustible?.id || '',
-                            destino: item.destino_combustible?.nombre || '',
-                            numero_salida_ruta: item.numero_salida_ruta || '',
-                            numero_salida_stock: item.numero_salida_stock || '',
-                            precio_unitario_soles: item.precio_unitario_soles || '',
-                            precio_total_soles: item.precio_total_soles || '',
-                            contometro_surtidor: item.contometro_surtidor || '',
-                            margen_error_surtidor: item.margen_error_surtidor || '',
-                            resultado: item.resultado || '',
-                            precinto_nuevo: item.precinto_nuevo || '',
-                            precinto_anterior: item.precinto_anterior || '',
-                            kilometraje: item.kilometraje || '',
-                            horometro: item.horometro || '',
-                            observacion: item.observacion || ''
-                        }
-                    })
-                    setCargando(false);
-
-                    setSalidasCombustible(SalidaCombustibleAdaptado)
-                }
-            } catch (error) {
-                setCargando(false);
-                console.log("Error al traer Ingresos", error)
-            }
-        }
-        TraerRegistroSalidasCombustible()
-        TraerRegistroSalidas()
-    }, [])
-    //#region para el filtro
-    const [filtro, setFiltro] = useState('')
-
-    const SalidaFiltrado = salidas.filter(p => {
-        const fecha = p.fecha || ''
-        const vale = p.vale || ''
-        const tipo_operacion = p.tipo_operacion || ''
-        const destino = p.destino || ''
-        const personal = p.personal || ''
-        const unidad = p.unidad || ''
-        const duracion_neumatico = p.duracion_neumatico || ''
-        const kilometraje_horometro = p.kilometraje_horometro || ''
-        const fecha_vencimiento = p.fecha_vencimiento || ''
-        const SKU = p.SKU || ''
-        const familia = p.familia || ''
-        const sub_familia = p.sub_familia || ''
-        const articulo = p.articulo || ''
-        const marca = p.marca || ''
-        const precio_dolares = p.precio_dolares || ''
-        const precio_soles = p.precio_soles || ''
-        const stock_logico = p.stock_logico || ''
-        const unidad_medida = p.unidad_medida || ''
-        const salida = p.salida || ''
-        const precio_unitario_soles = p.precio_unitario_soles || ''
-        const precio_total_soles = p.precio_total_soles || ''
-        const precio_unitario_dolares = p.precio_unitario_dolares || ''
-        const precio_total_dolares = p.precio_total_dolares || ''
-        const observaciones = p.observaciones || ''
-        return (
-            fecha.toLowerCase().includes(filtro.toLowerCase()) ||
-            vale.toLowerCase().includes(filtro.toLowerCase()) ||
-            tipo_operacion.toLowerCase().includes(filtro.toLowerCase()) ||
-            destino.toLowerCase().includes(filtro.toLowerCase()) ||
-            personal.toLowerCase().includes(filtro.toLowerCase()) ||
-            unidad.toLowerCase().includes(filtro.toLowerCase()) ||
-            duracion_neumatico.toLowerCase().includes(filtro.toLowerCase()) ||
-            kilometraje_horometro.toLowerCase().includes(filtro.toLowerCase()) ||
-            fecha_vencimiento.toLowerCase().includes(filtro.toLowerCase()) ||
-            SKU.toLowerCase().includes(filtro.toLowerCase()) ||
-            familia.toLowerCase().includes(filtro.toLowerCase()) ||
-            sub_familia.toLowerCase().includes(filtro.toLowerCase()) ||
-            articulo.toLowerCase().includes(filtro.toLowerCase()) ||
-            marca.toLowerCase().includes(filtro.toLowerCase()) ||
-            precio_dolares.toLowerCase().includes(filtro.toLowerCase()) ||
-            precio_soles.toLowerCase().includes(filtro.toLowerCase()) ||
-            stock_logico.toLowerCase().includes(filtro.toLowerCase()) ||
-            unidad_medida.toLowerCase().includes(filtro.toLowerCase()) ||
-            salida.toLowerCase().includes(filtro.toLowerCase()) ||
-            precio_unitario_dolares.toLowerCase().includes(filtro.toLowerCase()) ||
-            precio_unitario_soles.toLowerCase().includes(filtro.toLowerCase()) ||
-            precio_total_dolares.toLowerCase().includes(filtro.toLowerCase()) ||
-            precio_total_soles.toLowerCase().includes(filtro.toLowerCase()) ||
-            observaciones.toLowerCase().includes(filtro.toLowerCase())
-        )
-    })
-
     //#region estado para abrir y cerrar modal de editar
     const [modalEditarSalir, setModalEditarSalir] = useState(false)
     const [salidaSeleccionado, setSalidaSeleccionado] = useState(null)
@@ -247,17 +96,17 @@ export function SalidaPage() {
 
     //estado para abrir y cerrar modal de eliminar salida combustible    
     const [modalEliminarSalidaCombustible, setModalEliminarSalidaCombustible] = useState(false)
-    const functAbrirEliminarCombustible=(idSalir)=>{
+    const functAbrirEliminarCombustible = (idSalir) => {
         setModalEliminarSalidaCombustible(true)
         setSalidaCombustibleSeleccionado(idSalir)
     }
-    const funtCerrarEliminarCombustible=()=>{
+    const funtCerrarEliminarCombustible = () => {
         setModalEliminarSalidaCombustible(false)
     }
     //
 
     const botonDescargar = <ExportarSalida />;
-    const botonImportar = <ImportarSalida pasarSetSalida={setSalidas} />;
+    const botonImportar = <ImportarSalida pasarSetSalida={setData2} />;
 
     const botomExportarCombustible = <ExportarCombustible />
     //#region para aumentar Acciones a todas las filas
@@ -275,7 +124,7 @@ export function SalidaPage() {
                     </div>
                 )}
                 <div className="eliminar">
-                    <Button icon="pi pi-trash" severity="danger" style={{ color: '#FF6767', backgroundColor: '#FFECEC', border: 'none' }} aria-label="Eliminar" onClick={()=>{ functAbrirEliminarCombustible(id)}} />
+                    <Button icon="pi pi-trash" severity="danger" style={{ color: '#FF6767', backgroundColor: '#FFECEC', border: 'none' }} aria-label="Eliminar" onClick={() => { functAbrirEliminarCombustible(id) }} />
                 </div>
             </div>
         )
@@ -287,17 +136,16 @@ export function SalidaPage() {
         { label: 'Salida Inventario', icon: 'pi pi-users' },
         { label: 'Salida Combustible', icon: 'pi pi-envelope' }
     ];
-
     return (
         <Contenedor>
             <div className="contenedor" style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
                 <div className="encabezado" style={{ width: '100%', color: '#1A55B0' }}>
                     <div className="TituloE" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span style={{fontSize:'30px', fontWeight:'bold'}}>Gestión de Salidas </span>
+                        <span style={{ fontSize: '30px', fontWeight: 'bold' }}>Gestión de Salidas </span>
                         <TabMenu model={items} activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)} />
                     </div>
                     <div className="ContentE">
-                        <span style={{ color: '#1A55B0', fontSize:'15px' }}>
+                        <span style={{ color: '#1A55B0', fontSize: '15px' }}>
                             En este modulo usteded podra administrar el registro de las Salidas
                         </span>
                     </div>
@@ -306,18 +154,35 @@ export function SalidaPage() {
                 <div className="acciones" style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     {activeIndex === 0 && (
                         <>
-                            <ModalCrearSalida pasarSetSalidas={setSalidas} />
-                            <FiltradoSalida filtro={filtro} setFiltro={setFiltro} />
+                            <ModalCrearSalida pasarSetSalidas={setData2} />
+                            <IconField iconPosition="left">
+                                <InputIcon className="pi pi-search" />
+                                <InputText
+                                    style={{ backgroundColor: 'var(--clr-primary)', border: 'none' }}
+                                    value={filtroGlobal}
+                                    onChange={(e) => setFiltroGlobal(e.target.value)}
+                                    placeholder="Buscar Salida"
+                                />
+                            </IconField>
                         </>
                     )}
                     {activeIndex === 1 && (
 
                         <div className="header" style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                            <ModalCrearSalidaCombustible pasarSetSalidas={setSalidasCombustible} pasarSetCombustible={setCombustible}/>
+                            <ModalCrearSalidaCombustible pasarSetSalidas={setData} pasarSetCombustible={setRespuesta} />
 
-                            <Button style={{ fontSize: '17px', background: combustible.alerta === 'Solicitar Combustible' ? '#FFECEC' : '#BFF1DF', color: combustible.alerta === 'Solicitar Combustible' ? '#FF6767' : '#248D63', borderColor: combustible.alerta === 'Solicitar Combustible' ? '#FF6767' : '#248D63' }}>
-                                {combustible.alerta} : {combustible.stock}
+                            <Button style={{ fontSize: '17px', background: respuesta.alerta === 'Solicitar Combustible' ? '#FFECEC' : '#BFF1DF', color: respuesta.alerta === 'Solicitar Combustible' ? '#FF6767' : '#248D63', borderColor: respuesta.alerta === 'Solicitar Combustible' ? '#FF6767' : '#248D63' }}>
+                                {respuesta.alerta} : {respuesta.stock}
                             </Button>
+                            <IconField iconPosition="left">
+                                <InputIcon className="pi pi-search" />
+                                <InputText
+                                    style={{ backgroundColor: 'var(--clr-primary)', border: 'none' }}
+                                    value={filtroGlobal}
+                                    onChange={(e) => setFiltroGlobal(e.target.value)}
+                                    placeholder="Buscar Salida"
+                                />
+                            </IconField>
 
                         </div>
                     )}
@@ -329,21 +194,20 @@ export function SalidaPage() {
                     <div className="tabla-contenedor" style={{ width: '100%' }}>
                         {activeIndex === 0 && (
                             <DataTable
+                                value={datosFiltrados2}
                                 paginator rows={10}
                                 rowsPerPageOptions={[5, 10]}
                                 paginatorRight={botonDescargar}
                                 paginatorLeft={botonImportar}
-                                value={SalidaFiltrado}
                                 header={
-                                    <MultiSelectContainer>
-                                        <MultiSelect
-                                            value={columnasVisibles}
-                                            options={ColumnasInicialesSalida}
-                                            optionLabel="header"
-                                            onChange={manejarCambioColumnas}
-                                            display="chip"
-                                        />
-                                    </MultiSelectContainer>
+                                    <MultiSelect
+                                        style={{ width: '100%' }}
+                                        value={columnasVisibles}
+                                        options={ColumnasInicialesSalida}
+                                        optionLabel="header"
+                                        onChange={AlternarColumna2}
+                                        display="chip"
+                                    />
                                 }
                                 tableStyle={{ minWidth: '260rem' }}
                             >
@@ -412,21 +276,20 @@ export function SalidaPage() {
                         )}
                         {activeIndex === 1 && (
                             <DataTable
+                                value={datosFiltrados}
                                 paginator rows={10}
                                 rowsPerPageOptions={[5, 10]}
                                 paginatorRight={botomExportarCombustible}
                                 paginatorLeft={botonImportar}
-                                value={salidasCombustible}
                                 header={
-                                    <MultiSelectContainer>
-                                        <MultiSelect
-                                            value={columnasVisiblesCombustible}
-                                            options={ColumnasInicialesSalidaCombustible}
-                                            optionLabel="header"
-                                            onChange={manejarCambioColumnasCombustible}
-                                            display="chip"
-                                        />
-                                    </MultiSelectContainer>
+                                    <MultiSelect
+                                        style={{ width: '100%' }}
+                                        value={columnasVisiblesCombustible}
+                                        options={ColumnasInicialesSalidaCombustible}
+                                        optionLabel="header"
+                                        onChange={AlternarColumna}
+                                        display="chip"
+                                    />
                                 }
                                 tableStyle={{ minWidth: '260rem' }}
                             >
@@ -500,32 +363,17 @@ export function SalidaPage() {
 
                             </DataTable>
                         )}
+
                     </div>
                 </div>
             </div>
 
 
             {/* Modals */}
-            <ModalEditarSalir pasarAbrirModal={modalEditarSalir} pasarCerrarModal={funtCerrarEditar} pasarSalidaSeleccionado={salidaSeleccionado} pasarSetSalidas={setSalidas} />
-            <ModalEditarSalidaCombustible pasarAbrirModal={modalEditarSalidaCombustible} pasarCerrarModal={funtCerrarEditarCombustible} pasarSetSalidas={setSalidasCombustible} pasarSalidaSeleccionadoCombustible={salidaCombustibleSeleccionado} />
-            <ModalEliminarSalidaCombustible pasarAbrirModalEliminar={modalEliminarSalidaCombustible} pasarCerrarModalEliminar={funtCerrarEliminarCombustible} pasarSetSalidas={setSalidasCombustible} pasarSalidaSeleccionadoCombustible={salidaCombustibleSeleccionado}/>
-            {/* Mostrar el spinner si está cargando */}
-            {cargando && (
-                <div style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    zIndex: 10000 // Asegurarse de que esté encima del modal
-                }}>
-                    <ProgressSpinner className="custom-progress-spinner" style={{ width: '80px', height: '80px', color: 'red' }} strokeWidth="5" fill="var(--surface-ground)" animationDuration=".8s" />
-                </div>
-            )}
+            <ModalEditarSalir pasarAbrirModal={modalEditarSalir} pasarCerrarModal={funtCerrarEditar} pasarSalidaSeleccionado={salidaSeleccionado} pasarSetSalidas={setData2} />
+            <ModalEditarSalidaCombustible pasarAbrirModal={modalEditarSalidaCombustible} pasarCerrarModal={funtCerrarEditarCombustible} pasarSetSalidas={setData} pasarSalidaSeleccionadoCombustible={salidaCombustibleSeleccionado} />
+            <ModalEliminarSalidaCombustible pasarAbrirModalEliminar={modalEliminarSalidaCombustible} pasarCerrarModalEliminar={funtCerrarEliminarCombustible} pasarSetSalidas={setData} pasarSalidaSeleccionadoCombustible={salidaCombustibleSeleccionado} />
+
         </Contenedor>
     );
 }

@@ -9,6 +9,8 @@ import { InputText } from 'primereact/inputtext';
 import { MultiSelect } from 'primereact/multiselect';
 import { DataTable } from 'primereact/datatable';
 import { Column } from "primereact/column";
+import { IconField } from 'primereact/iconfield';
+import { InputIcon } from 'primereact/inputicon';
 
 export function MovimientoPage() {
     // Obtener datos
@@ -109,16 +111,15 @@ export function MovimientoPage() {
                     <div className="crear" style={{ width: '100%' }}>
                         <ModalCrearMovimiento pasarSetData={setData} />
                     </div>
-                    <div className="buscar" style={{ display: 'flex', width: '100%', justifyContent: 'flex-end', }}>
-                        <span className="p-inputgroup-addon">
-                            <i className="pi pi-search"></i>
-                        </span>
+                    <IconField iconPosition="left">
+                        <InputIcon className="pi pi-search" />
                         <InputText
+                            style={{ backgroundColor: 'var(--clr-primary)', border: 'none' }}
                             value={filtroGlobal}
                             onChange={(e) => setFiltroGlobal(e.target.value)}
-                            placeholder="Buscar..."
+                            placeholder="Buscar Movimiento"
                         />
-                    </div>
+                    </IconField>
                 </div>
                 <div className="general" style={{ display: 'flex', width: '100%', gap: '50px' }}>
                     <div className="contenido" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
@@ -159,7 +160,7 @@ export function MovimientoPage() {
                 </div>
             </div>
             <ModalTrazabilidadMovimiento pasarAbrirModal={abrirModalTrazabilidad} pasarCerrarModal={cerrarModal} pasarMovimientoSeleccionado={movimientoSeleccionado} />
-            <ModalEditarMovimiento pasarAbrirModal={abrirModalEditarMovimiento} pasarCerrarModal={CerrarModalEditar} pasarMovimientoSeleccionado={movimientoSeleccionado} pasarSetData={setData}/>
+            <ModalEditarMovimiento pasarAbrirModal={abrirModalEditarMovimiento} pasarCerrarModal={CerrarModalEditar} pasarMovimientoSeleccionado={movimientoSeleccionado} pasarSetData={setData} />
         </>
     );
 }

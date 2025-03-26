@@ -52,6 +52,7 @@ export const ColumnasInicialesSalidaCombustible = [
     { field: 'numero_salida_stock', header: 'Salida Stock' },
     { field: 'precio_unitario_soles', header: 'Precio Unitario Soles' },
     { field: 'precio_total_soles', header: 'Precio Total Soles' },
+    { field: 'precio_total_igv', header: 'Precio Total Sin IGV' },
     { field: 'contometro_surtidor', header: 'Contómetro' },
     { field: 'margen_error_surtidor', header: 'Margen de Error' },
     { field: 'resultado', header: 'Resultado' },
@@ -67,12 +68,13 @@ export const DataSalidaCombustible = {
     SKU: 537,
     numero_salida_combustible: '',
     numero_salida_ruta: '',
-
+    grifo_id: '',
     tipo_comprobante: '',
     numero_comprobante: '',
     
     precio_unitario_soles: '',
     precio_total_soles: '',
+    precio_total_igv:'',
 
     tipo_operacion: '',
     marca: '',

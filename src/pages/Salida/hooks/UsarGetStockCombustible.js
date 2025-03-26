@@ -20,7 +20,7 @@ const UsarGetStockCombustible = () => {
         FetchData();
     }, []);
 
-    return { respuesta };
+    return { respuesta,setRespuesta };
 };
 
 export default UsarGetStockCombustible;
