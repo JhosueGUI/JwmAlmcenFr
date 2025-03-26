@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
@@ -36,6 +36,14 @@ const ModalCrearSalidaCombustible = ({ pasarSetSalidas, pasarSetCombustible }) =
     }
     //#region estado para traer la data de salida
     const [dataSalida, setDataSalida] = useState(DataSalidaCombustible)
+
+    //Mostrar el Total
+    const [total, setTotal] = useState(0)
+    useEffect(() => {
+        const newTotal = (dataSalida.numero_salida_ruta ?? 0) * (dataSalida.precio_unitario_soles ?? 0);
+        setTotal(newTotal);
+    }, [dataSalida.numero_salida_ruta, dataSalida.precio_unitario_soles])
+        ;
     //funcion para crear salida
     const CrearSalida = async () => {
         try {
@@ -260,6 +268,23 @@ const ModalCrearSalidaCombustible = ({ pasarSetSalidas, pasarSetCombustible }) =
                                                     <label htmlFor="precio_unitario_soles" style={{ textAlign: "center", }}>Precio Unitario Soles</label>
                                                 </FloatLabel>
                                             </div>
+                                            <div className="total" style={{ width: '100%' }}>
+                                                <FloatLabel>
+                                                    <InputNumber
+                                                        id="total"
+                                                        name="total"
+                                                        style={{ width: '100%' }}
+                                                        value={total ?? null}
+                                                        mode="currency"
+                                                        currency="PEN"
+                                                        currencyDisplay="symbol"
+                                                        locale="es-PE"
+                                                        useGrouping={false}
+                                                    />
+                                                    <label htmlFor="total" style={{ textAlign: "center" }}>Total</label>
+                                                </FloatLabel>
+
+                                            </div>
                                         </div>
                                     </>
                                 )}
@@ -278,7 +303,7 @@ const ModalCrearSalidaCombustible = ({ pasarSetSalidas, pasarSetCombustible }) =
                             </div>
                             <div className="precinto_anterior" style={{ width: '100%' }}>
                                 <FloatLabel>
-                                    <InputText id="precinto_anterior" name="precinto_anterior" style={{ width: '100%' }} value={dataSalida.precinto_anterior ??null} onChange={handleInputChange} />
+                                    <InputText id="precinto_anterior" name="precinto_anterior" style={{ width: '100%' }} value={dataSalida.precinto_anterior ?? null} onChange={handleInputChange} />
                                     <label htmlFor="precinto_anterior" style={{ textAlign: "center", }}>Precinto Anterior</label>
                                 </FloatLabel>
                             </div>

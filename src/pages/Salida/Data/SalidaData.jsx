@@ -71,7 +71,7 @@ export const DataSalidaCombustible = {
     grifo_id: '',
     tipo_comprobante: '',
     numero_comprobante: '',
-    
+    total:0,
     precio_unitario_soles: '',
     precio_total_soles: '',
     precio_total_igv:'',
