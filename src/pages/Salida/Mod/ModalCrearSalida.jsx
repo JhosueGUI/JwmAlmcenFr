@@ -17,6 +17,12 @@ import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { GetStock } from "../../Ingreso/Services/GetStock";
 import { GetUnidad } from "../Services/GetUnidad";
+import { SeleccionarPersonal } from "../Components/SeleccionarPersonal";
+import { SeleccionarUnidad } from "../Components/SeleccionarUnidad";
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { SeleccionarProducto } from "../Components/SeleccionarProducto";
+import { NuevoProductoData } from "../Data/NuevoProductoData";
 
 const ModalCrearSalida = ({ pasarSetSalidas }) => {
     //const token
@@ -29,6 +35,7 @@ const ModalCrearSalida = ({ pasarSetSalidas }) => {
     const cerrarModal = () => {
         setModal(false)
     }
+
     //#region estado para traer la data de salida
     const [dataSalida, setDataSalida] = useState(DataSalida)
     //funcion para crear salida
@@ -36,6 +43,7 @@ const ModalCrearSalida = ({ pasarSetSalidas }) => {
         try {
             const token = obtenerToken()
             if (token) {
+                console.log("DataSalida", dataSalida)
                 const respuestaPost = await axios.post('https://jwmalmcenb-production.up.railway.app/api/almacen/salida/create', dataSalida, {
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -109,12 +117,61 @@ const ModalCrearSalida = ({ pasarSetSalidas }) => {
         });
     };
     // Manejar cambios en los campos del formulario para solo Productos
-    const handleProductosChange = (personalSeleccionado) => {
-        setDataSalida({
-            ...dataSalida,
-            SKU: personalSeleccionado.SKU
-        });
+    const [productoSeleccionado, setProductoSeleccionado] = useState(null)
+    const [numeroSalida, setNumeroSalida] = useState(0)
+    const [marca, setMarca] = useState("")
+
+    const handleProductosChange = (productoSeleccionado) => {
+        setProductoSeleccionado(productoSeleccionado)
     };
+
+    const textEditor = (options) => {
+        return <InputText type="text" value={options.value} onChange={(e) => options.editorCallback(e.target.value)} />;
+    };
+
+    const onCellEditComplete = (e) => {
+        let { rowData, newValue, field } = e;
+        const productosActualizados = dataSalida.productos.map((producto) => {
+            if (producto.SKU === rowData.SKU) {
+                return { ...producto, [field]: newValue };
+            }
+            return producto;
+        });
+        setDataSalida({ ...dataSalida, productos: productosActualizados });
+    };
+
+    const agregarProducto = (e) => {
+        e.preventDefault();
+        if (productoSeleccionado && numeroSalida) {
+            setDataSalida({
+                ...dataSalida,
+                productos: [
+                    ...dataSalida.productos,
+                    {
+                        SKU: productoSeleccionado.SKU,
+                        producto: productoSeleccionado.articulo.nombre,
+                        numero_salida: numeroSalida,
+                        marca: marca,
+                    },
+                ],
+            });
+            //resetear los campos
+            setProductoSeleccionado(null);
+            setNumeroSalida(0);
+            setMarca("");
+        } else {
+            toast.current.show({ severity: 'warn', summary: 'Advertencia', detail: 'Seleccione un producto y especifique la cantidad ', life: 3000 });
+        }
+    };
+    // Función para eliminar productos
+    const eliminarProducto = (producto, e) => {
+        e.preventDefault();
+        setDataSalida((prevData) => ({
+            ...prevData,
+            productos: prevData.productos.filter(p => p.SKU !== producto.SKU)
+        }));
+    };
+
     // Manejar cambios en los campos del formulario para solo Unidad
     const handleUnidadChange = (unidadSeleccionado) => {
         setDataSalida({
@@ -136,6 +193,13 @@ const ModalCrearSalida = ({ pasarSetSalidas }) => {
             accept: CrearSalida,
             reject
         });
+    };
+    const ColumnaAcciones = (producto) => {
+        return (
+            <div className="BotonEliminar" style={{ display: 'flex', justifyContent: 'center' }}>
+                <Button icon="pi pi-trash" severity="danger" style={{ color: '#FF6767', backgroundColor: '#FFECEC', border: 'none' }} aria-label="Eliminar" onClick={(e) => eliminarProducto(producto, e)} />
+            </div>
+        );
     };
     const footer = (
         <div>
@@ -162,81 +226,92 @@ const ModalCrearSalida = ({ pasarSetSalidas }) => {
                 onHide={cerrarModal}
                 closable={false}
             >
-                <form onSubmit={CrearSalida}>
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <div style={{ marginTop: "20px", width: "100%", display: 'flex', flexDirection: 'column', gap: '25px' }}>
-                            <div className="primerDiv" style={{ display: "flex", gap: '10px' }}>
-                                <div className="vale" style={{ width: '100%' }}>
-                                    <FloatLabel >
-                                        <InputNumber id="vale" name="vale" style={{ width: '100%' }} value={dataSalida.vale || null} onChange={(e) => setDataSalida({ ...dataSalida, vale: e.value })} />
-                                        <label htmlFor="vale" style={{ textAlign: "center", }}>Vale</label>
-                                    </FloatLabel>
-                                </div>
-                                <div className="operacion" style={{ width: '100%' }}>
-                                    <FloatLabel>
-                                        <InputText id="tipo_operacion" name="tipo_operacion" style={{ width: '100%' }} value={dataSalida.tipo_operacion} onChange={handleInputChange} />
-                                        <label htmlFor="tipo_operacion" style={{ textAlign: "center", }}>Tipo de Operacion</label>
-                                    </FloatLabel>
-                                </div>
-                                <div className="destino" style={{ width: '100%' }}>
-                                    <FloatLabel>
-                                        <InputText id="destino" name="destino" style={{ width: '100%' }} value={dataSalida.destino} onChange={handleInputChange} />
-                                        <label htmlFor="destino" style={{ textAlign: "center", }}>Destino</label>
-                                    </FloatLabel>
-                                </div>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <div style={{ marginTop: "20px", width: "100%", display: 'flex', flexDirection: 'column', gap: '25px' }}>
+                        <div className="primerDiv" style={{ display: "flex", gap: '10px' }}>
+                            <div className="vale" style={{ width: '100%' }}>
+                                <FloatLabel >
+                                    <InputNumber id="vale" name="vale" style={{ width: '100%' }} value={dataSalida.vale || null} onChange={(e) => setDataSalida({ ...dataSalida, vale: e.value })} />
+                                    <label htmlFor="vale" style={{ textAlign: "center", }}>Vale</label>
+                                </FloatLabel>
                             </div>
-                            <div className="SegundoDiv" style={{ display: 'flex', gap: '10px' }}>
-                                <GetPersonal pasarSetSalidas={handlePersonalChange} style={{ width: '100%' }} />
-                                <GetUnidad pasarSetSalidas={handleUnidadChange}style={{ width: '100%' }} />
+                            <div className="operacion" style={{ width: '100%' }}>
+                                <FloatLabel>
+                                    <InputText id="tipo_operacion" name="tipo_operacion" style={{ width: '100%' }} value={dataSalida.tipo_operacion} onChange={handleInputChange} />
+                                    <label htmlFor="tipo_operacion" style={{ textAlign: "center", }}>Tipo de Operacion</label>
+                                </FloatLabel>
                             </div>
-                            <div className="divTres" style={{ display: 'flex', gap: '10px' }}>
-                                <div className="neumatico" style={{ width: '100%' }}>
-                                    <FloatLabel>
-                                        <InputText id="duracion_neumatico" name="duracion_neumatico" style={{ width: '100%' }} value={dataSalida.duracion_neumatico} onChange={handleInputChange} />
-                                        <label htmlFor="duracion_neumatico" style={{ textAlign: "center", }}>Duracion de Neumático</label>
-                                    </FloatLabel>
-                                </div>
-                                <div className="kilometraje" style={{ width: '100%' }}>
-                                    <FloatLabel>
-                                        <InputText id="kilometraje_horometro" name="kilometraje_horometro" style={{ width: '100%' }} value={dataSalida.kilometraje_horometro} onChange={handleInputChange} />
-                                        <label htmlFor="kilometraje_horometro" style={{ textAlign: "center", }}>Kilometraje / Horómetro</label>
-                                    </FloatLabel>
-                                </div>
-                                <div className="fecha" style={{ width: '100%' }}>
-                                    <FloatLabel>
-                                        <InputText id="fecha_vencimiento" name="fecha_vencimiento" style={{ width: '100%' }} value={dataSalida.fecha_vencimiento} onChange={handleInputChange} />
-                                        <label htmlFor="fecha_vencimiento" style={{ textAlign: "center", }}>Fecha de Vencimiento</label>
-                                    </FloatLabel>
-                                </div>
+                            <div className="destino" style={{ width: '100%' }}>
+                                <FloatLabel>
+                                    <InputText id="destino" name="destino" style={{ width: '100%' }} value={dataSalida.destino} onChange={handleInputChange} />
+                                    <label htmlFor="destino" style={{ textAlign: "center", }}>Destino</label>
+                                </FloatLabel>
                             </div>
-                            <div className="divCuarto" style={{ display: 'flex', gap: '10px' }}>
-                                <div className="Sku" style={{ width: '100%' }}>
-                                    <GetProductosSalida pasarSetDataSalida={handleProductosChange} />
-                                </div>
-                                <div className="marca" style={{ width: '100%' }}>
-                                    <FloatLabel>
-                                        <InputText id="marca" name="marca" style={{ width: '100%' }} value={dataSalida.marca} onChange={handleInputChange} />
-                                        <label htmlFor="marca" style={{ textAlign: "center", }}>Marca</label>
-                                    </FloatLabel>
-                                </div>
-                            </div>
-
-                            <div className="stock" style={{ display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center' }}>
-                                <div className="ingreso" style={{ width: '100%' }} >
-                                    <FloatLabel>
-                                        <InputNumber id="numero_salida" name="numero_salida" style={{ width: '100%' }} value={dataSalida.numero_salida || null} onChange={(e) => setDataSalida({ ...dataSalida, numero_salida: e.value })}  minFractionDigits={2} min={0}/>
-                                        <label htmlFor="numero_salida" style={{ textAlign: "center", }}>Numero de Salida</label>
-                                    </FloatLabel>
-                                </div>
-                                <GetStock pasarProductoSeleccionado={dataSalida.SKU} />
-                            </div>
-                            <FloatLabel>
-                                <InputTextarea id="observaciones" name="observaciones" style={{ width: '100%' }} value={dataSalida.observaciones} onChange={handleInputChange} />
-                                <label htmlFor="observaciones" style={{ textAlign: "center", }}>Observaciones</label>
-                            </FloatLabel>
                         </div>
+                        <div className="SegundoDiv" style={{ display: 'flex', gap: '10px' }}>
+                            <SeleccionarPersonal pasarSetDataSalida={handlePersonalChange} />
+                            <SeleccionarUnidad pasarSetDataSalida={handleUnidadChange} />
+                        </div>
+                        <div className="divTres" style={{ display: 'flex', gap: '10px' }}>
+                            <div className="neumatico" style={{ width: '100%' }}>
+                                <FloatLabel>
+                                    <InputText id="duracion_neumatico" name="duracion_neumatico" style={{ width: '100%' }} value={dataSalida.duracion_neumatico} onChange={handleInputChange} />
+                                    <label htmlFor="duracion_neumatico" style={{ textAlign: "center", }}>Duracion de Neumático</label>
+                                </FloatLabel>
+                            </div>
+                            <div className="kilometraje" style={{ width: '100%' }}>
+                                <FloatLabel>
+                                    <InputText id="kilometraje_horometro" name="kilometraje_horometro" style={{ width: '100%' }} value={dataSalida.kilometraje_horometro} onChange={handleInputChange} />
+                                    <label htmlFor="kilometraje_horometro" style={{ textAlign: "center", }}>Kilometraje / Horómetro</label>
+                                </FloatLabel>
+                            </div>
+                            <div className="fecha" style={{ width: '100%' }}>
+                                <FloatLabel>
+                                    <InputText id="fecha_vencimiento" name="fecha_vencimiento" style={{ width: '100%' }} value={dataSalida.fecha_vencimiento} onChange={handleInputChange} />
+                                    <label htmlFor="fecha_vencimiento" style={{ textAlign: "center", }}>Fecha de Vencimiento</label>
+                                </FloatLabel>
+                            </div>
+                        </div>
+                        <div className="divCuarto" style={{ display: 'flex', gap: '10px' }}>
+                            <div className="Sku" style={{ width: '100%' }}>
+                                {/* <GetProductosSalida pasarSetDataSalida={handleProductosChange} /> */}
+                                <SeleccionarProducto pasarSetDataSalida={handleProductosChange} />
+                            </div>
+                            <div className="salida" style={{ width: '100%' }} >
+                                <FloatLabel>
+                                    <InputNumber id="numero_salida" name="numero_salida" style={{ width: '100%' }} value={numeroSalida || null} onChange={(e) => setNumeroSalida(e.value)} minFractionDigits={2} min={0} />
+                                    <label htmlFor="numero_salida" style={{ textAlign: "center", }}>Numero de Salida</label>
+                                </FloatLabel>
+                            </div>
+                            <div className="marca" style={{ width: '100%' }}>
+                                <FloatLabel>
+                                    <InputText
+                                        id="marca"
+                                        name="marca"
+                                        style={{ width: '100%' }}
+                                        value={marca || ''}
+                                        onChange={(e) => setMarca(e.target.value)}
+                                    />
+                                    <label htmlFor="marca" style={{ textAlign: "center" }}>
+                                        Marca
+                                    </label>
+                                </FloatLabel>
+                            </div>
+                            <GetStock pasarProductoSeleccionado={productoSeleccionado?.SKU} />
+                        </div>
+                        <Button label="Agregar Producto" style={{ width: "100%" }} onClick={agregarProducto} />
+                        <DataTable value={dataSalida.productos} editMode="cell" style={{ marginTop: "20px" }}>
+                            <Column field="SKU" header="SKU" style={{ width: '5%' }} />
+                            <Column field="producto" header="Producto" />
+                            <Column field="numero_salida" header="Numero de Salida" editor={(options) => textEditor(options)} onCellEditComplete={onCellEditComplete} style={{ width: '35%' }} />
+                            <Column body={ColumnaAcciones} header="Acciones" style={{ width: '5%' }}/>
+                        </DataTable>
+                        <FloatLabel>
+                            <InputTextarea id="observaciones" name="observaciones" style={{ width: '100%' }} value={dataSalida.observaciones} onChange={handleInputChange} />
+                            <label htmlFor="observaciones" style={{ textAlign: "center", }}>Observaciones</label>
+                        </FloatLabel>
                     </div>
-                </form>
+                </div>
             </Dialog>
         </>
     );
