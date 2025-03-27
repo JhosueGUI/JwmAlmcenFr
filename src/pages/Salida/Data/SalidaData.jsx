@@ -27,19 +27,16 @@ export const ColumnasInicialesSalida = [
 ]
 export const DataSalida = {
     vale: '',
+    tipo_operacion: '',
     destino: '',
     personal_id: '',
     unidad: '',
     duracion_neumatico: '',
     kilometraje_horometro: '',
     fecha_vencimiento: '',
-    numero_salida: '',
-    SKU: '',
-    tipo_operacion: '',
-    marca: '',
+    productos:[],
     observaciones: '',
 }
-
 //AÑADI
 export const ColumnasInicialesSalidaCombustible = [
     { field: 'id', header: 'ID' },

@@ -32,7 +32,6 @@ export function GetStock({ pasarProductoSeleccionado }) {
     return (
         <FloatLabel>
             <InputText id="stock" name="stock" style={{ width: '100%' }} value={stock ?? ""} disabled/>
-            <label htmlFor="stock" style={{ textAlign: "center" }}>Stock</label>
         </FloatLabel>
     );
 }
