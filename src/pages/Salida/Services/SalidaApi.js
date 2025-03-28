@@ -66,3 +66,35 @@ export const getProducto = async (token) => {
         throw error;
     }
 }
+export const createSalida = async (token, data) => {
+    try {
+        const apiClient = axios.create({
+            baseURL: PROGRAMACION_API,
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+        const response = await apiClient.post('/almacen/salida/create', data);
+        return response.data.resp
+    } catch (error) {
+        console.error("Error al crear Salida:", error);
+        throw error;
+    }
+}
+export const updateSalida = async (token, data, id) => {
+    try {
+        const apiClient = axios.create({
+            baseURL: PROGRAMACION_API,
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+        const response = await apiClient.post(`/almacen/salida/update/${id}`, data);
+        return response.data.resp
+    } catch (error) {
+        console.error("Error al actualizar Salida:", error);
+        throw error;
+    }
+}
