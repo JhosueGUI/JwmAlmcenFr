@@ -17,8 +17,12 @@ import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { GetStock } from "../../Ingreso/Services/GetStock";
 import { GetUnidad } from "../Services/GetUnidad";
+import UseUpdateSalida from "../hooks/UseUpdateSalida";
+import { getSalida } from "../Services/SalidaApi";
 
 const ModalEditarSalir = ({ pasarSetSalidas, pasarAbrirModal, pasarCerrarModal, pasarSalidaSeleccionado }) => {
+    //hooks
+    const { Update } = UseUpdateSalida()
     //const obtener token
     const { obtenerToken } = useContext(AuthContext)
     //#region estado para traer la data de salida
@@ -26,20 +30,11 @@ const ModalEditarSalir = ({ pasarSetSalidas, pasarAbrirModal, pasarCerrarModal, 
     //funcion para crear salida
     const EditarSalida = async () => {
         try {
-            console.log("edit", dataSalida)
             const token = obtenerToken()
             if (token) {
-                const respuestaPost = await axios.post(`https://jwmalmcenb-production.up.railway.app/api/almacen/salida/update/${pasarSalidaSeleccionado.id}`, dataSalida, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
-                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/salida/get", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
-                const SalidaAdaptado = respuestaGet.data.data.map(item => {
+                const responseServer= await Update(dataSalida, pasarSalidaSeleccionado.id)
+                const response = await getSalida(token)
+                const salidaAdapted = response.map(item => {
                     let personal = null;
                     if (item.personal && item.personal.persona) {
                         personal = `${item.personal.persona?.nombre || ''} ${item.personal.persona?.apellido_paterno || ''} ${item.personal.persona?.apellido_materno || ''}`;
@@ -73,9 +68,8 @@ const ModalEditarSalir = ({ pasarSetSalidas, pasarAbrirModal, pasarCerrarModal, 
                         observaciones: item.transaccion?.observaciones || ''
                     }
                 })
-                pasarSetSalidas(SalidaAdaptado)
-                const mensajeDelServidor = respuestaPost.data.resp
-                toast.current.show({ severity: 'success', summary: 'Éxito', detail: mensajeDelServidor, life: 3000 });
+                pasarSetSalidas(salidaAdapted)
+                toast.current.show({ severity: 'success', summary: 'Éxito', detail: responseServer, life: 3000 });
                 pasarCerrarModal()
             } else {
                 toast.current.show({ severity: 'info', summary: 'Observación', detail: "Número de RUC no ingresado", life: 3000 });
@@ -196,7 +190,7 @@ const ModalEditarSalir = ({ pasarSetSalidas, pasarAbrirModal, pasarCerrarModal, 
                                 </div>
                             </div>
                             <div className="SegundoDiv" style={{ display: 'flex', gap: '10px' }}>
-                                
+
                                 <GetPersonal pasarSetSalidas={handlePersonalChange} style={{ width: '100%' }} pasarPersonalInicial={pasarSalidaSeleccionado} />
                                 <GetUnidad pasarSetSalidas={handleUnidadChange} pasarPersonalInicial={pasarSalidaSeleccionado} style={{ width: '100%' }} />
                             </div>
@@ -234,7 +228,7 @@ const ModalEditarSalir = ({ pasarSetSalidas, pasarAbrirModal, pasarCerrarModal, 
                             <div className="stock" style={{ display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center' }}>
                                 <div className="ingreso" style={{ width: '100%' }} >
                                     <FloatLabel>
-                                        <InputText id="numero_salida" name="numero_salida" style={{ width: '100%' }} value={dataSalida.numero_salida} onChange={handleInputChange} minFractionDigits={2}/>
+                                        <InputText id="numero_salida" name="numero_salida" style={{ width: '100%' }} value={dataSalida.numero_salida} onChange={handleInputChange} minFractionDigits={2} />
                                         <label htmlFor="numero_salida" style={{ textAlign: "center", }}>Numero de Salida</label>
                                     </FloatLabel>
                                 </div>

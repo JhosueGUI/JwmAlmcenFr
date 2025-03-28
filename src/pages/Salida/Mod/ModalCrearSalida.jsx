@@ -1,30 +1,28 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { FloatLabel } from "primereact/floatlabel";
-import { Dropdown } from 'primereact/dropdown';
 import { DataSalida } from "../Data/SalidaData";
-import axios from "axios";
 import { InputNumber } from "primereact/inputnumber";
-import GetPersonal from "../Services/GetPersonal";
 import { InputTextarea } from "primereact/inputtextarea";
-import { GetProductosSalida } from "../Services/GetProductos";
 // Importar ReactPrime Confirmar Dialogo
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { GetStock } from "../../Ingreso/Services/GetStock";
-import { GetUnidad } from "../Services/GetUnidad";
 import { SeleccionarPersonal } from "../Components/SeleccionarPersonal";
 import { SeleccionarUnidad } from "../Components/SeleccionarUnidad";
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { SeleccionarProducto } from "../Components/SeleccionarProducto";
-import { NuevoProductoData } from "../Data/NuevoProductoData";
+import UseCreateProduct from "../hooks/UseCreateProduct";
+import { getSalida } from "../Services/SalidaApi";
 
 const ModalCrearSalida = ({ pasarSetSalidas }) => {
+    //hooks
+    const { Create } = UseCreateProduct()
     //const token
     const { obtenerToken } = useContext(AuthContext)
     //#region estado para abrir y cerrar modal de crear
@@ -43,18 +41,9 @@ const ModalCrearSalida = ({ pasarSetSalidas }) => {
         try {
             const token = obtenerToken()
             if (token) {
-                console.log("DataSalida", dataSalida)
-                const respuestaPost = await axios.post('https://jwmalmcenb-production.up.railway.app/api/almacen/salida/create', dataSalida, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
-                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/salida/get", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
-                const SalidaAdaptado = respuestaGet.data.data.map(item => {
+                const responseServer = await Create(dataSalida)
+                const response = await getSalida(token)
+                const salidaAdapted = response.map(item => {
                     let personal = null;
                     if (item.personal && item.personal.persona) {
                         personal = `${item.personal.persona?.nombre || ''} ${item.personal.persona?.apellido_paterno || ''} ${item.personal.persona?.apellido_materno || ''}`;
@@ -88,9 +77,8 @@ const ModalCrearSalida = ({ pasarSetSalidas }) => {
                         observaciones: item.transaccion?.observaciones || ''
                     }
                 })
-                pasarSetSalidas(SalidaAdaptado)
-                const mensajeDelServidor = respuestaPost.data.resp
-                toast.current.show({ severity: 'success', summary: 'Éxito', detail: mensajeDelServidor, life: 3000 });
+                pasarSetSalidas(salidaAdapted)
+                toast.current.show({ severity: 'success', summary: 'Éxito', detail: responseServer, life: 3000 });
                 cerrarModal()
             } else {
                 toast.current.show({ severity: 'info', summary: 'Observación', detail: "Número de RUC no ingresado", life: 3000 });
@@ -304,7 +292,7 @@ const ModalCrearSalida = ({ pasarSetSalidas }) => {
                             <Column field="SKU" header="SKU" style={{ width: '5%' }} />
                             <Column field="producto" header="Producto" />
                             <Column field="numero_salida" header="Numero de Salida" editor={(options) => textEditor(options)} onCellEditComplete={onCellEditComplete} style={{ width: '35%' }} />
-                            <Column body={ColumnaAcciones} header="Acciones" style={{ width: '5%' }}/>
+                            <Column body={ColumnaAcciones} header="Acciones" style={{ width: '5%' }} />
                         </DataTable>
                         <FloatLabel>
                             <InputTextarea id="observaciones" name="observaciones" style={{ width: '100%' }} value={dataSalida.observaciones} onChange={handleInputChange} />
