@@ -19,11 +19,19 @@ import { GetProveedor } from "../Services/GetProveedor";
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { GetStock } from "../Services/GetStock";
+import { SelectedProvider } from "../Components/SelectedProvider";
+import { SelectedProduct } from "../Components/SelectedProduct";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import UseCreateIngreso from "../Hooks/UseCreateIngreso";
+import { getIngreso } from "../Services/IngresoApi";
 
 
 const ModalIngresoCreate = ({ pasarSetIngreso }) => {
     //obtener token
     const { obtenerToken } = useContext(AuthContext)
+    //hooks
+    const { Create } = UseCreateIngreso()
     //#region estado para modal
     const [modal, setModal] = useState(false)
     //abrir modal
@@ -40,19 +48,9 @@ const ModalIngresoCreate = ({ pasarSetIngreso }) => {
         try {
             const token = obtenerToken()
             if (token) {
-                const respuestaPost = await axios.post("https://jwmalmcenb-production.up.railway.app/api/almacen/ingreso/create", dataIngreso, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
-                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/ingreso/get", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
-                console.log(respuestaGet.data.data)
-
-                const IngresoAdaptado = respuestaGet.data.data.map(item => {
+                const responseServer = await Create(dataIngreso)
+                const response = await getIngreso(token)
+                const IngresoAdaptado = response.map(item => {
                     // Acceso directo a transaccion para evitar múltiples accesos anidados
                     const transaccion = item.transaccion || {};
                     const producto = transaccion.producto || {};
@@ -90,8 +88,7 @@ const ModalIngresoCreate = ({ pasarSetIngreso }) => {
                     };
                 });
                 pasarSetIngreso(IngresoAdaptado)
-                const mensajeDelServidor = respuestaPost.data.resp
-                toast.current.show({ severity: 'success', summary: 'Éxito', detail: mensajeDelServidor, life: 3000 });
+                toast.current.show({ severity: 'success', summary: 'Éxito', detail: responseServer, life: 3000 });
                 cerrarModal()
             } else {
                 toast.current.show({ severity: 'info', summary: 'Observación', detail: "Número de RUC no ingresado", life: 3000 });
@@ -109,19 +106,73 @@ const ModalIngresoCreate = ({ pasarSetIngreso }) => {
         }));
     };
 
-    // Manejar cambios en los campos del formulario para solo producto
-    const handleProductoChange = (productoSeleccionado) => {
-        setDataIngreso({
-            ...dataIngreso,
-            SKU: productoSeleccionado.SKU
-        });
-    };
     // Manejar cambios en los campos del formulario para solo proveedor
     const handleProveedorChange = (proveedorSeleccionado) => {
         setDataIngreso({
             ...dataIngreso,
             proveedor_id: proveedorSeleccionado.id
         });
+    };
+
+    const [productoSeleccionado, setProductoSeleccionado] = useState(null)
+    const [numeroIngreso, setNumeroIngreso] = useState(null)
+    const [marca, setMarca] = useState("")
+    const [precioUnitarioSoles, setPrecioUnitarioSoles] = useState(0)
+    const [precioUnitarioDolares, setPrecioUnitarioDolares] = useState(0)
+
+    // Manejar cambios en los campos del formulario para solo producto
+    const handleProductoChange = (productoSeleccionado) => {
+        setProductoSeleccionado(productoSeleccionado)
+    };
+
+    const agregarProducto = (e) => {
+        e.preventDefault();
+        if (productoSeleccionado && numeroIngreso) {
+            setDataIngreso({
+                ...dataIngreso,
+                productos: [
+                    ...dataIngreso.productos,
+                    {
+                        SKU: productoSeleccionado.SKU,
+                        marca: marca,
+                        producto: productoSeleccionado.articulo.nombre,
+                        numero_ingreso: numeroIngreso,
+                        precio_unitario_soles: precioUnitarioSoles,
+                        precio_unitario_dolares: precioUnitarioDolares,
+                    },
+                ],
+            });
+            //resetear los campos
+            setProductoSeleccionado(null);
+            setNumeroIngreso(0);
+            setMarca("");
+            setPrecioUnitarioSoles("");
+            setPrecioUnitarioDolares("");
+        } else {
+            toast.current.show({ severity: 'warn', summary: 'Advertencia', detail: 'Seleccione un producto y especifique la cantidad ', life: 3000 });
+        }
+    };
+    const textEditor = (options) => {
+        return <InputText type="text" value={options.value} onChange={(e) => options.editorCallback(e.target.value)} />;
+    };
+
+    const onCellEditComplete = (e) => {
+        let { rowData, newValue, field } = e;
+        const productosActualizados = dataIngreso.productos.map((producto) => {
+            if (producto.SKU === rowData.SKU) {
+                return { ...producto, [field]: newValue };
+            }
+            return producto;
+        });
+        setDataIngreso({ ...dataIngreso, productos: productosActualizados });
+    };
+    // Función para eliminar productos
+    const eliminarProducto = (producto, e) => {
+        e.preventDefault();
+        setDataIngreso((prevData) => ({
+            ...prevData,
+            productos: prevData.productos.filter(p => p.SKU !== producto.SKU)
+        }));
     };
     //#region Estado Para Confirmacion
     const toast = useRef(null);
@@ -137,6 +188,13 @@ const ModalIngresoCreate = ({ pasarSetIngreso }) => {
             accept: CrearIngreso,
             reject
         });
+    };
+    const ColumnaAcciones = (producto) => {
+        return (
+            <div className="BotonEliminar" style={{ display: 'flex', justifyContent: 'center' }}>
+                <Button icon="pi pi-trash" severity="danger" style={{ color: '#FF6767', backgroundColor: '#FFECEC', border: 'none' }} aria-label="Eliminar" onClick={(e) => eliminarProducto(producto, e)} />
+            </div>
+        );
     };
     const footer = (
         <div>
@@ -201,18 +259,17 @@ const ModalIngresoCreate = ({ pasarSetIngreso }) => {
                                     </FloatLabel>
                                 </div>
                             </div>
-
-                            <GetProveedor pasarSetDataIngreso={handleProveedorChange} />
-                            <GetProductos pasarSetDataIngreso={handleProductoChange} />
+                            <SelectedProvider pasarSetDataIngreso={handleProveedorChange} />
+                            <SelectedProduct pasarSetDataIngreso={handleProductoChange} />
                             <FloatLabel>
                                 <InputText id="marca" name="marca" style={{ width: '100%' }} value={dataIngreso.marca || ''} onChange={handleInputChange} />
                                 <label htmlFor="marca" style={{ textAlign: "center", }}>Marca</label>
                             </FloatLabel>
 
-                            <div className="stock" style={{ display: 'flex', gap: '10px',justifyContent:'center',alignItems:'center' }}>
+                            <div className="stock" style={{ display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center' }}>
                                 <div className="ingreso" style={{ width: '100%' }} >
                                     <FloatLabel>
-                                        <InputNumber id="numero_ingreso" name="numero_ingreso" style={{ width: '100%' }} value={dataIngreso.numero_ingreso || null} onChange={(e) => setDataIngreso({ ...dataIngreso, numero_ingreso: e.value })} minFractionDigits={2} min={0}/>
+                                        <InputNumber id="numero_ingreso" name="numero_ingreso" style={{ width: '100%' }} value={numeroIngreso || null} onChange={(e) => setNumeroIngreso(e.value)} minFractionDigits={2} min={0} />
                                         <label htmlFor="numero_ingreso" style={{ textAlign: "center" }}>Número de Ingreso</label>
                                     </FloatLabel>
                                 </div>
@@ -226,8 +283,8 @@ const ModalIngresoCreate = ({ pasarSetIngreso }) => {
                                             id="precio_unitario_soles"
                                             name="precio_unitario_soles"
                                             style={{ width: '100%' }}
-                                            value={dataIngreso.precio_unitario_soles || 0}
-                                            onChange={(e) => setDataIngreso({ ...dataIngreso, precio_unitario_soles: e.value })}
+                                            value={precioUnitarioSoles || 0}
+                                            onChange={(e) => setPrecioUnitarioSoles(e.value)}
                                             showButtons
                                             buttonLayout="horizontal"
                                             step={0.25}
@@ -259,6 +316,28 @@ const ModalIngresoCreate = ({ pasarSetIngreso }) => {
                                     </FloatLabel>
                                 </div>
                             </div>
+                            <Button label="Agregar Producto" style={{ width: "100%" }} onClick={agregarProducto} />
+                            <DataTable value={dataIngreso.productos} editMode="cell" style={{ marginTop: "20px" }}>
+                                <Column field="SKU" header="SKU" style={{ width: '5%' }} />
+                                <Column field="producto" header="Producto" />
+                                <Column field="numero_ingreso" header="Cantidad" editor={(options) => textEditor(options)} onCellEditComplete={onCellEditComplete} />
+                                <Column
+                                    field="precio_unitario_soles"
+                                    header="Precio Unitario Soles"
+                                    body={(rowData) => `S/ ${rowData.precio_unitario_soles}`}
+                                    editor={(options) => textEditor(options)}
+                                    onCellEditComplete={onCellEditComplete}
+                                />
+
+                                <Column
+                                    field="precio_unitario_dolares"
+                                    header="Precio Unitario Dolares"
+                                    body={(rowData) => `$/ ${rowData.precio_unitario_dolares}`}
+                                    editor={(options) => textEditor(options)}
+                                    onCellEditComplete={onCellEditComplete}
+                                />
+                                <Column body={ColumnaAcciones} header="Acciones" style={{ width: '5%' }} />
+                            </DataTable>
                             <FloatLabel>
                                 <InputTextarea id="observaciones" name="observaciones" style={{ width: '100%' }} value={dataIngreso.observaciones || ''} onChange={handleInputChange} />
                                 <label htmlFor="observaciones" style={{ textAlign: "center", }}>Observaciones</label>
