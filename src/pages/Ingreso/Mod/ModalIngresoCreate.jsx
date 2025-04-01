@@ -274,7 +274,7 @@ const ModalIngresoCreate = ({ pasarSetIngreso }) => {
                                         <label htmlFor="numero_ingreso" style={{ textAlign: "center" }}>Número de Ingreso</label>
                                     </FloatLabel>
                                 </div>
-                                <GetStock pasarProductoSeleccionado={dataIngreso.SKU} />
+                                <GetStock pasarProductoSeleccionado={productoSeleccionado?.SKU} />
 
                             </div>
                             <div className="precios" style={{ display: 'flex', gap: '10px' }}>
