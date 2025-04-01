@@ -49,48 +49,48 @@ const ModalIngresoCreate = ({ pasarSetIngreso }) => {
             const token = obtenerToken()
             if (token) {
                 console.log("Data Ingreso", dataIngreso)
-                // const responseServer = await Create(dataIngreso)
-                // const response = await getIngreso(token)
-                // const IngresoAdaptado = response.map(item => {
-                //     // Acceso directo a transaccion para evitar múltiples accesos anidados
-                //     const transaccion = item.transaccion || {};
-                //     const producto = transaccion.producto || {};
-                //     const articulo = producto.articulo || {};
-                //     const sub_familia = articulo.sub_familia || {};
-                //     const familia = sub_familia.familia || {};
-                //     const proveedor_producto = transaccion.proveedor_producto || {};
-                //     const proveedor = proveedor_producto.proveedor || {};
-                //     const inventario = (producto.inventario && producto.inventario) || {};
-                //     return {
-                //         id: item.id || '',
-                //         fecha: item.fecha || '',
-                //         guia_remision: item.guia_remision || '',
-                //         tipo_operacion: transaccion.tipo_operacion || '',
-                //         tipo_cp: item.tipo_cp || '',
-                //         documento: item.documento || '',
-                //         orden_compra: item.orden_compra || '',
-                //         codigo_proveedor: proveedor.id || '',
-                //         proveedor: proveedor.razon_social || '',
-                //         SKU: producto.SKU || '',
-                //         familia: familia.familia || '',
-                //         sub_familia: sub_familia.nombre || '',
-                //         articulo: articulo.nombre || '',
-                //         marca: transaccion.marca || producto.marca || '',
-                //         precio_dolares: articulo.precio_dolares || 0,
-                //         precio_soles: articulo.precio_soles || 0,
-                //         stock_logico: inventario.stock_logico || '',
-                //         unidad_medida: producto.unidad_medida?.nombre || '',
-                //         ingreso: item.numero_ingreso || '',
-                //         precio_unitario_soles: transaccion.precio_unitario_soles || 0,
-                //         precio_total_soles: transaccion.precio_total_soles || '',
-                //         precio_unitario_dolares: transaccion.precio_unitario_dolares || 0,
-                //         precio_total_dolares: transaccion.precio_total_dolares || '',
-                //         observaciones: transaccion.observaciones || '',
-                //     };
-                // });
-                // pasarSetIngreso(IngresoAdaptado)
-                // toast.current.show({ severity: 'success', summary: 'Éxito', detail: responseServer, life: 3000 });
-                // cerrarModal()
+                const responseServer = await Create(dataIngreso)
+                const response = await getIngreso(token)
+                const IngresoAdaptado = response.map(item => {
+                    // Acceso directo a transaccion para evitar múltiples accesos anidados
+                    const transaccion = item.transaccion || {};
+                    const producto = transaccion.producto || {};
+                    const articulo = producto.articulo || {};
+                    const sub_familia = articulo.sub_familia || {};
+                    const familia = sub_familia.familia || {};
+                    const proveedor_producto = transaccion.proveedor_producto || {};
+                    const proveedor = proveedor_producto.proveedor || {};
+                    const inventario = (producto.inventario && producto.inventario) || {};
+                    return {
+                        id: item.id || '',
+                        fecha: item.fecha || '',
+                        guia_remision: item.guia_remision || '',
+                        tipo_operacion: transaccion.tipo_operacion || '',
+                        tipo_cp: item.tipo_cp || '',
+                        documento: item.documento || '',
+                        orden_compra: item.orden_compra || '',
+                        codigo_proveedor: proveedor.id || '',
+                        proveedor: proveedor.razon_social || '',
+                        SKU: producto.SKU || '',
+                        familia: familia.familia || '',
+                        sub_familia: sub_familia.nombre || '',
+                        articulo: articulo.nombre || '',
+                        marca: transaccion.marca || producto.marca || '',
+                        precio_dolares: articulo.precio_dolares || 0,
+                        precio_soles: articulo.precio_soles || 0,
+                        stock_logico: inventario.stock_logico || '',
+                        unidad_medida: producto.unidad_medida?.nombre || '',
+                        ingreso: item.numero_ingreso || '',
+                        precio_unitario_soles: transaccion.precio_unitario_soles || 0,
+                        precio_total_soles: transaccion.precio_total_soles || '',
+                        precio_unitario_dolares: transaccion.precio_unitario_dolares || 0,
+                        precio_total_dolares: transaccion.precio_total_dolares || '',
+                        observaciones: transaccion.observaciones || '',
+                    };
+                });
+                pasarSetIngreso(IngresoAdaptado)
+                toast.current.show({ severity: 'success', summary: 'Éxito', detail: responseServer, life: 3000 });
+                cerrarModal()
             } else {
                 toast.current.show({ severity: 'info', summary: 'Observación', detail: "Número de RUC no ingresado", life: 3000 });
             }
