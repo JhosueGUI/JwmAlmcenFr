@@ -48,6 +48,7 @@ const ModalIngresoCreate = ({ pasarSetIngreso }) => {
         try {
             const token = obtenerToken()
             if (token) {
+                console.log("Data Ingreso", dataIngreso)
                 const responseServer = await Create(dataIngreso)
                 const response = await getIngreso(token)
                 const IngresoAdaptado = response.map(item => {
@@ -273,7 +274,7 @@ const ModalIngresoCreate = ({ pasarSetIngreso }) => {
                                         <label htmlFor="numero_ingreso" style={{ textAlign: "center" }}>Número de Ingreso</label>
                                     </FloatLabel>
                                 </div>
-                                <GetStock pasarProductoSeleccionado={dataIngreso.SKU} />
+                                <GetStock pasarProductoSeleccionado={productoSeleccionado?.SKU} />
 
                             </div>
                             <div className="precios" style={{ display: 'flex', gap: '10px' }}>
@@ -304,7 +305,7 @@ const ModalIngresoCreate = ({ pasarSetIngreso }) => {
                                             id="precio_unitario_dolares"
                                             name="precio_unitario_dolares"
                                             value={dataIngreso.precio_unitario_dolares || 0}
-                                            onValueChange={(e) => setDataIngreso({ ...dataIngreso, precio_unitario_dolares: e.value })}
+                                            onValueChange={(e) => setPrecioUnitarioDolares(e.value)}
                                             showButtons
                                             buttonLayout="horizontal"
                                             step={0.25}
