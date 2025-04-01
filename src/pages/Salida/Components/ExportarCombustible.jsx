@@ -18,17 +18,19 @@ export const ExportarCombustible = () => {
 
     // Función para formatear la fecha en 'yyyy-mm-dd'
     const formatearFecha = (fecha) => {
-        const year = fecha.getFullYear().toString().slice(-2); // Obtener los últimos dos dígitos del año
-        const month = (fecha.getMonth() + 1).toString().padStart(2, '0'); // Asegurar dos dígitos en el mes
-        const day = fecha.getDate().toString().padStart(2, '0'); // Asegurar dos dígitos en el día
-        return `${day}-${month}-${year}`; // Retornar en formato "dd-mm-yy"
+        const year = fecha.getFullYear();
+        const month = (fecha.getMonth() + 1).toString().padStart(2, '0');
+        const day = fecha.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`; // Retornar en formato "YYYY-MM-DD"
     };
     
 
     // Función para exportar
     const ExportarConsumo = async () => {
         try {
-            if (fecha && fecha.length === 2) {
+            if (fecha && fecha.length === 2) 
+                console.log("Fechas", fecha[0], fecha[1]);
+            {
                 const data = {
                     fecha_inicio: formatearFecha(fecha[0]),
                     fecha_fin: formatearFecha(fecha[1]),
