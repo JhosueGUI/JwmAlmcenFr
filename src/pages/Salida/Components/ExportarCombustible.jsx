@@ -3,11 +3,13 @@ import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { Calendar } from 'primereact/calendar';
 import axios from "axios";
+import { SeleccionarFlota } from "./SeleccionarFlota";
+import { ExportacionData } from "../Data/ExportacionData";
 
 export const ExportarCombustible = () => {
     const [modal, setModal] = useState(false);
     const [fecha, setFecha] = useState(null);
-
+    const [data,setData]=useState(ExportacionData)
     const abrirModal = () => {
         setModal(true);
     };
@@ -23,19 +25,20 @@ export const ExportarCombustible = () => {
         const day = fecha.getDate().toString().padStart(2, '0');
         return `${year}-${month}-${day}`; // Retornar en formato "YYYY-MM-DD"
     };
-    
-
+    const HandlePlaca=(e)=>{
+        setData({
+            ...data,
+            placa: e.placa
+        })
+    }
     // Función para exportar
     const ExportarConsumo = async () => {
         try {
             if (fecha && fecha.length === 2) 
                 console.log("Fechas", fecha[0], fecha[1]);
             {
-                const data = {
-                    fecha_inicio: formatearFecha(fecha[0]),
-                    fecha_fin: formatearFecha(fecha[1]),
-                }
-                console.log(data);
+                data.fecha_inicio = formatearFecha(fecha[0]);
+                data.fecha_fin = formatearFecha(fecha[1]);
                 const respuesta = await axios.get('https://jwmalmcenb-production.up.railway.app/api/reporte/consumo/placa', {
                     params: data,
                     responseType: 'blob'  // Esto indica que la respuesta será un archivo binario
@@ -102,6 +105,7 @@ export const ExportarCombustible = () => {
                         hideOnRangeSelection
                         style={{ width: '100%' }}
                     />
+                    <SeleccionarFlota pasarSetDataExport={HandlePlaca}/>
                 </div>
             </Dialog>
         </>

@@ -84,7 +84,7 @@ export const getGrifo = async (token) => {
     }
 }
 export const createGrifo = async (token, data) => {
-    try{
+    try {
         const apiClient = axios.create({
             baseURL: PROGRAMACION_API,
             headers: {
@@ -92,10 +92,26 @@ export const createGrifo = async (token, data) => {
                 "Content-Type": "application/json"
             }
         });
-        const respuesta = await apiClient.post('/almacen/grifo/create',data);
+        const respuesta = await apiClient.post('/almacen/grifo/create', data);
         return respuesta.data.resp
-    }catch(error){
+    } catch (error) {
         console.error("Error al crear Grifo:", error);
+        throw error;
+    }
+}
+export const getFlota = async (token) => {
+    try {
+        const apiClient = axios.create({
+            baseURL: PROGRAMACION_API,
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+        const response = await apiClient.get('/almacen/flota/get')
+        return response.data.data
+    } catch (error) {
+        console.error("Error al obtener Flota:", error);
         throw error;
     }
 }
