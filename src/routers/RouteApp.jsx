@@ -18,6 +18,8 @@ import { ReporteGraficoImplemento } from "../pages/Reportes/Implementos/ReporteG
 import { Home } from "../pages/Home";
 import { MovimientoPage } from "../pages/Finanza/Movimiento/tabla/MovimientoPage";
 import { AsistenciaPage } from "../pages/RRHH/tabla/AsistenciaPage";
+import { FormularioPage } from "../pages/Formulario/Table/FormularioPage";
+import { PaginaFormulario } from "../pages/Mantenimiento/Formulario/Table/PaginaFormulario";
 
 export const RouteApp = () => {
   // Traemos al usuario autenticado
@@ -44,7 +46,9 @@ export const RouteApp = () => {
     'Rep Productos': ReporteGraficoFiltro,
     'EPPS': ReporteGraficoEpps,
     'Mantenimiento': InventarioPage,
-    'Implementos': ReporteGraficoImplemento
+    'Implementos': ReporteGraficoImplemento,
+    'Formulario MMTTO': FormularioPage,
+    'Ingreso MMTTO': PaginaFormulario
   };
 
   // Función para generar rutas

@@ -40,6 +40,7 @@ export const Sidebar = () => {
 
     'Mantenimiento': <GrVmMaintenance size={25} />,
     'Ingreso MMTTO': <MdSubdirectoryArrowRight size={25} />,
+    'Formulario MMTTO': <MdSubdirectoryArrowRight size={25} />,
 
     'Administración': <MdOutlineInventory size={25} />,
     'Flota': <MdSubdirectoryArrowRight size={25} />,
