@@ -13,10 +13,9 @@ import UseGetIngreso from "../Hooks/UseGetIngreso";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import { InputText } from "primereact/inputtext";
+import { Skeleton } from 'primereact/skeleton';
 
 export function IngresoPage() {
-    //#region para el cargado
-    const [cargando, setCargando] = useState(false);
     //hooks
     const { data, setData } = UseGetIngreso()
     //#region Estado para las columnas visibles en la tabla

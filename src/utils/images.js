@@ -27,6 +27,11 @@ import prueba from "../assets/images/prueba.svg"
 //roles
 import roles from "../assets/images/roles.svg"
 import LogoSistema from "../assets/images/LogoSistema.jpeg"
+
+//fondo de login
+import fondoLogin from "../assets/images/fondoLogin.jpg"
+import image from "../assets/images/image.png"
+
 export const iconsImgs = {
     alert, bell, bills, budget, card, check, empty_check, gears, home, menu, plane, plus, report, search, user, wallet, wealth
 }
@@ -43,4 +48,9 @@ export const reporte={
     producto,
     prueba,
     roles
+}
+
+export const fondo={
+    fondoLogin,
+    image
 }
