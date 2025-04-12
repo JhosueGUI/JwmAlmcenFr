@@ -11,6 +11,13 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from "primereact/column";
 import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
+import { SummaryCompanyJwm } from '../components/Empresa/SummaryCompanyJwm';
+import { SummaryCompanyCamionero } from '../components/Empresa/SummaryCompanyCamionero';
+import { SummaryCompanyFsj } from '../components/Empresa/SummaryCompanyFsj';
+import { SummaryCompanyJoel } from '../components/Empresa/SummaryCompanyJoel';
+import { SummaryCompanyPampaya } from '../components/Empresa/SummaryCompanyPampaya';
+import { SummaryCompanyWilliam } from '../components/Empresa/SummaryCompanyWilliam';
+import { ModalDeletMovimiento } from '../mod/Movimiento/ModalDeletMovimiento';
 
 export function MovimientoPage() {
     // Obtener datos
@@ -57,6 +64,17 @@ export function MovimientoPage() {
     const CerrarModalEditar = () => {
         setAbrirModalEditarMovimiento(false);
     }
+    //Abrir Modal Eliminar
+
+    const [abrirModalEliminar, setAbrirModalEliminar] = useState(false);
+    const AbrirModalEliminar = (id) => {
+        setAbrirModalEliminar(true);
+        setMovimientoSeleccionado(id);
+    }
+    const CerrarModalEliminar = () => {
+        setAbrirModalEliminar(false);
+    }
+
     // Columnas Adicionales
     const ColumnasAdicionales = (rowData) => {
         return (
@@ -87,11 +105,10 @@ export function MovimientoPage() {
                     />
                     <Button
                         icon="pi pi-trash"
-                        onClick={() => AbrirModalEditar(rowData)}
+                        onClick={() => AbrirModalEliminar(rowData)}
                         severity="danger"
                         aria-label="Editar"
                         style={{ color: '#FF6767', backgroundColor: '#FFECEC', border: 'none' }}
-                        disabled
                     />
                 </div>
             </div>
@@ -100,13 +117,21 @@ export function MovimientoPage() {
     return (
         <>
             <div className="contenedor" style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
+
                 <div className="encabezado" style={{ width: '100%', color: '#1A55B0', display: 'flex', flexDirection: 'column' }}>
                     <span style={{ fontSize: '30px', fontWeight: 'bold' }}> Gestión Financiera </span>
                     <span style={{ color: '#1A55B0', fontSize: '15px' }}>
                         A continuación, se visualiza la lista de los registro de Movimientos Financieros en el sistema
                     </span>
                 </div>
-
+                <div className="empresas" style={{ display: 'flex', gap: '20px', width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
+                    {/* <SummaryCompanyJwm />
+                    <SummaryCompanyCamionero />
+                    <SummaryCompanyFsj />
+                    <SummaryCompanyJoel />
+                    <SummaryCompanyPampaya />
+                    <SummaryCompanyWilliam /> */}
+                </div>
                 <div className="acciones" style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div className="crear" style={{ width: '100%' }}>
                         <ModalCrearMovimiento pasarSetData={setData} />
@@ -121,9 +146,10 @@ export function MovimientoPage() {
                         />
                     </IconField>
                 </div>
-                <div className="general" style={{ display: 'flex', width: '100%', gap: '50px' }}>
-                    <div className="contenido" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-                        <div className="tabla-contenedor" style={{ width: '100%' }}>
+
+                <div className="contenido" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                    <div className="tabla-contenedor" style={{ width: '100%' }}>
+                        <div className="tarjeta" style={{ overflowY: 'auto', overflowX: 'auto' }}>
                             <DataTable
                                 value={datosFiltrados}
                                 paginator
@@ -131,13 +157,14 @@ export function MovimientoPage() {
                                 rowsPerPageOptions={[5, 10, 20]}
                                 header={
                                     <MultiSelect
-                                        style={{ width: '100%' }}
                                         value={columnasVisibles}
                                         options={ColumnasMovimiento}
                                         optionLabel="header"
                                         onChange={AlternarColumna}
                                         display="chip"
                                         placeholder="Selecciona columnas"
+                                        style={{ width: '100%' }}
+
                                     />
                                 }
                             >
@@ -161,6 +188,7 @@ export function MovimientoPage() {
             </div>
             <ModalTrazabilidadMovimiento pasarAbrirModal={abrirModalTrazabilidad} pasarCerrarModal={cerrarModal} pasarMovimientoSeleccionado={movimientoSeleccionado} />
             <ModalEditarMovimiento pasarAbrirModal={abrirModalEditarMovimiento} pasarCerrarModal={CerrarModalEditar} pasarMovimientoSeleccionado={movimientoSeleccionado} pasarSetData={setData} />
+            <ModalDeletMovimiento cerrarModal={CerrarModalEliminar} modal={abrirModalEliminar} pasarMovimientoSeleccionado={movimientoSeleccionado} pasarSetData={setData} />
         </>
     );
 }

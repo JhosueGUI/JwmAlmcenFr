@@ -17,6 +17,23 @@ export const getMovimientos = async (token) => {
         throw error;
     }
 }
+export const deleteMovimiento = async (token, id) => {
+    try {
+        const apiClient = axios.create({
+            baseURL: PROGRAMACION_API,
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+        const response = await apiClient.delete(`/finanza/movimiento/delete/${id}`);
+        return response.data.resp;
+    } catch (error) {
+        console.error('Error al eliminar movimiento:', error);
+        throw error;
+    }
+}
+
 export const getEstadoMovimiento = async (token) => {
     try {
         const apiClient = axios.create({
@@ -275,7 +292,7 @@ export const getProveedor = async (token) => {
     }
 }
 export const crearProveedor = async (token, data) => {
-    try{
+    try {
         const apiClient = axios.create({
             baseURL: PROGRAMACION_API,
             headers: {
@@ -285,7 +302,7 @@ export const crearProveedor = async (token, data) => {
         });
         const respuesta = await apiClient.post('/finanza/proveedor/create', data);
         return respuesta.data.resp;
-    }catch(error){
+    } catch (error) {
         console.error('Error al crear Proveedor:', error);
         throw error;
     }

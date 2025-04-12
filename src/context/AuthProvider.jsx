@@ -123,7 +123,7 @@ export const AuthProvider = ({ children }) => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            zIndex: 1000 // Asegura que esté por encima de otros elementos
+            zIndex: 1000
           }}
         >
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center',gap:'20px' }}>

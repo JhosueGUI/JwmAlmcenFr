@@ -18,7 +18,7 @@ import { getMovimientos } from "../service/ApiMovimiento";
 import { AuthContext } from "../../../../context/AuthContext";
 import { SeleccionarPersona } from "../components/SeleccionarPersona";
 import { SeleccionarProveedor } from "../components/SeleccionarProveedor";
-
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 const ModalCrearMovimiento = ({ pasarSetData }) => {
     //token
     const { obtenerToken } = useContext(AuthContext);
@@ -62,10 +62,19 @@ const ModalCrearMovimiento = ({ pasarSetData }) => {
             [name]: value.toUpperCase()
         });
     };
+    const formatFecha = (fecha) => {
+        if (!fecha) return '';
+        const day = String(fecha.getDate()).padStart(2, '0');
+        const month = String(fecha.getMonth() + 1).padStart(2, '0');
+        const year = fecha.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
+
 
     const agregar = async () => {
-        await CrearMovimiento(movimiento);
         console.log(movimiento);
+        const fechaFormateada = formatFecha(movimiento.fecha);
+        const responseServer = await CrearMovimiento({ ...movimiento, fecha: fechaFormateada });
         const token = obtenerToken();
         const respuestaGet = await getMovimientos(token);
         const adaptarRespuesta = respuestaGet.map(movimiento => ({
@@ -93,9 +102,23 @@ const ModalCrearMovimiento = ({ pasarSetData }) => {
             n_retencion: movimiento.n_retencion,
             fecha_retencion: movimiento.fecha_retencion,
         }));
+        toast.current?.show({ severity: 'success', summary: 'Éxito', detail: responseServer, life: 3000 });
         pasarSetData(adaptarRespuesta);
         CerrarModal();
     }
+    //#region Estado Para Confirmacion
+    const reject = () => {
+        toast.current.show({ severity: 'error', summary: 'Cancelado', detail: 'Creación de Movimiento cancelado', life: 3000 });
+    };
+    const confirmarCreacion = () => {
+        confirmDialog({
+            message: '¿Está seguro de crear este movimiento?',
+            header: 'Confirmar Creación',
+            icon: 'pi pi-exclamation-triangle',
+            accept: agregar,
+            reject
+        });
+    };
 
     //funciones para eventoss
     const handleClienteChange = (e) => {
@@ -136,15 +159,17 @@ const ModalCrearMovimiento = ({ pasarSetData }) => {
     }
 
     const footer = (
+
         <div className="botonesFooter" style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
             <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={CerrarModal} />
-            <Button label="Confirmar" icon="pi pi-check" className="p-button-primary" onClick={agregar} />
+            <Button label="Confirmar" icon="pi pi-check" className="p-button-primary" onClick={confirmarCreacion} />
         </div>
     );
 
 
     return (
         <>
+            <Toast ref={toast} />
             <Button icon='pi pi-plus' label="Crear Movimiento" outlined onClick={AbrirModal} />
             <Dialog
                 header={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -163,7 +188,7 @@ const ModalCrearMovimiento = ({ pasarSetData }) => {
                 closable={false}
             >
 
-                <Toast ref={toast} />
+
                 <TabMenu model={menus} activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)} />
 
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -171,7 +196,7 @@ const ModalCrearMovimiento = ({ pasarSetData }) => {
                         <div className="1" style={{ display: "flex", gap: "20px" }}>
                             <div style={{ display: "flex", flexDirection: "column", gap: "5px", width: "100%" }}>
                                 <label htmlFor="fecha" style={{ color: '#344054' }}>Fecha</label>
-                                <Calendar value={movimiento.fecha} name="fecha" onChange={(e) => setMovimiento({ ...movimiento, fecha: e.value })} mask="99/99/9999" />
+                                <Calendar value={movimiento.fecha} name="fecha" onChange={(e) => setMovimiento({ ...movimiento, fecha: e.value })} mask="99/99/9999" dateFormat="dd/mm/yy" />
                             </div>
                             {activeIndex === 1 && (
                                 <div style={{ display: "flex", flexDirection: "column", gap: "5px", width: "100%" }}>
@@ -193,10 +218,10 @@ const ModalCrearMovimiento = ({ pasarSetData }) => {
                             {activeIndex === 1 && (
                                 <>
                                     <div style={{ width: "100%" }}>
-                                        <SeleccionarPersona pasarSetPersona={handlePersonaChange}/>
+                                        <SeleccionarPersona pasarSetPersona={handlePersonaChange} />
                                     </div>
                                     <div style={{ width: "100%" }}>
-                                        <SeleccionarProveedor pasarSetProveedor={handleProveedorChange}/>
+                                        <SeleccionarProveedor pasarSetProveedor={handleProveedorChange} />
                                     </div>
                                 </>
                             )}

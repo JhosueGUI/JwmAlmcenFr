@@ -1,14 +1,16 @@
 import { Dialog } from "primereact/dialog";
 import { Button } from 'primereact/button';
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { getClienteMovimiento } from "../service/ApiMovimiento";
 import { DataCliente } from "../data/DataCliente";
 import UsarCreateCliente from "../hooks/UsarCreateCliente";
 import { AuthContext } from "../../../../context/AuthContext";
+import { Toast } from "primereact/toast";
+import { confirmDialog } from "primereact/confirmdialog";
 export const ModalCrearCliente = ({ pasarSetData }) => {
     //token
-    const {obtenerToken}=useContext(AuthContext);
+    const { obtenerToken } = useContext(AuthContext);
     //hooks
     const { CrearCliente } = UsarCreateCliente();
 
@@ -24,22 +26,38 @@ export const ModalCrearCliente = ({ pasarSetData }) => {
         setModal(false);
     }
     const Crear = async () => {
-        await CrearCliente(data);
+        const responseServer = await CrearCliente(data);
         const token = obtenerToken();
         const respuesta = await getClienteMovimiento(token);
         pasarSetData(respuesta);
+        toast.current.show({ severity: 'success', summary: 'Éxito', detail: responseServer, life: 3000 });
         cerrarModal();
     }
+
+    const toast = useRef(null);
+    const reject = () => {
+        toast.current.show({ severity: 'error', summary: 'Cancelado', detail: 'Creación de Cliente cancelado', life: 3000 });
+    };
+    const confirmarCreacion = () => {
+        confirmDialog({
+            message: '¿Está seguro de Crear este cliente?',
+            header: 'Confirmar Creación',
+            icon: 'pi pi-exclamation-triangle',
+            accept: Crear,
+            reject
+        });
+    };
 
     const footer = (
         <div className="botonesFooter" style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
             <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={cerrarModal} />
-            <Button label="Confirmar" icon="pi pi-check" className="p-button-primary" onClick={Crear} />
+            <Button label="Confirmar" icon="pi pi-check" className="p-button-primary" onClick={confirmarCreacion} />
         </div>
     );
 
     return (
         <>
+            <Toast ref={toast} />
             <Button icon="pi pi-plus" aria-label="Filter" onClick={abrirModal} />
             <Dialog
                 header={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -62,7 +80,7 @@ export const ModalCrearCliente = ({ pasarSetData }) => {
                             id="nombre_cliente"
                             name='nombre_cliente'
                             value={data.nombre_cliente}
-                            onChange={(e) => setData({ ...data, nombre_cliente: e.target.value })}
+                            onChange={(e) => setData({ ...data, nombre_cliente: e.target.value.toUpperCase() })}
                             type="text"
                             className="w-full"
                         />
