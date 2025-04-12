@@ -7,7 +7,7 @@ import { Toast } from 'primereact/toast';
 import UseDeleteMovimiento from "../../hooks/Movimiento/UseDeleteMovimiento";
 import { useContext, useRef } from "react";
 import { AuthContext } from "../../../../../context/AuthContext";
-import { getModoMovimiento } from "../../service/ApiMovimiento";
+import { getModoMovimiento, getMovimientos } from "../../service/ApiMovimiento";
 
 export const ModalDeletMovimiento = ({ cerrarModal, modal, pasarSetData, pasarMovimientoSeleccionado }) => {
     //token
@@ -23,7 +23,7 @@ export const ModalDeletMovimiento = ({ cerrarModal, modal, pasarSetData, pasarMo
     const confirm = async () => {
         const token = obtenerToken()
         const responseServer = await Delete(pasarMovimientoSeleccionado.id);
-        const response = await getModoMovimiento(token)
+        const response = await getMovimientos(token)
         const adaptarRespuesta = response.map(movimiento => ({
             id: movimiento.id,
             fecha: movimiento.fecha,
