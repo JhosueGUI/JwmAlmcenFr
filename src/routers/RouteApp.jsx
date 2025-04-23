@@ -20,6 +20,7 @@ import { MovimientoPage } from "../pages/Finanza/Movimiento/tabla/MovimientoPage
 import { AsistenciaPage } from "../pages/RRHH/tabla/AsistenciaPage";
 import { FormularioPage } from "../pages/Formulario/Table/FormularioPage";
 import { PaginaFormulario } from "../pages/Mantenimiento/Formulario/Table/PaginaFormulario";
+import { AlertaPage } from "../pages/Monitoreo/Alerta/Tabla/AlertaPage";
 
 export const RouteApp = () => {
   // Traemos al usuario autenticado
@@ -37,6 +38,7 @@ export const RouteApp = () => {
     'Asistencias': AsistenciaPage,
     'Horarios': AsistenciaPage,
     
+    'Alertas':AlertaPage,
     'Movimientos': MovimientoPage,
     'Proveedor': ProveedorPage,
     'Personal': PersonalPage,

@@ -13,6 +13,7 @@ import { BsFileEarmarkBarGraph } from "react-icons/bs";
 import { MdSubdirectoryArrowRight } from "react-icons/md";
 import { GoContainer } from "react-icons/go";
 import { GrVmMaintenance } from "react-icons/gr";
+import { TbHeartRateMonitor } from "react-icons/tb";
 
 export const Sidebar = () => {
   const { logout, autenticadoState } = useContext(AuthContext);
@@ -41,7 +42,11 @@ export const Sidebar = () => {
     'Mantenimiento': <GrVmMaintenance size={25} />,
     'Ingreso MMTTO': <MdSubdirectoryArrowRight size={25} />,
     'Formulario MMTTO': <MdSubdirectoryArrowRight size={25} />,
-
+    
+    'Monitoreo': <TbHeartRateMonitor size={25} />,
+    'Alertas': <MdSubdirectoryArrowRight size={25} />,
+    'Seguimiento': <MdSubdirectoryArrowRight size={25} />,
+    
     'Administración': <MdOutlineInventory size={25} />,
     'Flota': <MdSubdirectoryArrowRight size={25} />,
     'Roles': <MdSubdirectoryArrowRight size={25} />,
