@@ -23,11 +23,10 @@ const getAuthToken = async () => {
     const response = await axios.post('https://v2api.frotcom.com/v2/authorize', credentials);
     authToken = response.data.token;
     console.log("Token obtenido:", authToken);
-    // Aquí podrías guardar el token en localStorage si lo deseas
     return authToken;
   } catch (error) {
     console.error("Error al obtener el token:", error);
-    throw error; // Propaga el error para que el componente lo maneje
+    throw error;
   }
 };
 
@@ -41,11 +40,9 @@ const refreshToken = async () => {
       const response = await axios.post('https://v2api.frotcom.com/v2/authorize', credentials);
       authToken = response.data.token;
       console.log("Token refrescado:", authToken);
-      // Aquí podrías actualizar el token en localStorage si lo guardaste allí
       resolve(authToken);
     } catch (error) {
       console.error("Error al refrescar el token:", error);
-      // Aquí podrías limpiar el token almacenado y forzar un nuevo inicio de sesión
       authToken = null;
       reject(error);
     } finally {
@@ -56,7 +53,6 @@ const refreshToken = async () => {
   return refreshTokenPromise;
 };
 
-// Interceptor para añadir el token a todas las peticiones
 axios.interceptors.request.use(
   (config) => {
     if (authToken && config.url !== 'https://v2api.frotcom.com/v2/authorize') {
@@ -67,7 +63,6 @@ axios.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Interceptor para manejar errores de autenticación (401)
 axios.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -81,7 +76,6 @@ axios.interceptors.response.use(
         return axios(originalRequest);
       } catch (refreshError) {
         console.error("Error al refrescar el token:", refreshError);
-        // Aquí podrías redirigir al usuario a la página de inicio de sesión o mostrar un error
         return Promise.reject(refreshError);
       }
     }
@@ -92,13 +86,12 @@ axios.interceptors.response.use(
 export function AlertaPage() {
   const [vehiculos, setVehiculos] = useState([]);
   const [alertas, setAlertas] = useState([]);
-  const [consumo, setConsumo] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const API_URL_VEHICLES = `https://v2api.frotcom.com/v2/vehicles?includeSensors=true`;
   const API_URL_FUEL = `https://v2api.frotcom.com/v2/vehicles/{vehicleId}/fuel`;
   const API_URL_ALERTS = `https://v2api.frotcom.com/v2/alarms/occurrences`;
-  const API_URL_CONSUMO = `https://v2api.frotcom.com/v2/vehicles/307979/graphs`;
+  const API_URL_CONSUMO_BASE = `https://v2api.frotcom.com/v2/vehicles/{vehicleId}/graphs`;
 
   useEffect(() => {
     let isMounted = true;
@@ -109,12 +102,10 @@ export function AlertaPage() {
         if (!authToken) {
           await getAuthToken();
         }
-        await fetchVehiculos();
+        await fetchVehiculosConConsumo();
         await fetchAlertas();
-        await FetchConsumo();
       } catch (error) {
         console.error("Error inicial al obtener datos:", error);
-        // Manejar el error inicial (por ejemplo, mostrar un mensaje al usuario)
       } finally {
         if (isMounted) {
           setLoading(false);
@@ -126,9 +117,8 @@ export function AlertaPage() {
 
     const interval = setInterval(async () => {
       if (authToken) {
-        await fetchVehiculos();
+        await fetchVehiculosConConsumo();
         await fetchAlertas();
-        await FetchConsumo();
       }
     }, 300000);
 
@@ -138,32 +128,40 @@ export function AlertaPage() {
     };
   }, []);
 
-  const fetchVehiculos = async () => {
+  const fetchVehiculosConConsumo = async () => {
     try {
       const response = await axios.get(API_URL_VEHICLES);
-      setVehiculos(
-        await Promise.all(
-          response.data.map(async (vehiculo) => {
-            try {
-              const fuelApiUrl = API_URL_FUEL.replace('{vehicleId}', vehiculo.id);
-              const responseFuel = await axios.get(fuelApiUrl);
-              if (responseFuel.data && responseFuel.data.length > 0) {
-                const registrosOrdenados = responseFuel.data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-                vehiculo.fuelLevel = registrosOrdenados[0]?.levelPerc ?? null;
-              } else {
-                vehiculo.fuelLevel = null;
-              }
-            } catch (error) {
-              console.error(`Error al obtener combustible para ${vehiculo.id}:`, error);
+      const vehiclesData = await Promise.all(
+        response.data.map(async (vehiculo) => {
+          try {
+            // Obtener nivel de combustible
+            const fuelApiUrl = API_URL_FUEL.replace('{vehicleId}', vehiculo.id);
+            const responseFuel = await axios.get(fuelApiUrl);
+            if (responseFuel.data && responseFuel.data.length > 0) {
+              const registrosOrdenados = responseFuel.data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+              vehiculo.fuelLevel = registrosOrdenados[0]?.levelPerc ?? null;
+            } else {
               vehiculo.fuelLevel = null;
             }
+
+            // Obtener consumo de combustible
+            const consumoApiUrl = API_URL_CONSUMO_BASE.replace('{vehicleId}', vehiculo.id);
+            const responseConsumo = await axios.get(consumoApiUrl);
+            vehiculo.avgConsumptionPerHour = responseConsumo.data.fuel?.[0]?.totals?.avgConsumptionPerHour ?? null;
+
             vehiculo.direccion = "Dirección no disponible";
             vehiculo.ciudad = "Ciudad no disponible";
             vehiculo.distrito = "Distrito no disponible";
             return vehiculo;
-          })
-        )
+          } catch (error) {
+            console.error(`Error al obtener datos extendidos para ${vehiculo.id}:`, error);
+            vehiculo.fuelLevel = null;
+            vehiculo.avgConsumptionPerHour = null;
+            return vehiculo;
+          }
+        })
       );
+      setVehiculos(vehiclesData);
     } catch (error) {
       console.error("Error al obtener vehículos:", error);
     }
@@ -175,15 +173,6 @@ export function AlertaPage() {
       setAlertas(responseAlertas.data.occurrences || []);
     } catch (error) {
       console.error("Error al obtener alertas:", error);
-    }
-  };
-
-  const FetchConsumo = async () => {
-    try {
-      const response = await axios.get(API_URL_CONSUMO);
-      setConsumo(response.data.fuel?.[0]?.totals?.avgConsumptionPerHour ?? null);
-    } catch (error) {
-      console.error("Error al obtener consumo:", error);
     }
   };
 
@@ -232,6 +221,10 @@ export function AlertaPage() {
       </span>
     );
   };
+
+  const consumoTemplate = (rowData) => (
+    <span>{rowData.avgConsumptionPerHour !== null ? rowData.avgConsumptionPerHour.toFixed(2) : ''}</span>
+  );
 
   const obtenerUltimasAlertasPorSeveridad = (rowData) => {
     const alertasVehiculo = alertas.filter(alerta => alerta.licensePlate === rowData.licensePlate);
@@ -297,7 +290,7 @@ export function AlertaPage() {
           <Column field="speed" header="KM / H" />
           <Column header="Estado" body={estadoTemplate} />
           <Column header="Combustible (%)" body={combustibleTemplate} />
-          <Column header="Consumo por Hora" body={() => consumo !== null ? consumo.toFixed(2) : ''} />
+          <Column header="Consumo por Hora" body={consumoTemplate} />
           <Column header="Alerta Leve" body={alertaLeveTemplate} />
           <Column header="Alerta Crítica" body={alertaCriticoTemplate} />
           <Column header="Alerta Severa" body={alertaSeveroTemplate} />
