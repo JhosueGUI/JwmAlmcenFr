@@ -290,10 +290,10 @@ export function AlertaPage() {
           <Column field="speed" header="KM / H" />
           <Column header="Estado" body={estadoTemplate} />
           <Column header="Combustible (%)" body={combustibleTemplate} />
-          <Column header="Consumo por Hora" body={consumoTemplate} />
+          <Column header="Consumo KM/GAL" body={consumoTemplate} />
           <Column header="Alerta Leve" body={alertaLeveTemplate} />
-          <Column header="Alerta Crítica" body={alertaCriticoTemplate} />
           <Column header="Alerta Severa" body={alertaSeveroTemplate} />
+          <Column header="Alerta Crítica" body={alertaCriticoTemplate} />
         </DataTable>
       )}
     </div>
