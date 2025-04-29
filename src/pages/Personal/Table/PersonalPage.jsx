@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 //TABLA REACT PRIME
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -7,7 +7,6 @@ import { MultiSelect } from 'primereact/multiselect';
 //IMPORTAR AXIOS
 import axios from "axios";
 //IMPORTAR ARCHIVO DE FILTRADO
-import { FiltradoPersonal } from "../Components/FiltradoPersonal";
 //MODAL PARA AGREGAR PERSONAL
 import ModalAgregarPersonal from "../Mod/ModalCrearPersonal";
 //MODAL EDITAR PERSONAL
@@ -15,8 +14,6 @@ import ModalEditarPersonal from "../Mod/ModalEditarPersonal";
 import { Button } from "primereact/button";
 import { ModalAsignarRol } from "../Mod/ModalAsignarRol";
 import ModalEliminarPersonal from "../Mod/ModalEliminarPersonal";
-import { useContext } from "react";
-import { AuthContext } from "../../../context/AuthContext";
 //para los menus
 import { TabMenu } from 'primereact/tabmenu';
 import { ModalEnvioDeCredencial } from "../Mod/ModalEnvioDeCredencial";
@@ -28,10 +25,13 @@ import { ColumnasPeronal } from "../Constant/ColumnasPersonal";
 import { InputText } from "primereact/inputtext";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
+import UseGetPersonalDisable from "../Hooks/UseGetPersonalDisable";
+import ModalActivarPersonal from "../Mod/ModalActivarPersonal";
 
 export function PersonalPage() {
     //hooks
     const { data, setData } = UsarGetPersonal();
+    const { personalDisable, setPersonalDisable } = UseGetPersonalDisable();
     //columnas Iniciales
     const [columnasVisibles, setColumnasVisibles] = useState(ColumnasPeronal);
     // Estado para la búsqueda global
@@ -50,8 +50,6 @@ export function PersonalPage() {
             item[col.field]?.toString().toLowerCase().includes(filtroGlobal.toLowerCase())
         )
     );
-    //#region para el cargado
-    const [cargando, setCargando] = useState(false);
 
     //#region para Modal Editar y Modal Eliminar
     //Estados para la seleccion del personal y del modal editar
@@ -76,6 +74,16 @@ export function PersonalPage() {
         setModalEliminarPersonal(false)
         setPersonalSeleccionado(null)
     }
+    //Estados para abrir modal activar
+    const [modalActivarPersonal, setModalActivarPersonal] = useState(false)
+    const abrirModalActivar = (idPersonal) => {
+        setModalActivarPersonal(true)
+        setPersonalSeleccionado(idPersonal)
+    }
+    const cerrarModalActivar = () => {
+        setModalActivarPersonal(false)
+        setPersonalSeleccionado(null)
+    }
 
     //#region JSX de las acciones para cada fila de la tabla
     const accionesCampoTabla = (id) => {
@@ -95,7 +103,8 @@ export function PersonalPage() {
 
     const items = [
         { label: 'Gestión de Personal', icon: 'pi pi-users' },
-        { label: 'Envío de Credencial', icon: 'pi pi-envelope' }
+        { label: 'Envío de Credencial', icon: 'pi pi-envelope' },
+        { label: 'Gestión de Usuarios', icon: 'pi pi-spin pi-cog' }
     ];
 
     //#region Para asignar rol
@@ -134,23 +143,39 @@ export function PersonalPage() {
                 {activeIndex === 1 && (
                     <Button label="Credenciales" outlined onClick={() => funtAbrirModalEnviar(id)} />
                 )}
+                {activeIndex === 2 && (
+                    <Button label="Reactivar" outlined onClick={() => abrirModalActivar(id)} />
+                )}
             </div>
         );
     };
-
+    const datosTabla = (activeIndex === 0 || activeIndex === 1) ? datosFiltrados :
+        (activeIndex === 2 ? personalDisable : []);
     return (
-        <Contenedor>
+        <>
             <div className="contenedor" style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
                 <div className="encabezado" style={{ width: '100%', color: '#1A55B0' }}>
                     <div className="TituloE" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span style={{ fontSize: '30px', fontWeight: 'bold' }}> Gestión de Personal </span>
+                        {(activeIndex === 0 || activeIndex === 1) && (
+                            <span style={{ fontSize: '30px', fontWeight: 'bold' }}>Gestión de Personal</span>
+                        )}
+                        {activeIndex === 2 && (
+                            <span style={{ fontSize: '30px', fontWeight: 'bold' }}> Gestión de Usuario </span>
+                        )}
                         <TabMenu model={items} activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)} />
 
                     </div>
                     <div className="ContentE">
-                        <span style={{ color: '#1A55B0', fontSize: '15px' }}>
-                            En este modulo usteded podra administrar el registro del Personal
-                        </span>
+                        {(activeIndex === 0 || activeIndex === 1) && (
+                            <span style={{ color: '#1A55B0', fontSize: '15px' }}>
+                                En este modulo usteded podra administrar el registro del Personal
+                            </span>
+                        )}
+                        {activeIndex === 2 && (
+                            <span style={{ color: '#1A55B0', fontSize: '15px' }}>
+                                En este modulo usteded podra administrar los usuarios del sistema
+                            </span>
+                        )}
                     </div>
                 </div>
 
@@ -167,7 +192,7 @@ export function PersonalPage() {
                             style={{ backgroundColor: 'var(--clr-primary)', border: 'none' }}
                             value={filtroGlobal}
                             onChange={(e) => setFiltroGlobal(e.target.value)}
-                            placeholder="Buscar Flota"
+                            placeholder="Buscar Personal"
                         />
                     </IconField>
 
@@ -178,20 +203,19 @@ export function PersonalPage() {
                     <div className="tabla-contenedor" style={{ width: '100%' }}>
                         <div className="tarjeta" style={{ height: '50%' }}>
                             <DataTable
-                                value={datosFiltrados}
+                                value={datosTabla}
                                 paginator rows={10}
                                 rowsPerPageOptions={[5, 10]}
                                 paginatorRight={botonDescargar}
                                 paginatorLeft={botonImportar}
                                 header={
                                     <MultiSelect
-                                        style={{ width: '100%' }}
                                         value={columnasVisibles}
                                         options={ColumnasPeronal}
                                         optionLabel="header"
                                         onChange={AlternarColumna}
-                                        className="w-full sm:w-20rem"
                                         display="chip"
+                                        style={{ width: '100%' }}
                                     />
                                 }
                                 tableStyle={{ minWidth: '50rem' }}
@@ -208,11 +232,13 @@ export function PersonalPage() {
                                     body={asignarRolCampoTabla}
                                     style={{ textAlign: 'center', width: '11rem' }}
                                 />
+                                {(activeIndex === 0 || activeIndex === 1) && (
                                 <Column
                                     header="Acciones"
                                     body={accionesCampoTabla}
                                     style={{ textAlign: 'center', width: '6rem', position: 'sticky', right: 0, background: 'white' }}
                                 />
+                                )}
                             </DataTable>
 
                         </div>
@@ -223,30 +249,9 @@ export function PersonalPage() {
             {/* RegionModal */}
             <ModalEditarPersonal pasarAbrirModalEditar={ModalEditar} pasarCerrarModalEditar={cerrarModalEditar} pasarPersonalSeleccionado={personalSeleccionado} pasarSetPersonal={setData} />
             <ModalAsignarRol pasarAbrirModalAsignar={ModalAsignar} pasarCerrarModalAsignar={cerrarModalAsignar} pasarPersonalSeleccionado={personalSeleccionado} />
-            <ModalEliminarPersonal pasarAbrirModalEliminar={modalEliminarPersonal} pasarCerrarModalEliminar={cerrarModalEliminar} pasarPersonalSeleccionado={personalSeleccionado} pasarSetPersonal={setData} />
+            <ModalEliminarPersonal pasarAbrirModalEliminar={modalEliminarPersonal} pasarCerrarModalEliminar={cerrarModalEliminar} pasarPersonalSeleccionado={personalSeleccionado} pasarSetPersonal={setData} pasarSetPersonalDisable={setPersonalDisable} />
             <ModalEnvioDeCredencial pasarAbrirModalEnviar={modalEnviar} pasarCerrarModalEnviar={functCerrarModalEnviar} pasarPersonalSeleccionado={personalSeleccionado} />
-            {/* Mostrar el spinner si está cargando */}
-            {cargando && (
-                <div style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    zIndex: 10000 // Asegurarse de que esté encima del modal
-                }}>
-                    <ProgressSpinner className="custom-progress-spinner" style={{ width: '80px', height: '80px', color: 'red' }} strokeWidth="5" fill="var(--surface-ground)" animationDuration=".8s" />
-                </div>
-            )}
-        </Contenedor>
+            <ModalActivarPersonal pasarAbrirModalActivar={modalActivarPersonal} pasarCerrarModalActivar={cerrarModalActivar} pasarPersonalSeleccionado={personalSeleccionado} pasarSetPersonalDisable={setPersonalDisable} pasarSetPersonal={setData}/>
+        </>
     );
 }
-
-// Estilo utilizando styled-components para el contenedor principal
-const Contenedor = styled.div`
-    overflow-y: auto;
-`;

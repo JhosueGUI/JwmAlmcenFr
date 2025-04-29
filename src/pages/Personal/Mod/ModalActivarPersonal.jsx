@@ -6,47 +6,41 @@ import { FloatLabel } from "primereact/floatlabel";
 // Importar ReactPrime Confirmar Dialogo
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
-
+//importar axios
+import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
-import UseDeletePersonal from "../Hooks/UseDeletePersonal";
+import UseReactivePersonal from "../Hooks/UseReactivePersonal";
 import { GetPersonal, getPersonalDisable } from "../Services/PersonalApi";
-const ModalEliminarPersonal = ({ pasarAbrirModalEliminar, pasarCerrarModalEliminar, pasarPersonalSeleccionado, pasarSetPersonal, pasarSetPersonalDisable }) => {
-    //hook
-    const { Delete } = UseDeletePersonal()
+const ModalActivarPersonal = ({ pasarAbrirModalActivar, pasarCerrarModalActivar, pasarPersonalSeleccionado, pasarSetPersonalDisable, pasarSetPersonal }) => {
+    //hooks,
+    const { Reactivate } = UseReactivePersonal()
     //traer token
     const { obtenerToken } = useContext(AuthContext)
-    const EliminarPersonal = async () => {
-        try {
-            const token = obtenerToken();
-            const responseServer = await Delete(pasarPersonalSeleccionado.id)
-            const response = await getPersonalDisable(token)
-            const response2 = await GetPersonal(token)
-            pasarSetPersonal(response2)
-            pasarSetPersonalDisable(response)
-
-            // Mostrar un mensaje de éxito con React Prime
-            toast.current.show({ severity: 'success', summary: 'Éxito', detail: responseServer, life: 3000 });
-            // Cerrar el modal después de agregar la categoría
-            pasarCerrarModalEliminar();
-
-        } catch (error) {
-            console.error("Error al asignar rol:", error);
-            toast.current.show({ severity: 'error', summary: 'Error', detail: `Error al asignar rol: ${error.message}`, life: 3000 });
-        }
+    const ActivarPersonal = async () => {
+        const token = obtenerToken();
+        const responseServer = await Reactivate(pasarPersonalSeleccionado.id)
+        const response =await getPersonalDisable(token)
+        const response2=await GetPersonal(token)
+        pasarSetPersonalDisable(response)
+        pasarSetPersonal(response2)
+        // Mostrar un mensaje de éxito con React Prime
+        toast.current.show({ severity: 'success', summary: 'Éxito', detail: responseServer, life: 3000 });
+        // Cerrar el modal después de agregar la categoría
+        pasarCerrarModalActivar();
     };
     //#region Estado Para Confirmacion
     const toast = useRef(null);
     const reject = () => {
-        toast.current.show({ severity: 'error', summary: 'Cancelado', detail: 'Eliminación de personal cancelada', life: 3000 });
+        toast.current.show({ severity: 'error', summary: 'Cancelado', detail: 'Activación de personal cancelada', life: 3000 });
     };
 
     const confirmarEliminar = () => {
         confirmDialog({
-            message: '¿Está seguro de que eliminar este personal?',
-            header: 'Confirmar Eliminación',
+            message: '¿Está seguro de activar este personal?',
+            header: 'Confirmar Activación',
             icon: 'pi pi-exclamation-triangle',
-            accept: EliminarPersonal,
+            accept: ActivarPersonal,
             reject
         });
     };
@@ -61,8 +55,8 @@ const ModalEliminarPersonal = ({ pasarAbrirModalEliminar, pasarCerrarModalElimin
 
     const footer = (
         <div>
-            <Button label="Eliminar" onClick={confirmarEliminar} className="p-button-danger" />
-            <Button label="Cancelar" onClick={pasarCerrarModalEliminar} className="p-button-secondary" />
+            <Button label="Activar" onClick={confirmarEliminar} className="p-button-info" />
+            <Button label="Cancelar" onClick={pasarCerrarModalActivar} className="p-button-secondary" />
         </div>
     );
 
@@ -73,13 +67,13 @@ const ModalEliminarPersonal = ({ pasarAbrirModalEliminar, pasarCerrarModalElimin
             {/* Contenido */}
             <Dialog
                 header={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '50px' }}>
-                    <h3>Eliminar Personal</h3>
-                    <Button icon="pi pi-times" rounded text severity="danger" aria-label="Cancel" onClick={pasarCerrarModalEliminar} />
+                    <h3>Activar Personal</h3>
+                    <Button icon="pi pi-times" rounded text severity="danger" aria-label="Cancel" onClick={pasarCerrarModalActivar} />
                 </div>}
-                visible={pasarAbrirModalEliminar}
+                visible={pasarAbrirModalActivar}
                 style={{ width: '20%', minWidth: '300px' }}
                 footer={footer}
-                onHide={pasarCerrarModalEliminar}
+                onHide={pasarCerrarModalActivar}
                 closable={false}
             >
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -95,4 +89,4 @@ const ModalEliminarPersonal = ({ pasarAbrirModalEliminar, pasarCerrarModalElimin
     );
 };
 
-export default ModalEliminarPersonal;
+export default ModalActivarPersonal;
