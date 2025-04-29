@@ -1,19 +1,22 @@
-import React, { useState,useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { FloatLabel } from "primereact/floatlabel";
-import { Dropdown } from 'primereact/dropdown';
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { useEffect } from "react";
 import { DataRoles } from "../Data/DataRoles";
 // Importar ReactPrime Confirmar Dialogo
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import axios from "axios";
+import UseDeleteRol from "../Hooks/Rol/UseDeleteRol";
+import { getRoles } from "../Services/ApiRol";
 
 export const ModalEliminarRol = ({ pasarAbrirModalEliminar, pasarCerrarModalEliminar, pasarSetRol, pasarRolSeleccionado }) => {
+    //hooks
+    const { Delete } = UseDeleteRol()
     //obtener token
     const { obtenerToken } = useContext(AuthContext)
     //traer data rol
@@ -21,24 +24,15 @@ export const ModalEliminarRol = ({ pasarAbrirModalEliminar, pasarCerrarModalElim
     //#region para eliminar rol
     const EliminarRol = async () => {
         try {
-            const token = obtenerToken()
-            if (token) {
-                const respuestaDelete = await axios.delete(`https://jwmalmcenb-production.up.railway.app/api/almacen/rol/delete/${pasarRolSeleccionado.id}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
-                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/rol/get", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
-                pasarSetRol(respuestaGet.data.data)
-                const mensajeDelServidor = respuestaDelete.data.resp
+            
+                const responseServer = await Delete(pasarRolSeleccionado.id)
+                const token = obtenerToken()
+                const response = await getRoles(token)
+                pasarSetRol(response)
                 // Mostrar un mensaje de éxito
-                toast.current.show({ severity: 'success', summary: 'Éxito', detail: mensajeDelServidor, life: 3000 });
+                toast.current.show({ severity: 'success', summary: 'Éxito', detail: responseServer, life: 3000 });
                 pasarCerrarModalEliminar()
-            }
+            
         } catch (error) {
             console.error("Error al agregar una categoría:", error);
             toast.current.show({ severity: 'info', summary: 'Observación', detail: error.response?.data?.resp || 'Error al Crear el Inventario', life: 3000 });

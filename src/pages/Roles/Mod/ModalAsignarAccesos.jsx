@@ -1,55 +1,45 @@
-import React, { useState,useRef } from "react";
+// ModalAsignarAccesos.js
+import React, { useState, useRef } from "react";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
-import { InputText } from "primereact/inputtext";
-import { FloatLabel } from "primereact/floatlabel";
-import { Dropdown } from 'primereact/dropdown';
-import { MultiSelect } from 'primereact/multiselect';
-import { GetAccesos } from "../Services/GetAccesos";
-import { DataRoles } from "../Data/DataRoles";
-import { useContext } from "react";
-import { AuthContext } from "../../../context/AuthContext";
-import axios from "axios";
+import { GetAccesos } from "../Components/GetAccesos";
 // Importar ReactPrime Confirmar Dialogo
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
+import UseAsignAcces from "../Hooks/Acceso/UseAsignAcces";
 
-export const ModalAsignarAccesos = ({pasarAbrirModalAsignar,pasarCerrarModalAsignar,pasarRolSeleccionado}) => {
-    
-    //traer token
-    const {obtenerToken}=useContext(AuthContext)
-
+export const ModalAsignarAccesos = ({ pasarAbrirModalAsignar, pasarCerrarModalAsignar, pasarRolSeleccionado }) => {
+    //hooks
+    const { Asing } = UseAsignAcces()
     //traer la data
-    const [dataRol,setDataRol]=useState([])
+    const [dataRol, setDataRol] = useState([])
+    const toast = useRef(null);
+
     //#region para administrar accesoso
-    const AsignarAccesos=async()=>{
+    const AsignarAccesos = async () => {
         try {
-            const token =obtenerToken()     
-            if(token){
-                const respuestaPost = await axios.post(`https://jwmalmcenb-production.up.railway.app/api/almacen/rol/asignar_acceso/${pasarRolSeleccionado.id}`,dataRol,{
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
-                const mensajeDelServidor = respuestaPost.data.resp
-                // Mostrar un mensaje de éxito
-                toast.current.show({ severity: 'success', summary: 'Éxito', detail: mensajeDelServidor, life: 3000 });
-                pasarCerrarModalAsignar()
-            }
+            console.log("dataRol", dataRol);
+            const responseServer = await Asing(dataRol, pasarRolSeleccionado.id);
+            // Mostrar un mensaje de éxito
+            toast.current.show({ severity: 'success', summary: 'Éxito', detail: responseServer, life: 3000 });
+            pasarCerrarModalAsignar();
         } catch (error) {
             console.error("Error al asignar Accesos:", error);
             toast.current.show({ severity: 'info', summary: 'Observación', detail: error.response?.data?.resp || 'Error al Crear el Inventario', life: 3000 });
         }
     }
-     // Manejar cambios en los campos del formulario para solo Accesos
-     const handleAccesosChange = (accesosSeleccionados) => {
+
+    // Manejar los accesos seleccionados desde el componente GetAccesos (Tree)
+    const handleAccesosChange = (accesosSeleccionados) => {
+        console.log("Accesos Seleccionados en Modal:", accesosSeleccionados);
         setDataRol({
             ...dataRol,
             accesos: accesosSeleccionados.map(acceso => acceso.id)
         });
+        console.log("Estado dataRol:", dataRol);
     };
+
     //#region Estado Para Confirmacion
-    const toast = useRef(null);
     const reject = () => {
         toast.current.show({ severity: 'error', summary: 'Cancelado', detail: 'Asignación de Accesos cancelado', life: 3000 });
     };
@@ -63,31 +53,33 @@ export const ModalAsignarAccesos = ({pasarAbrirModalAsignar,pasarCerrarModalAsig
             reject
         });
     };
+
     const footer = (
         <div>
             <Button label="Guardar" onClick={confirmarAsiganacion} className="p-button-success" />
             <Button label="Cancelar" onClick={pasarCerrarModalAsignar} className="p-button-secondary" />
         </div>
     );
+
     return (
         <>
-        {/* Confirmacion */}
-        <Toast ref={toast} />
+            {/* Confirmacion */}
+            <Toast ref={toast} />
             {/* Contenido */}
             <Dialog
                 header={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '50px' }}>
                     <h3>Asignar Accesos</h3>
-                    <Button icon="pi pi-times" rounded text severity="danger" aria-label="Cancel" onClick={pasarCerrarModalAsignar}/>
+                    <Button icon="pi pi-times" rounded text severity="danger" aria-label="Cancel" onClick={pasarCerrarModalAsignar} />
                 </div>}
                 visible={pasarAbrirModalAsignar}
-                style={{ width: '25%', minWidth: '300px',height: '350px'  }}
+                style={{ width: '50%', minWidth: '300px', height: '100%' }}
                 footer={footer}
                 onHide={pasarCerrarModalAsignar}
                 closable={false}
             >
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                     <div style={{ marginTop: "20px", width: "100%", display: 'flex', flexDirection: 'column', gap: '25px' }}>
-                        <GetAccesos pasarSetRoles={handleAccesosChange}/>
+                        <GetAccesos pasarSetRoles={handleAccesosChange} personalInicial={pasarRolSeleccionado?.id} />
                     </div>
                 </div>
             </Dialog>

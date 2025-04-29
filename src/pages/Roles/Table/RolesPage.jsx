@@ -1,11 +1,7 @@
-import styled from "styled-components";
 import React, { useState, useEffect, useContext } from 'react';
-import { ColumnasInicialesRoles } from "../Data/DataRoles";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { MultiSelect } from "primereact/multiselect";
-import { AuthContext } from "../../../context/AuthContext";
-import axios from "axios";
 import { Button } from "primereact/button";
 import { ModalCrearRol } from "../Mod/ModalCrearRol";
 import { ModalEditarRol } from "../Mod/ModalEditarRol";
@@ -13,15 +9,14 @@ import { ModalEliminarRol } from "../Mod/ModalEliminarRol";
 import { ModalAsignarAccesos } from "../Mod/ModalAsignarAccesos";
 import { reporte } from "../../../utils/images";
 import { TbLockAccess } from "react-icons/tb";
-import { ProgressSpinner } from 'primereact/progressspinner';
+import { ColumnsRol } from "../Constant/ColumnsRol";
+import UseGetRol from '../Hooks/Rol/UseGetRol';
 
 export function RolesPage() {
-    //#region para el cargado
-    const [cargando, setCargando] = useState(false);
-    //obtener token
-    const { obtenerToken } = useContext(AuthContext)
+    //hooks
+    const { rol, setRol } = UseGetRol()
     //#region columnas iniciales
-    const [columnasVisibles, setColumnasVisibles] = useState(ColumnasInicialesRoles)
+    const [columnasVisibles, setColumnasVisibles] = useState(ColumnsRol)
     const manejarCambioColumnas = (e) => {
         const columnasSeleccionadas = e.value;
         const columnasOrdenadasSeleccionadas = ColumnasInicialesRoles.filter(col =>
@@ -29,29 +24,7 @@ export function RolesPage() {
         );
         setColumnasVisibles(columnasOrdenadasSeleccionadas);
     };
-    //traer a los roles
-    const [roles, setRoles] = useState([])
-    useEffect(() => {
-        const ObtenerRoles = async () => {
-            try {
-                const token = obtenerToken()
-                if (token) {
-                    setCargando(true);
-                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/rol/get", {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    })
-                    setCargando(false);
-                    setRoles(respuestaGet.data.data)
-                }
-            } catch (error) {
-                console.log('Error',error)
-                setCargando(false);
-            }
-        }
-        ObtenerRoles()
-    }, [])
+
 
     //#region modal
     const [rolSeleccionado, setRolSeleccionado] = useState(null)
@@ -85,7 +58,7 @@ export function RolesPage() {
     //#region para aumentar mas columnas
     const asignarAccesoCampoTabla = (id) => {
         return (
-            <Button label='Accesos' style={{ background:'rgb(34, 197, 94)',border:'1px solid #22c55e',color:'white',gap:'10px' }} severity="succes" outlined aria-label="Eliminar" onClick={() => funtAbrirModalAsignar(id)} > <TbLockAccess size={25}/> </Button>
+            <Button label='Accesos' style={{ background: 'rgb(34, 197, 94)', border: '1px solid #22c55e', color: 'white', gap: '10px' }} severity="succes" outlined aria-label="Eliminar" onClick={() => funtAbrirModalAsignar(id)} > <TbLockAccess size={25} /> </Button>
         );
     };
 
@@ -102,35 +75,34 @@ export function RolesPage() {
         );
     }
     return (
-        <Contenedor>
+        <>
             <div className="contenedor" style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
-                <div className="encabezado" style={{ width: '100%', color: '#1A55B0', display:'flex', flexDirection:'column'}}>
-                    <span style={{fontSize:'30px', fontWeight:'bold'}}> Gestión de Roles </span>
-                    <span style={{ color: '#1A55B0', fontSize:'15px' }}>
+                <div className="encabezado" style={{ width: '100%', color: '#1A55B0', display: 'flex', flexDirection: 'column' }}>
+                    <span style={{ fontSize: '30px', fontWeight: 'bold' }}> Gestión de Roles </span>
+                    <span style={{ color: '#1A55B0', fontSize: '15px' }}>
                         En este modulo usteded podra gestionar los Accesos a los Roles
                     </span>
                 </div>
 
                 <div className="acciones" style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <ModalCrearRol pasarSetRol={setRoles} />
+                    <ModalCrearRol pasarSetRol={setRol}/>
                 </div>
-                <div className="general" style={{ display: 'flex',width: '100%',gap:'50px'}}>
+                <div className="general" style={{ display: 'flex', width: '100%', gap: '50px' }}>
                     <div className="contenido" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
                         <div className="tabla-contenedor" style={{ width: '100%' }}>
                             <DataTable
-                            paginator rows={10}
-                            rowsPerPageOptions={[5, 10]}
-                                value={roles}
+                                paginator rows={10}
+                                rowsPerPageOptions={[5, 10]}
+                                value={rol}
                                 header={
-                                    <MultiSelectContainer>
-                                        <MultiSelect
-                                            value={columnasVisibles}
-                                            options={ColumnasInicialesRoles}
-                                            optionLabel="header"
-                                            onChange={manejarCambioColumnas}
-                                            display="chip"
-                                        />
-                                    </MultiSelectContainer>
+                                    <MultiSelect
+                                        value={columnasVisibles}
+                                        options={ColumnsRol}
+                                        optionLabel="header"
+                                        onChange={manejarCambioColumnas}
+                                        display="chip"
+                                        style={{ width: '100%' }}
+                                    />
                                 }
                                 tableStyle={{ minWidth: '10rem' }}
                             >
@@ -163,36 +135,9 @@ export function RolesPage() {
             </div>
 
             {/* Modals */}
-            <ModalEditarRol pasarAbrirModalEdit={modalEditar} pasarCerrarModalEdit={functCerrarModalEdit} pasarRolSeleccionado={rolSeleccionado} pasarSetRol={setRoles} />
-            <ModalEliminarRol pasarAbrirModalEliminar={modalEliminar} pasarCerrarModalEliminar={functCerrarModalDelete} pasarRolSeleccionado={rolSeleccionado} pasarSetRol={setRoles} />
+            <ModalEditarRol pasarAbrirModalEdit={modalEditar} pasarCerrarModalEdit={functCerrarModalEdit} pasarRolSeleccionado={rolSeleccionado} pasarSetRol={setRol} />
+            <ModalEliminarRol pasarAbrirModalEliminar={modalEliminar} pasarCerrarModalEliminar={functCerrarModalDelete} pasarRolSeleccionado={rolSeleccionado} pasarSetRol={setRol} />
             <ModalAsignarAccesos pasarAbrirModalAsignar={modalAsignar} pasarCerrarModalAsignar={funtCerrarModalAsignar} pasarRolSeleccionado={rolSeleccionado} />
-            {/* Mostrar el spinner si está cargando */}
-            {cargando && (
-                <div style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    zIndex: 10000 // Asegurarse de que esté encima del modal
-                }}>
-                    <ProgressSpinner className="custom-progress-spinner" style={{ width: '80px', height: '80px', color: 'red' }} strokeWidth="5" fill="var(--surface-ground)" animationDuration=".8s" />
-                </div>
-            )}
-        </Contenedor>
+        </>
     );
 }
-
-const Contenedor = styled.div`
-    overflow-y: auto;
-`;
-
-const MultiSelectContainer = styled.div`
-    .p-multiselect {
-        width: 100%; /* Ajusta el tamaño según tus necesidades */
-    }
-`;
