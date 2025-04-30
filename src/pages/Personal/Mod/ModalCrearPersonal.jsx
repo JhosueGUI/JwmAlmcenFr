@@ -17,8 +17,12 @@ import { AuthContext } from "../../../context/AuthContext";
 import { SeleccionarPlanilla } from "../Components/SeleccionarPlanilla";
 import { SeleccionarCargo } from "../Components/SeleccionarCargo";
 import { Calendar } from 'primereact/calendar';
+import { FileUpload } from 'primereact/fileupload';
+import { Stepper } from 'primereact/stepper';
+import { StepperPanel } from 'primereact/stepperpanel';
 
 const ModalAgregarPersonal = ({ pasarSetPersonal }) => {
+    const stepperRef = useRef(null);
     //obtner tokrn
     const { obtenerToken } = useContext(AuthContext)
     //#region Estado para modal
@@ -132,7 +136,12 @@ const ModalAgregarPersonal = ({ pasarSetPersonal }) => {
             <Button icon="pi pi-plus" label="Agregar Personal" severity="info" outlined style={{ color: '#1A55B0' }} onClick={abrirModalPersonal} />
             <Dialog
                 header={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '50px' }}>
-                    <h3>Crear Personal</h3>
+                    <div className="header1" style={{ display: 'flex', flexDirection: 'column' }}>
+                        <label style={{ fontSize: '26px', color: '#3B75F1' }}>Crear Personal</label>
+                        <label style={{ fontSize: '18px', fontWeight: 'normal' }}>En esta sección usted puede generar un nuevo movimiento</label>
+                        <div className="card">
+                        </div>
+                    </div>
                     <Button onClick={cerrarModalPersonal} icon="pi pi-times" rounded text severity="danger" aria-label="Cancel" />
                 </div>}
                 visible={modal}
@@ -142,66 +151,128 @@ const ModalAgregarPersonal = ({ pasarSetPersonal }) => {
                 closable={false}
             >
                 <form onSubmit={agregarCategoria}>
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <div style={{ marginTop: "20px", width: "100%", display: 'flex', flexDirection: 'column', gap: '25px' }}>
-                            <div className="apellidos" style={{ display: 'flex', justifyContent: 'space-between', gap: '5px', width: '100%' }}>
-                                <div style={{ width: '100%' }}>
-                                    <FloatLabel>
-                                        <InputText id="nombre" name="nombre" style={{ width: '100%' }} value={dataPersonal.nombre} onChange={handleInputChange} />
-                                        <label htmlFor="nombre" style={{ textAlign: "center", }}>Nombre Completo</label>
-                                    </FloatLabel>
-                                </div>
-                                <div style={{ width: '100%' }}>
-                                    <FloatLabel>
-                                        <InputText id="apellido_paterno" name="apellido_paterno" style={{ width: '100%' }} value={dataPersonal.apellido_paterno} onChange={handleInputChange} />
-                                        <label htmlFor="apellido_paterno" style={{ textAlign: "center" }}>Apellido Paterno</label>
-                                    </FloatLabel>
-                                </div>
-                                <div style={{ width: '100%' }}>
-                                    <FloatLabel>
-                                        <InputText id="apellido_materno" name="apellido_materno" style={{ width: '100%' }} value={dataPersonal.apellido_materno} onChange={handleInputChange} />
-                                        <label htmlFor="apellido_materno" style={{ textAlign: "center" }}>Apellido Materno</label>
-                                    </FloatLabel>
-                                </div>
-                                <div style={{ width: '100%' }}>
-                                    <FloatLabel>
-                                        <Calendar id="fecha_nacimiento" value={dataPersonal.fecha_nacimiento} onChange={(e) => setDataPersonal({ ...dataPersonal, fecha_nacimiento: e.value })} dateFormat="dd/mm/yy" showIcon style={{ width: "100%" }} />
-                                        <label htmlFor="fecha_nacimiento" style={{ textAlign: "center" }}>Fecha Nacimiento</label>
-                                    </FloatLabel>
-                                </div>
-                            </div>
-                            <div className="documentos" style={{ display: 'flex', gap: '5px' }}>
-                                <div className="gmail" style={{ width: '100%' }}>
-                                    <FloatLabel>
-                                        <InputText id="gmail" name="gmail" style={{ width: '100%' }} value={dataPersonal.gmail} onChange={handleInputChange} />
-                                        <label htmlFor="gmail" style={{ textAlign: "center" }}>Gmail</label>
-                                    </FloatLabel>
-                                </div>
-                                <div className="documento" style={{ width: '100%' }}>
-                                    <GetTipoDocumentos pasarDataPersonal={handleDocumentosChange} />
-                                </div>
-                                <div className="documento" style={{ width: '100%' }}>
-                                    <FloatLabel>
-                                        <InputText id="numero_documento" name="numero_documento" style={{ width: '100%' }} value={dataPersonal.numero_documento} onChange={handleInputChange} />
-                                        <label htmlFor="numero_documento" style={{ textAlign: "center" }}>Número Documento</label>
-                                    </FloatLabel>
-                                </div>
-                            </div>
-                            <div style={{ display: 'flex', gap: '5px' }}>
-                                <SeleccionarCargo />
-                                <div style={{ width: '100%' }}>
-                                    <FloatLabel>
-                                        <Calendar id="fecha_ingreso" value={dataPersonal.fecha_ingreso} onChange={(e) => setDataPersonal({ ...dataPersonal, fecha_ingreso: e.value })} dateFormat="dd/mm/yy" showIcon style={{ width: "100%" }} />
-                                        <label htmlFor="fecha_ingreso" style={{ textAlign: "center" }}>Fecha Ingreso</label>
-                                    </FloatLabel>
+                    <Stepper ref={stepperRef} style={{ flexBasis: '50rem' }}>
+                        <StepperPanel header="Datos Personales">
+                            <div className="flex flex-column h-12rem">
+                                <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
+                                    <div className="apellidos" style={{ display: 'flex', justifyContent: 'space-between', gap: '5px', width: '100%' }}>
+                                        <div style={{ width: '100%' }}>
+                                            <FloatLabel>
+                                                <InputText id="nombre" name="nombre" style={{ width: '100%' }} value={dataPersonal.nombre} onChange={handleInputChange} />
+                                                <label htmlFor="nombre" style={{ textAlign: "center", }}>Nombre Completo</label>
+                                            </FloatLabel>
+                                        </div>
+                                        <div style={{ width: '100%' }}>
+                                            <FloatLabel>
+                                                <InputText id="apellido_paterno" name="apellido_paterno" style={{ width: '100%' }} value={dataPersonal.apellido_paterno} onChange={handleInputChange} />
+                                                <label htmlFor="apellido_paterno" style={{ textAlign: "center" }}>Apellido Paterno</label>
+                                            </FloatLabel>
+                                        </div>
+                                        <div style={{ width: '100%' }}>
+                                            <FloatLabel>
+                                                <InputText id="apellido_materno" name="apellido_materno" style={{ width: '100%' }} value={dataPersonal.apellido_materno} onChange={handleInputChange} />
+                                                <label htmlFor="apellido_materno" style={{ textAlign: "center" }}>Apellido Materno</label>
+                                            </FloatLabel>
+                                        </div>
+                                        <div style={{ width: '100%' }}>
+                                            <FloatLabel>
+                                                <Calendar id="fecha_nacimiento" value={dataPersonal.fecha_nacimiento} onChange={(e) => setDataPersonal({ ...dataPersonal, fecha_nacimiento: e.value })} dateFormat="dd/mm/yy" showIcon style={{ width: "100%" }} />
+                                                <label htmlFor="fecha_nacimiento" style={{ textAlign: "center" }}>Fecha Nacimiento</label>
+                                            </FloatLabel>
+                                        </div>
+                                    </div>
+                                    <div className="documentos" style={{ display: 'flex', gap: '5px' }}>
+                                        <div className="gmail" style={{ width: '100%' }}>
+                                            <FloatLabel>
+                                                <InputText id="gmail" name="gmail" style={{ width: '100%' }} value={dataPersonal.gmail} onChange={handleInputChange} />
+                                                <label htmlFor="gmail" style={{ textAlign: "center" }}>Gmail</label>
+                                            </FloatLabel>
+                                        </div>
+                                        <div className="documento" style={{ width: '100%' }}>
+                                            <GetTipoDocumentos pasarDataPersonal={handleDocumentosChange} />
+                                        </div>
+                                        <div className="documento" style={{ width: '100%' }}>
+                                            <FloatLabel>
+                                                <InputText id="numero_documento" name="numero_documento" style={{ width: '100%' }} value={dataPersonal.numero_documento} onChange={handleInputChange} />
+                                                <label htmlFor="numero_documento" style={{ textAlign: "center" }}>Número Documento</label>
+                                            </FloatLabel>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div style={{ display: 'flex', gap: '5px' }}>
-                                <SeleccionarPlanilla pasarSetPersonal={handlePlanillaChange}/>
+                            <div className="flex pt-4 justify-content-end">
+                                <Button label="Next" icon="pi pi-arrow-right" iconPos="right" onClick={() => stepperRef.current.nextCallback()} />
+                            </div>
+                        </StepperPanel>
+                        <StepperPanel header="Datos Laborales">
+                            <div className="flex flex-column h-12rem">
+                                <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
+                                    <div style={{ display: 'flex', gap: '5px' }}>
+                                        <SeleccionarCargo />
+                                        <div style={{ width: '100%' }}>
+                                            <FloatLabel>
+                                                <Calendar id="fecha_ingreso" value={dataPersonal.fecha_ingreso} onChange={(e) => setDataPersonal({ ...dataPersonal, fecha_ingreso: e.value })} dateFormat="dd/mm/yy" showIcon style={{ width: "100%" }} />
+                                                <label htmlFor="fecha_ingreso" style={{ textAlign: "center" }}>Fecha Ingreso</label>
+                                            </FloatLabel>
+                                        </div>
+                                        <div style={{ width: '100%' }}>
+                                            <FloatLabel>
+                                                <Calendar id="fecha_salida" value={dataPersonal.fecha_salida} onChange={(e) => setDataPersonal({ ...dataPersonal, fecha_salida: e.value })} dateFormat="dd/mm/yy" showIcon style={{ width: "100%" }} />
+                                                <label htmlFor="fecha_salida" style={{ textAlign: "center" }}>Fecha Salida</label>
+                                            </FloatLabel>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: 'flex', gap: '5px' }}>
+                                        <div style={{ width: '100%' }}>
+                                            <FloatLabel>
+                                                <Calendar id="inicio_contrato" value={dataPersonal.inicio_contrato} onChange={(e) => setDataPersonal({ ...dataPersonal, inicio_contrato: e.value })} dateFormat="dd/mm/yy" showIcon style={{ width: "100%" }} />
+                                                <label htmlFor="inicio_contrato" style={{ textAlign: "center" }}>Inicio de Contrato</label>
+                                            </FloatLabel>
+                                        </div>
+                                        <div style={{ width: '100%' }}>
+                                            <FloatLabel>
+                                                <Calendar id="fin_contrato" value={dataPersonal.fin_contrato} onChange={(e) => setDataPersonal({ ...dataPersonal, fin_contrato: e.value })} dateFormat="dd/mm/yy" showIcon style={{ width: "100%" }} />
+                                                <label htmlFor="fin_contrato" style={{ textAlign: "center" }}>Fin de Contrato</label>
+                                            </FloatLabel>
+                                        </div>
+                                        <FileUpload mode="basic" name="demo[]" url="/api/upload" accept="image/*" maxFileSize={1000000} />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex pt-4 justify-content-between">
+                                <Button label="Back" severity="secondary" icon="pi pi-arrow-left" onClick={() => stepperRef.current.prevCallback()} />
+                                <Button label="Next" icon="pi pi-arrow-right" iconPos="right" onClick={() => stepperRef.current.nextCallback()} />
+                            </div>
+                        </StepperPanel>
+                        <StepperPanel header="Datos Planilla">
+                            <div className="flex flex-column h-12rem">
+                                <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
+                                <div style={{ display: 'flex', gap: '5px' }}>
+                                <SeleccionarPlanilla pasarSetPersonal={handlePlanillaChange} />
+                                <FloatLabel style={{ width: '100%' }}>
+                                    <InputText id="sueldo_planilla" name="sueldo_planilla" style={{ width: '100%' }} value={dataPersonal.sueldo_planilla} onChange={handleInputChange} />
+                                    <label htmlFor="sueldo_planilla" style={{ textAlign: "center" }} >Sueldo Planilla</label>
+                                </FloatLabel>
+                                <FloatLabel style={{ width: '100%' }}>
+                                    <InputText id="sueldo_real" name="sueldo_real" style={{ width: '100%' }} value={dataPersonal.sueldo_real} onChange={handleInputChange} />
+                                    <label htmlFor="sueldo_real" style={{ textAlign: "center" }} >Sueldo Real</label>
+                                </FloatLabel>
                                 <div style={{ width: '100%' }}>
                                     <FloatLabel>
                                         <Calendar id="fecha_ingreso_planilla" value={dataPersonal.fecha_ingreso_planilla} onChange={(e) => setDataPersonal({ ...dataPersonal, fecha_ingreso_planilla: e.value })} dateFormat="dd/mm/yy" showIcon style={{ width: "100%" }} />
                                         <label htmlFor="fecha_ingreso_planilla" style={{ textAlign: "center" }}>Fecha Ingreso Planilla</label>
+                                    </FloatLabel>
+                                </div>
+                                <div style={{ width: '100%' }}>
+                                    <FloatLabel>
+                                        <Calendar id="fecha_alta" value={dataPersonal.fecha_alta} onChange={(e) => setDataPersonal({ ...dataPersonal, fecha_alta: e.value })} dateFormat="dd/mm/yy" showIcon style={{ width: "100%" }} />
+                                        <label htmlFor="fecha_alta" style={{ textAlign: "center" }}>Fecha Alta</label>
+                                    </FloatLabel>
+                                </div>
+                                <div style={{ width: '100%' }}>
+                                    <FloatLabel>
+                                        <Calendar id="fecha_baja" value={dataPersonal.fecha_baja} onChange={(e) => setDataPersonal({ ...dataPersonal, fecha_baja: e.value })} dateFormat="dd/mm/yy" showIcon style={{ width: "100%" }} />
+                                        <label htmlFor="fecha_baja" style={{ textAlign: "center" }}>Fecha Baja</label>
                                     </FloatLabel>
                                 </div>
                             </div>
@@ -214,6 +285,18 @@ const ModalAgregarPersonal = ({ pasarSetPersonal }) => {
                                 <InputText id="experiencia" name="experiencia" style={{ width: '100%' }} value={dataPersonal.experiencia} onChange={handleInputChange} />
                                 <label htmlFor="experiencia" style={{ textAlign: "center" }} >Experiencia</label>
                             </FloatLabel>
+                                </div>
+                            </div>
+                            <div className="flex pt-4 justify-content-start">
+                                <Button label="Back" severity="secondary" icon="pi pi-arrow-left" onClick={() => stepperRef.current.prevCallback()} />
+                            </div>
+                        </StepperPanel>
+                    </Stepper>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                        <div style={{ marginTop: "20px", width: "100%", display: 'flex', flexDirection: 'column', gap: '25px' }}>
+
+
+                            
                         </div>
                     </div>
                 </form>

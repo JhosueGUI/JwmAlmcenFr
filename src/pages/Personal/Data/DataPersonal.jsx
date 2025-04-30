@@ -11,7 +11,17 @@ export const DataPersonal = {
     habilidad: "",
     experiencia: "",
     fecha_ingreso: "",
+    fecha_salida: "",
+    inicio_contrato: "",
+    fin_contrato: "",
+    pdf_contrato: "",
     planilla_id: "",
+
+    sueldo_planilla: "",
+    sueldo_real: "",
     fecha_ingreso_planilla: "",
+
+    fecha_alta: "",
+    fecha_baja: "",
 }
 

@@ -4,7 +4,7 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { FloatLabel } from "primereact/floatlabel";
 // Importar ReactPrime Confirmar Dialogo
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 
 import { useContext } from "react";
