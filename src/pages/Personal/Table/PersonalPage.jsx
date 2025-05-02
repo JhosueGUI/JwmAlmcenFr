@@ -152,7 +152,7 @@ export function PersonalPage() {
     const datosTabla = (activeIndex === 0 || activeIndex === 1) ? datosFiltrados :
         (activeIndex === 2 ? personalDisable : []);
     return (
-        <>
+        <Contenedor>
             <div className="contenedor" style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
                 <div className="encabezado" style={{ width: '100%', color: '#1A55B0' }}>
                     <div className="TituloE" style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -201,7 +201,7 @@ export function PersonalPage() {
 
                 <div className="contenido" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
                     <div className="tabla-contenedor" style={{ width: '100%' }}>
-                        <div className="tarjeta" style={{ height: '50%' }}>
+                        <div className="tarjeta" style={{ overflowY: 'auto', overflowX: 'auto' }}>
                             <DataTable
                                 value={datosTabla}
                                 paginator rows={10}
@@ -253,6 +253,10 @@ export function PersonalPage() {
             <ModalEnvioDeCredencial pasarAbrirModalEnviar={modalEnviar} pasarCerrarModalEnviar={functCerrarModalEnviar} pasarPersonalSeleccionado={personalSeleccionado} />
             <ModalActivarPersonal pasarAbrirModalActivar={modalActivarPersonal} pasarCerrarModalActivar={cerrarModalActivar} pasarPersonalSeleccionado={personalSeleccionado} pasarSetPersonalDisable={setPersonalDisable} pasarSetPersonal={setData}/>
             <ModalEditPersonal pasarAbrirModalEditar={ModalEditar} pasarCerrarModalEditar={cerrarModalEditar} pasarPersonalSeleccionado={personalSeleccionado} pasarSetPersonal={setData}/>
-        </>
+            </Contenedor>
+        
     );
-}
+}// Estilo utilizando styled-components para el contenedor principal y MultiSelect
+const Contenedor = styled.div`
+overflow-y: auto;
+`;
