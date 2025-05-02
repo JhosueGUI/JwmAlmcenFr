@@ -10,7 +10,7 @@ export const VerPdf = ({ numeroCompra }) => {
 
     const visualizarPdf = async () => {
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/orden_compra/observar/${numeroCompra}`, {
+            const response = await axios.get(`https://jwmalmcenb-production.up.railway.app/api/orden_compra/observar/${numeroCompra}`, {
                 responseType: 'blob' // Indica que esperas un blob (archivo) como respuesta
             });
 

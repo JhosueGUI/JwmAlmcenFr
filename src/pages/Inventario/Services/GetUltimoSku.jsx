@@ -15,7 +15,7 @@ export const GetUltimoSku = ({ pasarSetDataInventario }) => {
             try {
                 const token = obtenerToken();
                 if (token) {
-                    const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/inventario_valorizado/ultimo_sku", {
+                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/inventario_valorizado/ultimo_sku", {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
