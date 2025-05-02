@@ -22,14 +22,14 @@ export const ModalEditarFlota = ({ pasarSetFlota,pasarAbrirModal,pasarCerrarModa
         try {
             const token = obtenerToken()
             if (token) {
-                const respuestaPost = await axios.post(`https://jwmalmcenb-production.up.railway.app/api/almacen/flota/update/${pasarFlotaSeleccionado.id}`, dataFlota, {
+                const respuestaPost = await axios.post(`http://127.0.0.1:8000/api/almacen/flota/update/${pasarFlotaSeleccionado.id}`, dataFlota, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 })
                 console.log(respuestaPost.data)
 
-                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/flota/get", {
+                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/flota/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
 

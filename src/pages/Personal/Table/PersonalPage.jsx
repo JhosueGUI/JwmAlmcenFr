@@ -10,7 +10,6 @@ import axios from "axios";
 //MODAL PARA AGREGAR PERSONAL
 import ModalAgregarPersonal from "../Mod/ModalCrearPersonal";
 //MODAL EDITAR PERSONAL
-import ModalEditarPersonal from "../Mod/ModalEditarPersonal";
 import { Button } from "primereact/button";
 import { ModalAsignarRol } from "../Mod/ModalAsignarRol";
 import ModalEliminarPersonal from "../Mod/ModalEliminarPersonal";
@@ -27,6 +26,7 @@ import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import UseGetPersonalDisable from "../Hooks/UseGetPersonalDisable";
 import ModalActivarPersonal from "../Mod/ModalActivarPersonal";
+import ModalEditPersonal from "../Mod/ModalEditPersonal";
 
 export function PersonalPage() {
     //hooks
@@ -247,11 +247,12 @@ export function PersonalPage() {
 
             </div>
             {/* RegionModal */}
-            <ModalEditarPersonal pasarAbrirModalEditar={ModalEditar} pasarCerrarModalEditar={cerrarModalEditar} pasarPersonalSeleccionado={personalSeleccionado} pasarSetPersonal={setData} />
+            {/* <ModalEditarPersonal pasarAbrirModalEditar={ModalEditar} pasarCerrarModalEditar={cerrarModalEditar} pasarPersonalSeleccionado={personalSeleccionado} pasarSetPersonal={setData} /> */}
             <ModalAsignarRol pasarAbrirModalAsignar={ModalAsignar} pasarCerrarModalAsignar={cerrarModalAsignar} pasarPersonalSeleccionado={personalSeleccionado} />
             <ModalEliminarPersonal pasarAbrirModalEliminar={modalEliminarPersonal} pasarCerrarModalEliminar={cerrarModalEliminar} pasarPersonalSeleccionado={personalSeleccionado} pasarSetPersonal={setData} pasarSetPersonalDisable={setPersonalDisable} />
             <ModalEnvioDeCredencial pasarAbrirModalEnviar={modalEnviar} pasarCerrarModalEnviar={functCerrarModalEnviar} pasarPersonalSeleccionado={personalSeleccionado} />
             <ModalActivarPersonal pasarAbrirModalActivar={modalActivarPersonal} pasarCerrarModalActivar={cerrarModalActivar} pasarPersonalSeleccionado={personalSeleccionado} pasarSetPersonalDisable={setPersonalDisable} pasarSetPersonal={setData}/>
+            <ModalEditPersonal pasarAbrirModalEditar={ModalEditar} pasarCerrarModalEditar={cerrarModalEditar} pasarPersonalSeleccionado={personalSeleccionado} pasarSetPersonal={setData}/>
         </>
     );
 }

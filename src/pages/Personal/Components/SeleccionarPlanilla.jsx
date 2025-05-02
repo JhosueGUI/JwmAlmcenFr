@@ -1,11 +1,18 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import UsarGetPlanilla from "../Hooks/UsarGetPlanilla"
 import { Dropdown } from "primereact/dropdown"
+import { use } from "react"
 
-export const SeleccionarPlanilla = ({pasarSetPersonal}) => {
+export const SeleccionarPlanilla = ({pasarSetPersonal,pasarPersonalSeleccionado}) => {
     //hooks
     const { data } = UsarGetPlanilla()
     const [planillaSeleccionado, setPlanillaSeleccionado] = useState(null)
+    useEffect(() => {
+        if (pasarPersonalSeleccionado && data) {
+            const planillaEncontrada = data.find(planilla => planilla.id === pasarPersonalSeleccionado.planilla_id);
+            setPlanillaSeleccionado(planillaEncontrada || null);
+        }
+    }, [pasarPersonalSeleccionado,data ])
     const ManejoDeCliente=(e)=>{
         const seleccion=e.value
         setPlanillaSeleccionado(seleccion)

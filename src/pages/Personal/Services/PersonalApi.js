@@ -22,12 +22,20 @@ export const GetPersonal = async (token) => {
             numero_documento: item.persona?.numero_documento || '',
             tipo_documento_id: item.persona?.tipo_documento_id || '',
             fecha_ingreso: item.fecha_ingreso || '',
+            fecha_salida: item.fecha_salida || '',
+            inicio_contrato: item.inicio_contrato || '',
+            fin_contrato: item.fin_contrato || '',
             area: item.cargo.area?.nombre || '',
             cargo: item.cargo?.nombre_cargo || '',
-            area_id: item.area?.id || '',
+            cargo_id: item.cargo?.id || '',
             habilidad: item.habilidad || '',
             ingreso_planilla: item.fecha_ingreso_planilla || '',
             planilla: item.planilla?.nombre_planilla || '',
+            sueldo_planilla: item.sueldo_planilla || '',
+            planilla_id: item.planilla?.id || '',
+            sueldo_real: item.sueldo_real || '',
+            fecha_alta: item.fecha_alta || '',
+            fecha_baja: item.fecha_baja || '',
             experiencia: item.experiencia || '',
         }));
     } catch (error) {
@@ -35,6 +43,22 @@ export const GetPersonal = async (token) => {
         throw error;
     }
 };
+export const editPersonal = async (token, id, data) => {
+    try {
+        const apiClient = axios.create({
+            baseURL: PROGRAMACION_API,
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+        const respuesta = await apiClient.post(`/almacen/personal/update/${id}`, data);
+        return respuesta.data.resp;
+    } catch (error) {
+        console.error("Error al editar Personal:", error);
+        throw error;
+    }
+}
 export const GetPlanilla = async (token) => {
     try {
         const apiClient = axios.create({
@@ -128,6 +152,22 @@ export const reactivatePersonal = async (token, id) => {
         return respuesta.data.resp;
     } catch (error) {
         console.error("Error al reactivar Personal:", error);
+        throw error;
+    }
+}
+export const createPersonal = async (token, data) => {
+    try{
+        const apiClient = axios.create({
+            baseURL: PROGRAMACION_API,
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+        const response = await apiClient.post("/almacen/personal/create", data);
+        return response.data.resp;
+    }catch(error){
+        console.error("Error al crear Personal:", error);
         throw error;
     }
 }
