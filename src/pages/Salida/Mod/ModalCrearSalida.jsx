@@ -19,12 +19,16 @@ import { Column } from 'primereact/column';
 import { SeleccionarProducto } from "../Components/SeleccionarProducto";
 import UseCreateProduct from "../hooks/UseCreateProduct";
 import { getSalida } from "../Services/SalidaApi";
+import UseGetUltimaSalida from "../hooks/UseGetUltimaSalida";
 
 const ModalCrearSalida = ({ pasarSetSalidas }) => {
+
     //hooks
     const { Create } = UseCreateProduct()
+    const { ultimaSalida } = UseGetUltimaSalida()
     //const token
     const { obtenerToken } = useContext(AuthContext)
+    console.log("responseServer", ultimaSalida)
     //#region estado para abrir y cerrar modal de crear
     const [modal, setModal] = useState(false)
     const abrirModal = () => {
@@ -41,7 +45,11 @@ const ModalCrearSalida = ({ pasarSetSalidas }) => {
         try {
             const token = obtenerToken()
             if (token) {
+                if(dataSalida.vale === ""){
+                    dataSalida.vale = parseInt(ultimaSalida.vale) + 1
+                }
                 const responseServer = await Create(dataSalida)
+                
                 const response = await getSalida(token)
                 const salidaAdapted = response.map(item => {
                     let personal = null;
@@ -219,7 +227,7 @@ const ModalCrearSalida = ({ pasarSetSalidas }) => {
                         <div className="primerDiv" style={{ display: "flex", gap: '10px' }}>
                             <div className="vale" style={{ width: '100%' }}>
                                 <FloatLabel >
-                                    <InputNumber id="vale" name="vale" style={{ width: '100%' }} value={dataSalida.vale || null} onChange={(e) => setDataSalida({ ...dataSalida, vale: e.value })} />
+                                    <InputNumber id="vale" name="vale" style={{ width: '100%' }} value={dataSalida.vale || parseInt(ultimaSalida.vale)+1 } onChange={(e) => setDataSalida({ ...dataSalida, vale: e.value })} />
                                     <label htmlFor="vale" style={{ textAlign: "center", }}>Vale</label>
                                 </FloatLabel>
                             </div>

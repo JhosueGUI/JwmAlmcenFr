@@ -66,6 +66,22 @@ export const getProducto = async (token) => {
         throw error;
     }
 }
+export const getUltimaSalida = async (token) => {
+    try {
+        const apiClient = axios.create({
+            baseURL: PROGRAMACION_API,
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+        const respuesta = await apiClient.get('/almacen/salida/get/ultimo');
+        return respuesta.data.resp;
+    } catch (error) {
+        console.error("Error al obtener ultima salida:", error);
+        throw error;
+    }
+}
 export const createSalida = async (token, data) => {
     try {
         const apiClient = axios.create({

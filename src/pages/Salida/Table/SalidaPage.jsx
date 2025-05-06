@@ -23,6 +23,7 @@ import UsarGetSalida from "../hooks/UsarGetSalida";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import { InputText } from "primereact/inputtext";
+import { DescargarPdf } from "../Components/DescargarPdf";
 
 export function SalidaPage() {
     //#hooks
@@ -114,9 +115,15 @@ export function SalidaPage() {
         return (
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: '5px' }}>
                 {activeIndex === 0 && (
-                    <div className="editar">
-                        <Button icon="pi pi-pencil" severity="success" style={{ color: '#248D63', backgroundColor: '#BFF1DF', border: 'none' }} aria-label="Editar" onClick={() => { functAbrirEditar(id) }} />
-                    </div>
+                    <>
+                        <div className="descargar">
+                            <DescargarPdf icon="pi pi-pencil" severity="success" style={{ color: '#248D63', backgroundColor: '#BFF1DF', border: 'none' }} aria-label="Editar" numeroCompra={id.vale} />
+                        </div>
+                        <div className="editar">
+                            <Button icon="pi pi-pencil" severity="success" style={{ color: '#248D63', backgroundColor: '#BFF1DF', border: 'none' }} aria-label="Editar" onClick={() => { functAbrirEditar(id) }} />
+                        </div>
+
+                    </>
                 )}
                 {activeIndex === 1 && (
                     <div className="editar">
