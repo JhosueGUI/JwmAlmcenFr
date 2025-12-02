@@ -6,15 +6,20 @@ export function ExportarSalida() {
     const exportarExcel = async () => {
         try {
             const fecha = new Date();
-            const fechaFormateada = fecha.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+            const fechaFormateada = fecha.toISOString().split('T')[0];
 
-            const response = await axios.get('https://jwmalmcenb-production.up.railway.app/api/orden_compra/exportar_salida',{ timeout: 300000 }, {
-                responseType: 'blob' // Para manejar archivos binarios (Excel en este caso)
-            });
+            const response = await axios.get(
+                'https://jwmalmcenb-production.up.railway.app/api/orden_compra/exportar_salida',
+                {
+                    timeout: 300000,
+                    responseType: 'blob'
+                }
+            );
+
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', `salida-${fechaFormateada}.xlsx`); // Nombre del archivo con fecha actual
+            link.setAttribute('download', `salida-${fechaFormateada}.xlsx`);
             document.body.appendChild(link);
             link.click();
         } catch (error) {
@@ -23,6 +28,13 @@ export function ExportarSalida() {
     };
 
     return (
-        <Button type="button" icon="pi pi-download" className="p-button-secondary" severity="info" onClick={exportarExcel} style={{background:'#1A55B0',border:'1px solid #1A55B0'}}/>
+        <Button
+            type="button"
+            icon="pi pi-download"
+            className="p-button-secondary"
+            severity="info"
+            onClick={exportarExcel}
+            style={{ background: '#1A55B0', border: '1px solid #1A55B0' }}
+        />
     );
 }
