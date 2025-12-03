@@ -41,14 +41,14 @@ export const ModalAgregarPersonalSalida = ({ pasarSetPersonal }) => {
             if (token) {
                 console.log("Datos que se enviarán:", dataPersonal);
 
-                const respuestaCategoria = await axios.post("https://jwmalmcenb-production.up.railway.app/api/almacen/personal/create", dataPersonal, {
+                const respuestaCategoria = await axios.post("http://127.0.0.1:8000/api/almacen/personal/create", dataPersonal, {
                     headers: {
                         Authorization: `Bearer ${token}`
 
                     }
                 });
                 // Obtener las categorías actualizadas después de agregar una nueva categoría
-                const respuestaCategorias = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/personal/get", {
+                const respuestaCategorias = await axios.get("http://127.0.0.1:8000/api/almacen/personal/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
 

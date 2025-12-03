@@ -31,7 +31,7 @@ export const ReporteGraficoFiltro = () => {
         try {
             const token = obtenerToken();
             if (token) {
-                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/sub_familia/sub_familia", {
+                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/sub_familia/sub_familia", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -50,7 +50,7 @@ export const ReporteGraficoFiltro = () => {
                 const data = {
                     sub_familia_id: subFamiliaId
                 };
-                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/reporte/familia/filtro", {
+                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/reporte/familia/filtro", {
                     params: data,
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -199,7 +199,7 @@ export const ReporteGraficoFiltro = () => {
                     sub_familia_id: subFamiliaId
                 };
 
-                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/reporte/familia/filtro/meses", {
+                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/reporte/familia/filtro/meses", {
                     params: data,
                     headers: {
                         Authorization: `Bearer ${token}`

@@ -17,7 +17,7 @@ export function GetProductosSalida({ pasarSetDataSalida,pasarProductoInicial}) {
             try {
                 const token = obtenerToken();
                 if (token) {
-                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/producto/get", {
+                    const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/producto/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

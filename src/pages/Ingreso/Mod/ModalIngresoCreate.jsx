@@ -25,6 +25,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import UseCreateIngreso from "../Hooks/UseCreateIngreso";
 import { getIngreso } from "../Services/IngresoApi";
+import { Calendar } from "primereact/calendar";
 
 
 const ModalIngresoCreate = ({ pasarSetIngreso }) => {
@@ -225,6 +226,17 @@ const ModalIngresoCreate = ({ pasarSetIngreso }) => {
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                         <div style={{ marginTop: "20px", width: "100%", display: 'flex', flexDirection: 'column', gap: '25px' }}>
                             <div className="primerDiv" style={{ display: 'flex', gap: '10px' }}>
+                                <Calendar
+                                    style={{ width: '100%' }}
+                                    placeholder="Fecha"
+                                    name="fecha"
+                                    value={dataIngreso.fecha ?? null}
+                                    onChange={(e) => {
+                                        setDataIngreso({ ...dataIngreso, fecha: e.value });
+                                    }}
+                                    dateFormat="dd/mm/yy"
+                                    mask="99/99/9999"
+                                />
                                 <div className="guia" style={{ width: '100%' }}>
                                     <FloatLabel>
                                         <InputText id="guia_remision" name='guia_remision' style={{ width: '100%' }} value={dataIngreso.guia_remision || ''} onChange={handleInputChange} />

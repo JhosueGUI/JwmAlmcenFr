@@ -18,7 +18,7 @@ const GetPersonal = ({ pasarSetSalidas, pasarPersonalInicial, pasarSalidaSelecci
             try {
                 const token = obtenerToken()
                 if (token) {
-                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/personal/get", {
+                    const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/personal/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

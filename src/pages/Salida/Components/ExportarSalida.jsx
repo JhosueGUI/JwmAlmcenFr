@@ -9,7 +9,7 @@ export function ExportarSalida() {
             const fechaFormateada = fecha.toISOString().split('T')[0];
 
             const response = await axios.get(
-                'https://jwmalmcenb-production.up.railway.app/api/orden_compra/exportar_salida',
+                'http://127.0.0.1:8000/api/orden_compra/exportar_salida',
                 {
                     timeout: 300000,
                     responseType: 'blob'

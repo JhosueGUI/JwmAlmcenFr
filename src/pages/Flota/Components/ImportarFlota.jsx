@@ -28,7 +28,7 @@ export const ImportarFlota = ({ pasarSetFlota }) => {
 
     const uploadRef = useRef(null);
 
-    const urlSubirArchivo = "https://jwmalmcenb-production.up.railway.app/api/almacen/flota/importar";
+    const urlSubirArchivo = "http://127.0.0.1:8000/api/almacen/flota/importar";
 
     const [archivoSeleccionado, setArchivoSeleccionado] = useState(null)
 
@@ -52,7 +52,7 @@ export const ImportarFlota = ({ pasarSetFlota }) => {
                 // Ocultar spinner al finalizar la carga
                 setCargando(false);
 
-                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/flota/get", {
+                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/flota/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
