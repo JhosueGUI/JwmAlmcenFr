@@ -34,7 +34,7 @@ export const ReporteGraficoImplemento = () => {
         try {
             const token = obtenerToken()
             if (token) {
-                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/reporte/implementos/filtro", {
+                const respuestaGet = await axios.get("https://zoological-blessing-production.up.railway.app/api/almacen/reporte/implementos/filtro", {
                     params: dataImplementos,
                     headers: {
                         Authorization: `Bearer${token}`
@@ -164,7 +164,7 @@ export const ReporteGraficoImplemento = () => {
         try {
             const token = obtenerToken();
             if (token) {
-                const respuestaGet = await axios.get("http://127.0.0.1:8000/api/almacen/reporte/implementos/filtro/mes", {
+                const respuestaGet = await axios.get("https://zoological-blessing-production.up.railway.app/api/almacen/reporte/implementos/filtro/mes", {
                     params: { ...dataImplementos, año },
                     headers: {
                         Authorization: `Bearer ${token}`

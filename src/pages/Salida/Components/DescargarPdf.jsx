@@ -6,7 +6,7 @@ import axios from "axios";
 export const DescargarPdf = ({ numeroCompra }) => {
     const descargar = async () => {
         try {
-            const respuestaGet = await axios.get(`http://127.0.0.1:8000/api/valeSalida/descargar/${numeroCompra}`, {
+            const respuestaGet = await axios.get(`https://zoological-blessing-production.up.railway.app/api/valeSalida/descargar/${numeroCompra}`, {
                 responseType: 'blob' // Indica que esperas un blob (archivo) como respuesta
             });
              // Creas una URL de objeto blob para el archivo PDF
