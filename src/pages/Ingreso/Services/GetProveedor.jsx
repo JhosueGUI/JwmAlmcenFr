@@ -18,7 +18,7 @@ export function GetProveedor({ pasarSetDataIngreso, proveedorInicial }) {
             try {
                 const token = obtenerToken()
                 if (token) {
-                    const respuestaGet = await axios.get("https://zoological-blessing-production.up.railway.app/api/almacen/proveedor/get", {
+                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/proveedor/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

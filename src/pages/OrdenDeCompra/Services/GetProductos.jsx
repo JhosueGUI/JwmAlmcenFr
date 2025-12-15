@@ -18,7 +18,7 @@ export function GetProductosOrden({ pasarSetDataOrden, productoInicial }) {
             try {
                 const token = obtenerToken()
                 if (token) {
-                    const respuestaGet = await axios.get("https://zoological-blessing-production.up.railway.app/api/almacen/producto/get", {
+                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/producto/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

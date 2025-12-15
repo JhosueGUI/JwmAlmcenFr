@@ -16,7 +16,7 @@ const GetUbicacion = ({ pasarSetDataInventario, pasarUbicacionSeleccionado }) =>
             try {
                 const token = obtenerToken();
                 if (token) {
-                    const respuesta = await axios.get("https://zoological-blessing-production.up.railway.app/api/almacen/ubicacion/get", {
+                    const respuesta = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/ubicacion/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

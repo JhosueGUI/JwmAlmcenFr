@@ -28,7 +28,7 @@ export const ImportarSalida = ({ pasarSetSalida }) => {
 
     const uploadRef = useRef(null);
 
-    const urlSubirArchivo = "https://zoological-blessing-production.up.railway.app/api/almacen/salida/importar";
+    const urlSubirArchivo = "https://jwmalmcenb-production.up.railway.app/api/almacen/salida/importar";
 
     const [archivoSeleccionado, setArchivoSeleccionado] = useState(null)
 
@@ -52,7 +52,7 @@ export const ImportarSalida = ({ pasarSetSalida }) => {
                 // Ocultar spinner al finalizar la carga
                 setCargando(false);
 
-                const respuestaGet = await axios.get("https://zoological-blessing-production.up.railway.app/api/almacen/salida/get", {
+                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/salida/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

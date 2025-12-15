@@ -26,7 +26,7 @@ export const SubirArchivoPersonal = ({ pasarSetPersonal }) => {
 
     const uploadRef = useRef(null);
 
-    const urlSubirArchivo = "https://zoological-blessing-production.up.railway.app/api/almacen/personal/archivo";
+    const urlSubirArchivo = "https://jwmalmcenb-production.up.railway.app/api/almacen/personal/archivo";
 
     const SubirArchivo = async () => {
         try {
@@ -49,7 +49,7 @@ export const SubirArchivoPersonal = ({ pasarSetPersonal }) => {
                 setCargando(false);
 
                 // Obtener y transformar datos actualizados después de la carga
-                const respuestaPersonalGet = await axios.get("https://zoological-blessing-production.up.railway.app/api/almacen/personal/get", {
+                const respuestaPersonalGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/personal/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

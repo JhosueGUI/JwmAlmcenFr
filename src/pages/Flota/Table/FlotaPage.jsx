@@ -42,7 +42,7 @@ export function FlotaPage() {
                 const token = obtenerToken()
                 if (token) {
                     setCargando(true);
-                    const respuestaGet = await axios.get("https://zoological-blessing-production.up.railway.app/api/almacen/flota/get", {
+                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/flota/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

@@ -30,7 +30,7 @@ export function OrdenDeCompra() {
                 const token = obtenerToken()
                 if (token) {
                     setCargando(true);
-                    const respuestaGet = await axios.get("https://zoological-blessing-production.up.railway.app/api/almacen/orden_compra/get", {
+                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/orden_compra/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

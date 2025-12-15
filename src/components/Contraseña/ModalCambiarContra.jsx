@@ -28,7 +28,7 @@ export const ModalCambiarContra = ({ pasarAbrirModal, pasarCerrarModa }) => {
                     nueva_contraseña: nuevaContraseña,
                     repetir_contraseña: repetirContraseña,
                 };
-                const respuestaPost = await axios.post("https://zoological-blessing-production.up.railway.app/api/almacen/password/cambiar", data, {
+                const respuestaPost = await axios.post("https://jwmalmcenb-production.up.railway.app/api/almacen/password/cambiar", data, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

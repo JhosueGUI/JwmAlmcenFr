@@ -29,7 +29,7 @@ export const ModalEnvioDeCredencial = ({ pasarAbrirModalEnviar, pasarCerrarModal
             const token = obtenerToken();
             if (token) {
                 setCargando(true);
-                const respuestaPost = await axios.post(`https://zoological-blessing-production.up.railway.app/api/almacen/personal/credenciales/${pasarPersonalSeleccionado.id}`,{},{
+                const respuestaPost = await axios.post(`https://jwmalmcenb-production.up.railway.app/api/almacen/personal/credenciales/${pasarPersonalSeleccionado.id}`,{},{
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

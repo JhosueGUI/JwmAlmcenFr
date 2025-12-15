@@ -15,12 +15,12 @@ const ModalEliminarSalidaCombustible = ({ pasarAbrirModalEliminar, pasarCerrarMo
         try {
             const token = obtenerToken()
             if (token) {
-                const respuestaPost = await axios.delete(`https://zoological-blessing-production.up.railway.app/api/almacen/salida_combustible/delete/${pasarSalidaSeleccionadoCombustible.id}`, {
+                const respuestaPost = await axios.delete(`https://jwmalmcenb-production.up.railway.app/api/almacen/salida_combustible/delete/${pasarSalidaSeleccionadoCombustible.id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 })
-                const respuestaGet = await axios.get("https://zoological-blessing-production.up.railway.app/api/almacen/salida_combustible/get", {
+                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/salida_combustible/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

@@ -18,7 +18,7 @@ const GetPersonal = ({ pasarSetSalidas, pasarPersonalInicial, pasarSalidaSelecci
             try {
                 const token = obtenerToken()
                 if (token) {
-                    const respuestaGet = await axios.get("https://zoological-blessing-production.up.railway.app/api/almacen/personal/get", {
+                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/personal/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

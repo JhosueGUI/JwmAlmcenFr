@@ -19,7 +19,7 @@ export const GetArea = ({ pasarSetPersonal, pasarPersonalInicial }) => {
             try {
                 const token = obtenerToken()
                 if (token) {
-                    const respuestaGet = await axios.get("https://zoological-blessing-production.up.railway.app/api/almacen/area/get", {
+                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/area/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

@@ -18,7 +18,7 @@ const GetEstadoOperativo = ({pasarSetDataInventario}) => {
             try {
                 const token = obtenerToken()
                 if (token) {
-                    const respuesta = await axios.get("https://zoological-blessing-production.up.railway.app/api/almacen/estado_operativo/get", {
+                    const respuesta = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/estado_operativo/get", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

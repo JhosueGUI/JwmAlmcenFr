@@ -19,7 +19,7 @@ export const GetUnidadImplementos = ({pasarSetDataImplementos}) => {
             try {
                 const token=obtenerToken()
                 if (token) {
-                    const respuestaGet = await axios.get("https://zoological-blessing-production.up.railway.app/api/almacen/flota/get_unidad", {
+                    const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/flota/get_unidad", {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

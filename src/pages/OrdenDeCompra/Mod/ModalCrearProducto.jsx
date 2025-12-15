@@ -42,12 +42,12 @@ export const ModalCrearProducto = ({ pasarSetProducto }) => {
             const token = obtenerToken()
             if (token) {
                 setCargando(true);
-                const respuestaPost = await axios.post("https://zoological-blessing-production.up.railway.app/api/almacen/orden_compra/producto/create", dataProducto, {
+                const respuestaPost = await axios.post("https://jwmalmcenb-production.up.railway.app/api/almacen/orden_compra/producto/create", dataProducto, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 })
-                const respuestaGet = await axios.get("https://zoological-blessing-production.up.railway.app/api/almacen/producto/get", {
+                const respuestaGet = await axios.get("https://jwmalmcenb-production.up.railway.app/api/almacen/producto/get", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

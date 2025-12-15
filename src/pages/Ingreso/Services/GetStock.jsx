@@ -16,7 +16,7 @@ export function GetStock({ pasarProductoSeleccionado }) {
             try {
                 const token = obtenerToken()
                 if (token) {
-                    const respuestaGet = await axios.get(`https://zoological-blessing-production.up.railway.app/api/almacen/producto/stock/${pasarProductoSeleccionado}`, {
+                    const respuestaGet = await axios.get(`https://jwmalmcenb-production.up.railway.app/api/almacen/producto/stock/${pasarProductoSeleccionado}`, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
